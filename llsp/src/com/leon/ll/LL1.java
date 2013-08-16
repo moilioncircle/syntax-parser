@@ -7,7 +7,7 @@ import static com.leon.util.Utils.index;
 import static com.leon.util.Utils.is_nonterminal;
 import static com.leon.util.Utils.is_terminal;
 import static com.leon.util.Utils.cut_array_add_end;
-import static com.leon.util.Utils.substitute;
+import static com.leon.util.Utils.derivation;
 import static com.leon.util.Utils.remove_direct_left_recursion;
 
 
@@ -142,7 +142,7 @@ public class LL1 {
             ProductionSet temp = ai;
             for (int j = 0; j < i; j++) {
                 ProductionSet aj = substitute_list.get(j);
-                ai = substitute(aj, ai);
+                ai = derivation(aj, ai);
             }
             substitute_list.add(ai);
             list.addAll(remove_direct_left_recursion(ai,temp));

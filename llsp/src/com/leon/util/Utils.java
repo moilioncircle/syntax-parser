@@ -251,7 +251,7 @@ public class Utils {
         return index;
     }
     
-    public static ProductionSet substitute(ProductionSet aj, ProductionSet ai) {
+    public static ProductionSet derivation(ProductionSet aj, ProductionSet ai) {
         ProductionSet result = new ProductionSet(ai.lhs);
         String symbol = aj.lhs;
         for (int i = 0; i < ai.rhs_set.size(); i++) {
