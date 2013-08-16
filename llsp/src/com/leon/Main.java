@@ -10,6 +10,10 @@ import java.util.Set;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
+import com.leon.tree.cpt.CPNode;
+import com.leon.tree.cpt.NodeType;
+import com.leon.util.Stack;
+import com.leon.util.Token;
 
 /** @author : Leon
  * @since   : 2013-8-11
@@ -82,7 +86,6 @@ public class Main {
         List<Production> list = new ArrayList<Production>();
         String[] terminals = new String[]{"ID","INTLIT",":=",",",";","+","*","(",")","begin","end","read","write","$"};
         String start_symbol = "system_goal";
-        
         list.add(new Production("program",new String[]{"begin","statement_list","end"}));
         list.add(new Production("statement_list",new String[]{"statement","statement_tail"}));
         list.add(new Production("statement_tail",new String[]{"statement","statement_tail"}));
@@ -138,11 +141,36 @@ public class Main {
         for (int i = 0; i < g.nonterminals.length; i++) {
             c.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        c.grammar_str = "begin ID := ID * INTLIT + ID ; end $".split(" ");
-        for (int i = 0; i < c.grammar_str.length; i++) {
-            System.out.println(c.grammar_str[i]);
+        c.token = new Token("begin ID := ID * INTLIT + ID ; end $".split(" "));
+
+        CPNode root = c.ll1_driver(g, m);
+        System.out.println("digraph g {");
+        System.out.println("\tnode[shape = record, width = .1, height = .1];");
+        Stack<CPNode> stack = new Stack<CPNode>();
+        int k = 0;
+        Stack<Integer> k_stack = new Stack<Integer>();
+        stack.push(root);
+        k_stack.push(k);
+        System.out.println("\tnode" + k + "[label = \"{<n> " + root.name + " }\", color = lightgray, style = filled];");
+        while (!stack.is_empty()) {
+            CPNode parent = stack.pop();
+            String parentNode = "node" + k_stack.pop();
+            for (int i = 0; i < parent.childs.size(); i++) {
+                String childNode = "node" + (++k);
+                if (parent.childs.get(i).type == NodeType.LEAF) {
+                    System.out.println("\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
+                                       + " }\", color = lightblue, style = filled];");
+                }
+                else {
+                    System.out.println("\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
+                                       + " }\", color = lightgray, style = filled];");
+                }
+                System.out.println("\t" + parentNode + ":n->" + childNode + ":n;");
+                stack.push(parent.childs.get(i));
+                k_stack.push(k);
+            }
         }
-        c.ll1_driver(g, m);
+        System.out.println("}");
     }
     
     public void do_4_gammar(){

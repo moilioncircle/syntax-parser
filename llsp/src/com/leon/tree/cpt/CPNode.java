@@ -13,8 +13,10 @@ public abstract class CPNode {
     public String name;
     public NodeType type;
     public List<CPNode> childs = new ArrayList<CPNode>();
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
-enum NodeType{
-    LEAF,INTERNAL;
-}
+
 

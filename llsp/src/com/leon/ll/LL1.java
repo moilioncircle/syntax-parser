@@ -1,6 +1,8 @@
 
 package com.leon.ll;
 
+import static com.leon.util.Utils.fill_first_set;
+import static com.leon.util.Utils.fill_follow_set;
 import static com.leon.util.Utils.longest_common_perfix;
 import static com.leon.util.Utils.first;
 import static com.leon.util.Utils.index;
@@ -10,7 +12,6 @@ import static com.leon.util.Utils.cut_array_add_end;
 import static com.leon.util.Utils.derivation;
 import static com.leon.util.Utils.remove_direct_left_recursion;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,11 @@ import java.util.Set;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
+import com.leon.tree.cpt.CPNode;
+import com.leon.tree.cpt.InternalNode;
+import com.leon.tree.cpt.LeafNode;
 import com.leon.util.Stack;
+import com.leon.util.Token;
 
 /**
  * @author : Leon
@@ -29,9 +34,25 @@ import com.leon.util.Stack;
 
 public class LL1 {
     
-    public String[] grammar_str;
+    public Token token;
     
-    private int     token_i;
+    public LL1(){
+        
+    }
+    
+    public LL1(Token token){
+        this.token = token;
+    }
+    
+    public int[][] predict_table(Grammar g){
+        Set<String>[] first_set = fill_first_set(g);
+        Set<String>[] follow_set = fill_follow_set(g, first_set);
+        int[][] m = new int[g.terminals.length][g.nonterminals.length];
+        for (int i = 0; i < g.productions.size(); i++) {
+            predict(g.productions.get(i), first_set, follow_set, g, i+1, m);
+        }
+        return m;
+    }
     
     public void predict(Production p, Set<String>[] first_set, Set<String>[] follow_set, Grammar g, int p_index,
                         int[][] m) {
@@ -87,35 +108,38 @@ public class LL1 {
         System.out.println("}");
     }
     
-    public void ll1_driver(Grammar g, int[][] m) {
-        Stack<String> stack = new Stack<String>();
-        stack.push(g.start_symbol);
-        String a = next_token();
+    public CPNode ll1_driver(Grammar g, int[][] m) {
+        Stack<CPNode> stack = new Stack<CPNode>();
+        CPNode root = new InternalNode(g.start_symbol);
+        stack.push(root);
+        String a = token.next_token();
         while (!stack.is_empty()) {
-            System.out.println(stack);
-            String symbol = stack.pop();
-            if (is_nonterminal(symbol, g) && m[index(a, g.terminals)][index(symbol, g.nonterminals)] > 0) {
-                Production p = g.productions.get(m[index(a, g.terminals)][index(symbol, g.nonterminals)] - 1);
+            CPNode node = stack.pop();
+            if (is_nonterminal(node.name, g) && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
+                Production p = g.productions.get(m[index(a, g.terminals)][index(node.name, g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
-                    stack.push(rhs[i]);
+                    CPNode child = is_nonterminal(rhs[i], g) ? new InternalNode(rhs[i]) : new LeafNode(rhs[i]);
+                    stack.push(child);
+                    node.childs.add(0, child);
                 }
             }
-            else if (symbol.equals(a)) {
-                a = next_token();
+            else if (node.name.equals(a)) {
+                a = token.next_token();
             }
             else {
                 System.out.println("syntax error");
             }
         }
+        return root;
     }
     
     public Grammar factor(Grammar g) {
         CommonPerfixStruct struct;
         Grammar temp = g;
         int count = 0;
-        while ((struct = common_perfix(temp.productions))!=null) {
-            String new_nonterminal = struct.lhs + ""+(count++);
+        while ((struct = common_perfix(temp.productions)) != null) {
+            String new_nonterminal = struct.lhs + "" + (count++);
             
             List<Production> new_productions = temp.productions;
             Production p = new Production(struct.lhs, cut_array_add_end(struct.perfix, 0, struct.perfix.length,
@@ -145,7 +169,7 @@ public class LL1 {
                 ai = derivation(aj, ai);
             }
             substitute_list.add(ai);
-            list.addAll(remove_direct_left_recursion(ai,temp));
+            list.addAll(remove_direct_left_recursion(ai, temp));
         }
         return new Grammar(g.start_symbol, g.terminals, list);
     }
@@ -153,33 +177,33 @@ public class LL1 {
     private CommonPerfixStruct common_perfix(List<Production> productions) {
         int max_len = 0;
         Production max_len_p = null;
-        for (int i = 0; i < productions.size()-1; i++) {
+        for (int i = 0; i < productions.size() - 1; i++) {
             int index = 0;
             Production pi = productions.get(i);
-            for (int j = i+1; j < productions.size(); j++) {
+            for (int j = i + 1; j < productions.size(); j++) {
                 Production pj = productions.get(j);
-                if(pi.lhs.equals(pj.lhs)){
-                    index = longest_common_perfix(pi.rhs,pj.rhs);
+                if (pi.lhs.equals(pj.lhs)) {
+                    index = longest_common_perfix(pi.rhs, pj.rhs);
                 }
             }
-            if(index > max_len){
+            if (index > max_len) {
                 max_len = index;
                 max_len_p = pi;
             }
         }
-        if(max_len >0){
+        if (max_len > 0) {
             List<Production> list = new ArrayList<Production>();
             for (int i = 0; i < productions.size(); i++) {
                 Production p = productions.get(i);
-                if(p.lhs.equals(max_len_p.lhs)){
+                if (p.lhs.equals(max_len_p.lhs)) {
                     int k = 0;
                     for (int j = 0; j < max_len; j++) {
-                        if(p.rhs[j].equals(max_len_p.rhs[j])){
+                        if (p.rhs[j].equals(max_len_p.rhs[j])) {
                             k++;
                         }
                     }
                     
-                    if(k == max_len){
+                    if (k == max_len) {
                         list.add(p);
                     }
                 }
@@ -188,14 +212,5 @@ public class LL1 {
         }
         return null;
     }
-    
-    private String next_token() {
-        if (token_i < grammar_str.length) {
-            return grammar_str[token_i++];
-        }
-        return null;
-    }
-    
+
 }
-
-
