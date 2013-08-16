@@ -270,7 +270,7 @@ public class Utils {
         return result;
     }
     
-    public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai) {
+    public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai,ProductionSet temp) {
         System.out.println("ai:"+ai);
         List<Production> ai_ps = ai.get_productions();
         ProductionSet new_ai = new ProductionSet(ai.lhs);
@@ -293,7 +293,7 @@ public class Utils {
             rs.add(new_ai_tail);
         }
         else {
-            rs.add(ai);
+            rs.add(temp);
         }
         return rs;
     }
@@ -327,7 +327,7 @@ public class Utils {
 //        ProductionSet rs = substitute(ai, aj);
 //        System.out.println(rs);
 //        System.out.println("=============");
-        List<ProductionSet> list = remove_direct_left_recursion(ai);
+        List<ProductionSet> list = remove_direct_left_recursion(ai,ai);
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));
         }

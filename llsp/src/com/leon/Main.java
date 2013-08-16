@@ -28,6 +28,10 @@ public class Main {
         new Main().do_8_gammar();
         new Main().do_9_gammar();
         new Main().do_10_gammar();
+        new Main().do_11_gammar();
+        new Main().do_12_gammar();
+        new Main().do_13_gammar();
+        new Main().do_14_gammar();
     }
     
     public void do_1_gammar(){
@@ -250,6 +254,67 @@ public class Main {
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
         }
+        Grammar g1 = l.remove_left_recursion(g);
+        System.out.println("===============");
+        for (int i = 0; i < g1.productions.size(); i++) {
+            System.out.println(g1.productions.get(i));
+        }
+    }
+
+    public void do_11_gammar(){
+        System.out.println("do_11_gammar");
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("B", new String[]{"C","b"}));
+        list.add(new Production("A", new String[]{"B","a"}));
+        list.add(new Production("C", new String[]{"A","c"}));
+        Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
+        Grammar g1 = l.remove_left_recursion(g);
+        System.out.println("===============");
+        for (int i = 0; i < g1.productions.size(); i++) {
+            System.out.println(g1.productions.get(i));
+        }
+    }
+    
+    public void do_12_gammar(){
+        System.out.println("do_12_gammar");
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("A", new String[]{"B","a"}));
+        list.add(new Production("B", new String[]{"C","b"}));
+        list.add(new Production("C", new String[]{"A","c"}));
+        Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
+        Grammar g1 = l.remove_left_recursion(g);
+        System.out.println("===============");
+        for (int i = 0; i < g1.productions.size(); i++) {
+            System.out.println(g1.productions.get(i));
+        }
+    }
+    
+    public void do_13_gammar(){
+        System.out.println("do_13_gammar");
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("C", new String[]{"A","c"}));
+        list.add(new Production("A", new String[]{"B","a"}));
+        list.add(new Production("B", new String[]{"C","b"}));
+        
+        Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
+        Grammar g1 = l.remove_left_recursion(g);
+        System.out.println("===============");
+        for (int i = 0; i < g1.productions.size(); i++) {
+            System.out.println(g1.productions.get(i));
+        }
+    }
+    
+    public void do_14_gammar(){
+        System.out.println("do_14_gammar");
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("B", new String[]{"C","b"}));
+        list.add(new Production("C", new String[]{"A","c"}));
+        list.add(new Production("A", new String[]{"B","a"}));
+        Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {

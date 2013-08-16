@@ -136,13 +136,16 @@ public class LL1 {
     
     public Grammar remove_left_recursion(Grammar g) {
         List<ProductionSet> list = new ArrayList<ProductionSet>();
+        List<ProductionSet> substitute_list = new ArrayList<ProductionSet>();
         for (int i = 0; i < g.production_set.size(); i++) {
             ProductionSet ai = g.production_set.get(i);
+            ProductionSet temp = ai;
             for (int j = 0; j < i; j++) {
-                ProductionSet aj = g.production_set.get(j);
+                ProductionSet aj = substitute_list.get(j);
                 ai = substitute(aj, ai);
             }
-            list.addAll(remove_direct_left_recursion(ai));
+            substitute_list.add(ai);
+            list.addAll(remove_direct_left_recursion(ai,temp));
         }
         return new Grammar(g.start_symbol, g.terminals, list);
     }
