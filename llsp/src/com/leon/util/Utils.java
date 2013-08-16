@@ -251,17 +251,51 @@ public class Utils {
         return index;
     }
     
-    public static ProductionSet substitute(String[] p_rhs,String symbol,ProductionSet p_set){
-        ProductionSet result = new ProductionSet(p_set.lhs);
-        for (int i = 0; i < p_set.rhs_set.size(); i++) {
-            String[] rhs = p_set.rhs_set.get(i);
-            if(rhs.length !=0 && rhs[0].equals(symbol)){
-                result.add_rhs(cut_array_add_before(rhs, 1, rhs.length, p_rhs));
-            }else{
+    public static ProductionSet substitute(ProductionSet aj, ProductionSet ai) {
+        ProductionSet result = new ProductionSet(ai.lhs);
+        String symbol = aj.lhs;
+        for (int i = 0; i < ai.rhs_set.size(); i++) {
+            String[] rhs = ai.rhs_set.get(i);
+            if (rhs.length != 0 && rhs[0].equals(symbol)) {
+                List<Production> aj_ps = aj.get_productions();
+                for (int j = 0; j < aj_ps.size(); j++) {
+                    result.add_rhs(cut_array_add_before(rhs, 1, rhs.length, aj_ps.get(j).rhs));
+                }
+            }
+            else {
                 result.add_rhs(rhs);
             }
         }
+        
         return result;
+    }
+    
+    public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai) {
+        System.out.println("ai:"+ai);
+        List<Production> ai_ps = ai.get_productions();
+        ProductionSet new_ai = new ProductionSet(ai.lhs);
+        ProductionSet new_ai_tail = new ProductionSet(ai.lhs + "_tail");
+        for (int i = 0; i < ai_ps.size(); i++) {
+            Production p = ai_ps.get(i);
+            if (p.rhs.length != 0 && p.rhs[0].equals(p.lhs)) {
+                String[] new_rhs = cut_array_add_end(p.rhs, 1, p.rhs.length, new_ai_tail.lhs);
+                new_ai_tail.add_rhs(new_rhs);
+                new_ai_tail.add_rhs(new String[] {});
+            }
+            else {
+                String[] new_rhs = cut_array_add_end(p.rhs, 0, p.rhs.length, new_ai_tail.lhs);
+                new_ai.add_rhs(new_rhs);
+            }
+        }
+        List<ProductionSet> rs = new ArrayList<ProductionSet>();
+        if (new_ai_tail.rhs_set.size() != 0) {
+            rs.add(new_ai);
+            rs.add(new_ai_tail);
+        }
+        else {
+            rs.add(ai);
+        }
+        return rs;
     }
     
     private static boolean have_derives(String nonterminal, String terminal, Grammar g) {
@@ -284,9 +318,18 @@ public class Utils {
     }
     
     public static void main(String[] args) {
-        String[] rs = cut_array_add_before(new String[]{"A","a","b"},1,3,new String[]{"S","d"});
-        for (int i = 0; i < rs.length; i++) {
-            System.out.println(rs[i]);
+        ProductionSet ai = new ProductionSet("A");
+        ProductionSet aj = new ProductionSet("B");
+        ai.add_rhs(new String[]{"a","B"});
+        ai.add_rhs(new String[]{"B","b"});
+        aj.add_rhs(new String[]{"A","c"});
+        aj.add_rhs(new String[]{"d"});
+        ProductionSet rs = substitute(ai, aj);
+        System.out.println(rs);
+        System.out.println("=============");
+        List<ProductionSet> list = remove_direct_left_recursion(ai);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(list.get(i));
         }
     }
 }

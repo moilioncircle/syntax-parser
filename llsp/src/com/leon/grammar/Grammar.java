@@ -15,16 +15,18 @@ public class Grammar {
     public String[] terminals;
     
     
-    public Grammar(String start_symbol,String[] nonterminals,String[] terminals,List<ProductionSet> production_set){
-        this(start_symbol,nonterminals,terminals);
+    public Grammar(String start_symbol,String[] terminals,List<ProductionSet> production_set){
+        this(start_symbol,terminals);
         this.production_set = production_set;
         for (int i = 0; i < production_set.size(); i++) {
             productions.addAll(production_set.get(i).get_productions());
         }
+        set_nonterminals();
+        set_vocabulary();
     }
     
-    public Grammar(String start_symbol,List<Production> productions,String[] nonterminals,String[] terminals){
-        this(start_symbol,nonterminals,terminals);
+    public Grammar(String start_symbol,List<Production> productions,String[] terminals){
+        this(start_symbol,terminals);
         this.productions = productions;
         for (int i = 0; i < productions.size(); i++) {
             Production production = productions.get(i);
@@ -37,20 +39,31 @@ public class Grammar {
                 p_set.add_rhs(production.rhs);
             }
         }
+        set_nonterminals();
+        set_vocabulary();
     }
-    
-    private Grammar(String start_symbol,String[] nonterminals,String[] terminals){
-        this.start_symbol = start_symbol;
-        this.nonterminals = nonterminals;
-        this.terminals = terminals;
-        vocabulary = new String[nonterminals.length+terminals.length];
+
+    private void set_vocabulary() {
+        vocabulary = new String[nonterminals.length+this.terminals.length];
         int j=0;
         for (int i = 0; i < nonterminals.length; i++) {
             vocabulary[j++] = nonterminals[i];
         }
-        for (int i = 0; i < terminals.length; i++) {
-            vocabulary[j++] = terminals[i];
+        for (int i = 0; i < this.terminals.length; i++) {
+            vocabulary[j++] = this.terminals[i];
         }
+    }
+
+    private void set_nonterminals() {
+        this.nonterminals = new String[this.production_set.size()];
+        for (int i = 0; i < this.production_set.size(); i++) {
+            this.nonterminals[i] = this.production_set.get(i).lhs;
+        }
+    }
+    
+    private Grammar(String start_symbol,String[] terminals){
+        this.start_symbol = start_symbol;
+        this.terminals = terminals;
     }
     
     private ProductionSet contain_lhs(String lhs){

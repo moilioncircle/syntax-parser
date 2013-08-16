@@ -34,6 +34,9 @@ public class ProductionSet {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        if(rhs_set.size() == 0){
+            return "";
+        }
         sb.append(lhs+"->");
         for (int i = 0; i < rhs_set.size()-1; i++) {
             if(rhs_set.get(i).length == 0){

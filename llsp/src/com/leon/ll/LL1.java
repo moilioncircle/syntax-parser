@@ -7,6 +7,9 @@ import static com.leon.util.Utils.index;
 import static com.leon.util.Utils.is_nonterminal;
 import static com.leon.util.Utils.is_terminal;
 import static com.leon.util.Utils.cut_array_add_end;
+import static com.leon.util.Utils.substitute;
+import static com.leon.util.Utils.remove_direct_left_recursion;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,6 +18,7 @@ import java.util.Set;
 
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
+import com.leon.grammar.ProductionSet;
 import com.leon.util.Stack;
 
 /**
@@ -113,8 +117,6 @@ public class LL1 {
         while ((struct = common_perfix(temp.productions))!=null) {
             String new_nonterminal = struct.lhs + ""+(count++);
             
-            String[] new_nonterminals = cut_array_add_end(temp.nonterminals, 0, temp.nonterminals.length, new_nonterminal);
-            
             List<Production> new_productions = temp.productions;
             Production p = new Production(struct.lhs, cut_array_add_end(struct.perfix, 0, struct.perfix.length,
                     new_nonterminal));
@@ -127,13 +129,22 @@ public class LL1 {
             for (int i = 0; i < struct.list.size(); i++) {
                 new_productions.remove(struct.list.get(i));
             }
-            temp = new Grammar(temp.start_symbol, new_productions,new_nonterminals, temp.terminals);
+            temp = new Grammar(temp.start_symbol, new_productions, temp.terminals);
         }
         return temp;
     }
     
     public Grammar remove_left_recursion(Grammar g) {
-        return g;
+        List<ProductionSet> list = new ArrayList<ProductionSet>();
+        for (int i = 0; i < g.production_set.size(); i++) {
+            ProductionSet ai = g.production_set.get(i);
+            for (int j = 0; j < i; j++) {
+                ProductionSet aj = g.production_set.get(j);
+                ai = substitute(aj, ai);
+            }
+            list.addAll(remove_direct_left_recursion(ai));
+        }
+        return new Grammar(g.start_symbol, g.terminals, list);
     }
     
     private CommonPerfixStruct common_perfix(List<Production> productions) {
