@@ -206,19 +206,6 @@ public class Utils {
         return false;
     }
     
-    public static boolean deep_equals(Set<?> c1,Set<?> c2){
-        if(c1.size() != c2.size()){
-            return false;
-        }
-        for (Iterator<?> iterator = c1.iterator(); iterator.hasNext();) {
-            Object obj1 = iterator.next();
-            if(!c2.contains(obj1)){
-                return false;
-            }
-        }
-        return true;
-    }
-    
     @SafeVarargs
     public static <T> T[] cut_array_add_end(T[] original, int from, int to, T... t) {
         T[] array = Arrays.copyOfRange(original, from, to);
