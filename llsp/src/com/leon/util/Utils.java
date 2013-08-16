@@ -280,7 +280,6 @@ public class Utils {
             if (p.rhs.length != 0 && p.rhs[0].equals(p.lhs)) {
                 String[] new_rhs = cut_array_add_end(p.rhs, 1, p.rhs.length, new_ai_tail.lhs);
                 new_ai_tail.add_rhs(new_rhs);
-                new_ai_tail.add_rhs(new String[] {});
             }
             else {
                 String[] new_rhs = cut_array_add_end(p.rhs, 0, p.rhs.length, new_ai_tail.lhs);
@@ -289,6 +288,7 @@ public class Utils {
         }
         List<ProductionSet> rs = new ArrayList<ProductionSet>();
         if (new_ai_tail.rhs_set.size() != 0) {
+            new_ai_tail.add_rhs(new String[] {});
             rs.add(new_ai);
             rs.add(new_ai_tail);
         }
@@ -320,13 +320,13 @@ public class Utils {
     public static void main(String[] args) {
         ProductionSet ai = new ProductionSet("A");
         ProductionSet aj = new ProductionSet("B");
-        ai.add_rhs(new String[]{"a","B"});
+        ai.add_rhs(new String[]{"A","B"});
         ai.add_rhs(new String[]{"B","b"});
         aj.add_rhs(new String[]{"A","c"});
         aj.add_rhs(new String[]{"d"});
-        ProductionSet rs = substitute(ai, aj);
-        System.out.println(rs);
-        System.out.println("=============");
+//        ProductionSet rs = substitute(ai, aj);
+//        System.out.println(rs);
+//        System.out.println("=============");
         List<ProductionSet> list = remove_direct_left_recursion(ai);
         for (int i = 0; i < list.size(); i++) {
             System.out.println(list.get(i));

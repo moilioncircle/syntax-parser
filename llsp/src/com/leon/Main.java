@@ -27,6 +27,7 @@ public class Main {
         new Main().do_7_gammar();
         new Main().do_8_gammar();
         new Main().do_9_gammar();
+        new Main().do_10_gammar();
     }
     
     public void do_1_gammar(){
@@ -225,6 +226,30 @@ public class Main {
         list.add(new Production("T", new String[]{"P"}));
         list.add(new Production("P", new String[]{"ID"}));
         Grammar g = new Grammar("E", list, new String[]{"+","*","ID"});
+        Grammar g1 = l.remove_left_recursion(g);
+        System.out.println("===============");
+        for (int i = 0; i < g1.productions.size(); i++) {
+            System.out.println(g1.productions.get(i));
+        }
+    }
+    
+    public void do_10_gammar(){
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S", new String[]{"E","$"}));
+        list.add(new Production("E", new String[]{"E","+","T"}));
+        list.add(new Production("E", new String[]{"E","-","T"}));
+        list.add(new Production("E", new String[]{"T"}));
+        list.add(new Production("T", new String[]{"T","*","F"}));
+        list.add(new Production("T", new String[]{"T","/","F"}));
+        list.add(new Production("T", new String[]{"F"}));
+        list.add(new Production("F", new String[]{"ID"}));
+        list.add(new Production("F", new String[]{"NUM"}));
+        list.add(new Production("F", new String[]{"(","E",")"}));
+        Grammar g = new Grammar("S", list, new String[]{"$","+","-","*","/","ID","NUM","(",")"});
+        for (int i = 0; i < g.production_set.size(); i++) {
+            System.out.println(g.production_set.get(i));
+        }
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
