@@ -11,6 +11,7 @@ import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
 import com.leon.tree.cpt.CPNode;
+import com.leon.tree.cpt.CPT;
 import com.leon.tree.cpt.NodeType;
 import com.leon.util.Stack;
 import com.leon.util.Token;
@@ -22,20 +23,21 @@ import com.leon.util.Token;
 
 public class Main {
     public static void main(String[] args) {
-        new Main().do_1_gammar();
-        new Main().do_2_gammar();
-        new Main().do_3_gammar();
-        new Main().do_4_gammar();
-        new Main().do_5_gammar();
-        new Main().do_6_gammar();
-        new Main().do_7_gammar();
-        new Main().do_8_gammar();
-        new Main().do_9_gammar();
-        new Main().do_10_gammar();
-        new Main().do_11_gammar();
-        new Main().do_12_gammar();
-        new Main().do_13_gammar();
-        new Main().do_14_gammar();
+//        new Main().do_1_gammar();
+//        new Main().do_2_gammar();
+//        new Main().do_3_gammar();
+//        new Main().do_4_gammar();
+//        new Main().do_5_gammar();
+//        new Main().do_6_gammar();
+//        new Main().do_7_gammar();
+//        new Main().do_8_gammar();
+//        new Main().do_9_gammar();
+//        new Main().do_10_gammar();
+//        new Main().do_11_gammar();
+//        new Main().do_12_gammar();
+//        new Main().do_13_gammar();
+        new Main().do_15_gammar();
+//        new Main().do_3_gammar();
     }
     
     public void do_1_gammar(){
@@ -348,5 +350,27 @@ public class Main {
         for (int i = 0; i < g1.productions.size(); i++) {
             System.out.println(g1.productions.get(i));
         }
+    }
+    
+    public void do_15_gammar(){
+        System.out.println("do_15_gammar");
+        LL1 l = new LL1();
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S", new String[]{"E","$"}));
+        list.add(new Production("E", new String[]{"T","E_tail"}));
+        list.add(new Production("E_tail", new String[]{"+","T","E_tail"}));
+        list.add(new Production("E_tail", new String[]{"-","T","E_tail"}));
+        list.add(new Production("E_tail", new String[]{}));
+        list.add(new Production("T", new String[]{"(","E",")"}));
+        list.add(new Production("T", new String[]{"id"}));
+        list.add(new Production("T", new String[]{"num"}));
+        
+        Grammar g = new Grammar("S", list, new String[]{"+","-","(",")","id","num","$"});
+        int[][] m = l.predict_table(g);
+        for (int i = 0; i < g.nonterminals.length; i++) {
+            l.make_parsing_proc(g.nonterminals[i], m, g);
+        }
+        CPT cpt = new CPT(new Token("id + ( id - num ) $".split(" ")),g);
+        System.out.println(cpt.toString());
     }
 }
