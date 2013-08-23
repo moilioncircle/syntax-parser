@@ -24,6 +24,13 @@ public class Stack<T> {
         throw new UnsupportedOperationException("empty stack");
     }
     
+    public T top(){
+        if(!is_empty()){
+            return list.get(0);
+        }
+        throw new UnsupportedOperationException("empty stack");
+    }
+    
     public boolean is_empty(){
         return list.isEmpty();
     }

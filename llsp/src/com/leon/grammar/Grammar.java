@@ -14,7 +14,6 @@ public class Grammar {
     public String[] nonterminals;
     public String[] terminals;
     
-    
     public Grammar(String start_symbol,String[] terminals,List<ProductionSet> production_set){
         this(start_symbol,terminals);
         this.production_set = production_set;
@@ -23,6 +22,7 @@ public class Grammar {
         }
         set_nonterminals();
         set_vocabulary();
+        set_start_production();
     }
     
     public Grammar(String start_symbol,List<Production> productions,String[] terminals){
@@ -41,6 +41,7 @@ public class Grammar {
         }
         set_nonterminals();
         set_vocabulary();
+        set_start_production();
     }
 
     private void set_vocabulary() {
@@ -61,6 +62,16 @@ public class Grammar {
         }
     }
     
+    private void set_start_production(){
+        for (int i = 0; i < productions.size(); i++) {
+            Production p = productions.get(i);
+            if(p.lhs.equals(this.start_symbol)){
+                this.start_production = p;
+                break;
+            }
+        }
+    }
+    
     private Grammar(String start_symbol,String[] terminals){
         this.start_symbol = start_symbol;
         this.terminals = terminals;
@@ -78,6 +89,7 @@ public class Grammar {
     public List<ProductionSet> production_set = new ArrayList<ProductionSet>();
     public List<Production> productions = new ArrayList<Production>();
     public String[] vocabulary;
+    public Production start_production;
     
 }
 

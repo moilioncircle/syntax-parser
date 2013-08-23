@@ -48,5 +48,10 @@ public class LRTerm {
         else if (!p.equals(other.p)) return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "LRTerm [p=" + p + ", index=" + index + ", look_ahead=" + look_ahead + "]";
+    }
 }
 
