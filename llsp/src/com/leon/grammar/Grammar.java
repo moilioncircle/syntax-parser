@@ -3,7 +3,6 @@ package com.leon.grammar;
 
 import java.util.ArrayList;
 import java.util.List;
-import static com.leon.util.Utils.is_nonterminal;
 
 /**
  * @author : Leon
