@@ -82,9 +82,6 @@ public class Grammar {
     private void set_eog() {
         String[] rhs = this.start_production.rhs;
         this.eog = rhs[rhs.length - 1];
-        if (is_nonterminal(this.eog, this.nonterminals)) {
-            throw new UnsupportedOperationException("eog is nonterminal:" + this.eog);
-        }
     }
     
     private Grammar(String start_symbol, String[] terminals) {
