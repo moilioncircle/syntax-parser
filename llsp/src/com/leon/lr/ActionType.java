@@ -7,10 +7,10 @@ package com.leon.lr;
  * @see :
  */
 
-public enum ItemType {
+public enum ActionType {
     A("A"), S("S"), R("R"), G("G");
     
-    private ItemType(String str) {
+    private ActionType(String str) {
         this.str = str;
     }
     
