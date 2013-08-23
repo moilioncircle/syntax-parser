@@ -36,20 +36,20 @@ public class LL1 {
     
     public Token token;
     
-    public LL1(){
+    public LL1() {
         
     }
     
-    public LL1(Token token){
+    public LL1(Token token) {
         this.token = token;
     }
     
-    public int[][] predict_table(Grammar g){
+    public int[][] predict_table(Grammar g) {
         Set<String>[] first_set = fill_first_set(g);
         Set<String>[] follow_set = fill_follow_set(g, first_set);
         int[][] m = new int[g.terminals.length][g.nonterminals.length];
         for (int i = 0; i < g.productions.size(); i++) {
-            predict(g.productions.get(i), first_set, follow_set, g, i+1, m);
+            predict(g.productions.get(i), first_set, follow_set, g, i + 1, m);
         }
         return m;
     }
@@ -212,5 +212,5 @@ public class LL1 {
         }
         return null;
     }
-
+    
 }

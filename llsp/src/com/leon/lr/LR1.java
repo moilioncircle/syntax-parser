@@ -315,7 +315,7 @@ public class LR1 {
     private static void do_5_grammar() {
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "$" }));
-        list.add(new Production("E", new String[] { "i"}));
+        list.add(new Production("E", new String[] { "i" }));
         list.add(new Production("E", new String[] {}));
         Grammar g = new Grammar("S", list, new String[] { "i", "$" });
         LR1 lr = new LR1();

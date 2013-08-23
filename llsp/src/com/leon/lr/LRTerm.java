@@ -1,12 +1,12 @@
+
 package com.leon.lr;
 
 import com.leon.grammar.Production;
 
-
-
-/** @author : Leon
- * @since   : 2013-8-13
- * @see    : 
+/**
+ * @author : Leon
+ * @since : 2013-8-13
+ * @see :
  */
 
 public class LRTerm {
@@ -48,10 +48,9 @@ public class LRTerm {
         else if (!p.equals(other.p)) return false;
         return true;
     }
-
+    
     @Override
     public String toString() {
         return "LRTerm [p=" + p + ", index=" + index + ", look_ahead=" + look_ahead + "]";
     }
 }
-

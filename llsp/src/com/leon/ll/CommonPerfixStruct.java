@@ -1,14 +1,14 @@
+
 package com.leon.ll;
 
 import java.util.List;
 
 import com.leon.grammar.Production;
 
-
-
-/** @author : Leon
- * @since   : 2013-8-14
- * @see    : 
+/**
+ * @author : Leon
+ * @since : 2013-8-14
+ * @see :
  */
 
 public class CommonPerfixStruct {
@@ -31,4 +31,3 @@ public class CommonPerfixStruct {
     public String   lhs;
     public String[] perfix;
 }
-

@@ -12,8 +12,9 @@ import java.util.Set;
  */
 
 public class LRState {
+    
     Set<LRTerm> terms = new HashSet<LRTerm>();
-
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -21,7 +22,7 @@ public class LRState {
         result = prime * result + ((terms == null) ? 0 : terms.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -31,48 +32,48 @@ public class LRState {
         if (terms == null) {
             if (other.terms != null) return false;
         }
-        else if (!is_equals(terms,other.terms)) return false;
+        else if (!is_equals(terms, other.terms)) return false;
         return true;
     }
     
-    private boolean is_equals(Set<LRTerm> t1,Set<LRTerm> t2){
-        if(t1 == null && t2 == null){
+    private boolean is_equals(Set<LRTerm> t1, Set<LRTerm> t2) {
+        if (t1 == null && t2 == null) {
             return true;
-        }else if(t1 != null && t2 != null){
-            if(t1.size() == t2.size()){
+        }
+        else if (t1 != null && t2 != null) {
+            if (t1.size() == t2.size()) {
                 boolean is_contains = true;
                 for (Iterator<LRTerm> iterator = t1.iterator(); iterator.hasNext();) {
                     LRTerm t1_term = iterator.next();
-                    if(!t2.contains(t1_term)){
+                    if (!t2.contains(t1_term)) {
                         is_contains = false;
                         break;
                     }
                 }
-                if(is_contains){
+                if (is_contains) {
                     return true;
-                }else{
+                }
+                else {
                     return false;
                 }
-            }else{
+            }
+            else {
                 return false;
             }
-        }else{
+        }
+        else {
             return false;
         }
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Iterator<LRTerm> iterator = terms.iterator(); iterator.hasNext();) {
-            LRTerm term =  iterator.next();
-            sb.append(term.toString()+"\n");
+            LRTerm term = iterator.next();
+            sb.append(term.toString() + "\n");
         }
         return sb.toString();
     }
     
-    
-    
 }
-
-

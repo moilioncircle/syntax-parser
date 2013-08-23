@@ -1,21 +1,24 @@
+
 package com.leon.grammar;
 
 import java.util.Arrays;
 
-
-/** @author : Leon
- * @since   : 2013-8-12
- * @see    : 
+/**
+ * @author : Leon
+ * @since : 2013-8-12
+ * @see :
  */
 
 public class Production {
-
+    
     public Production(String lhs, String[] rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
+    
     public String[] rhs;
-    public String lhs;
+    public String   lhs;
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -24,6 +27,7 @@ public class Production {
         result = prime * result + Arrays.hashCode(rhs);
         return result;
     }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -38,15 +42,13 @@ public class Production {
         return true;
     }
     
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.lhs+"->");
+        sb.append(this.lhs + "->");
         for (int i = 0; i < this.rhs.length; i++) {
-            sb.append(this.rhs[i]+" ");
+            sb.append(this.rhs[i] + " ");
         }
         return sb.toString();
     }
     
 }
-
-
