@@ -72,7 +72,7 @@ public class LL1 {
         }
         else {
             for (int i = 0; i < symbol.length; i++) {
-                if (is_terminal(symbol[i], g)) {
+                if (is_terminal(symbol[i], g.terminals)) {
                     System.out.println("\t\t\tnode.childs.add(match(\"" + symbol[i] + "\"));");
                 }
                 else {
@@ -115,11 +115,11 @@ public class LL1 {
         String a = token.next_token();
         while (!stack.is_empty()) {
             CPNode node = stack.pop();
-            if (is_nonterminal(node.name, g) && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
+            if (is_nonterminal(node.name, g.nonterminals) && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
                 Production p = g.productions.get(m[index(a, g.terminals)][index(node.name, g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
-                    CPNode child = is_nonterminal(rhs[i], g) ? new InternalNode(rhs[i]) : new LeafNode(rhs[i]);
+                    CPNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(rhs[i]);
                     stack.push(child);
                     node.childs.add(0, child);
                 }

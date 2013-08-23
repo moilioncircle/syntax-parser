@@ -4,7 +4,6 @@ package com.leon.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -178,13 +177,8 @@ public class Utils {
         return -1;
     }
     
-    public static boolean is_nonterminal(String symbol, Grammar g) {
-        for (int i = 0; i < g.nonterminals.length; i++) {
-            if (g.nonterminals[i].equals(symbol)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean is_nonterminal(String symbol, String[] nonterminals) {
+        return is_in(symbol, nonterminals);
     }
     
     public static List<Production> match_lhs(String symbol,Grammar g){
@@ -197,9 +191,13 @@ public class Utils {
         return result;
     }
     
-    public static boolean is_terminal(String symbol, Grammar g) {
-        for (int i = 0; i < g.terminals.length; i++) {
-            if (g.terminals[i].equals(symbol)) {
+    public static boolean is_terminal(String symbol, String[] terminals) {
+        return is_in(symbol, terminals);
+    }
+
+    private static boolean is_in(String symbol, String[] symbols) {
+        for (int i = 0; i < symbols.length; i++) {
+            if (symbols[i].equals(symbol)) {
                 return true;
             }
         }

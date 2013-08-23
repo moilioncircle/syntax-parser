@@ -3,6 +3,7 @@ package com.leon.grammar;
 
 import java.util.ArrayList;
 import java.util.List;
+import static com.leon.util.Utils.is_nonterminal;
 
 /**
  * @author : Leon
@@ -15,7 +16,8 @@ public class Grammar {
     public String   start_symbol;
     public String[] nonterminals;
     public String[] terminals;
-    
+    public String   eog;         //end of grammar;
+                                  
     public Grammar(String start_symbol, String[] terminals, List<ProductionSet> production_set) {
         this(start_symbol, terminals);
         this.production_set = production_set;
@@ -25,6 +27,7 @@ public class Grammar {
         set_nonterminals();
         set_vocabulary();
         set_start_production();
+        set_eog();
     }
     
     public Grammar(String start_symbol, List<Production> productions, String[] terminals) {
@@ -45,6 +48,7 @@ public class Grammar {
         set_nonterminals();
         set_vocabulary();
         set_start_production();
+        set_eog();
     }
     
     private void set_vocabulary() {
@@ -72,6 +76,14 @@ public class Grammar {
                 this.start_production = p;
                 break;
             }
+        }
+    }
+    
+    private void set_eog() {
+        String[] rhs = this.start_production.rhs;
+        this.eog = rhs[rhs.length - 1];
+        if (is_nonterminal(this.eog, this.nonterminals)) {
+            throw new UnsupportedOperationException("eog is nonterminal:" + this.eog);
         }
     }
     

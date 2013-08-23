@@ -177,8 +177,8 @@ public class LR1 {
                 LRTerm term = iterator.next();
                 if (term.p.rhs.length != term.index) {
                     String a = term.p.rhs[term.index];
-                    if (is_terminal(a, g) && go_to[index(a, g.vocabulary)][i] != -1) {
-                        if (!a.equals("$")) {
+                    if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {
+                        if (!a.equals(g.eog)) {
                             m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.S);
                         }
                         else {
@@ -236,6 +236,7 @@ public class LR1 {
         list.add(new Production("stmts", new String[] {}));
         
         Grammar g = new Grammar("program", list, new String[] { "begin", "end", ";", "simplestmt", "$" });
+        System.out.println(g.eog);
         Set<String>[] first_set = fill_first_set(g);
         LR1 lr = new LR1();
         LRTerm term = new LRTerm(g.start_production, 0, null);
