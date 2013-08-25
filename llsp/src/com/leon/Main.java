@@ -23,21 +23,21 @@ import com.leon.util.Token;
 
 public class Main {
     public static void main(String[] args) {
-//        new Main().do_1_gammar();
-//        new Main().do_2_gammar();
-//        new Main().do_3_gammar();
-//        new Main().do_4_gammar();
-//        new Main().do_5_gammar();
-//        new Main().do_6_gammar();
-//        new Main().do_7_gammar();
-//        new Main().do_8_gammar();
-//        new Main().do_9_gammar();
-//        new Main().do_10_gammar();
-//        new Main().do_11_gammar();
-//        new Main().do_12_gammar();
-//        new Main().do_13_gammar();
+        new Main().do_1_gammar();
+        new Main().do_2_gammar();
+        new Main().do_3_gammar();
+        new Main().do_4_gammar();
+        new Main().do_5_gammar();
+        new Main().do_6_gammar();
+        new Main().do_7_gammar();
+        new Main().do_8_gammar();
+        new Main().do_9_gammar();
+        new Main().do_10_gammar();
+        new Main().do_11_gammar();
+        new Main().do_12_gammar();
+        new Main().do_13_gammar();
+        new Main().do_14_gammar();
         new Main().do_15_gammar();
-//        new Main().do_3_gammar();
     }
     
     public void do_1_gammar(){
@@ -298,6 +298,7 @@ public class Main {
         list.add(new Production("B", new String[]{"C","b"}));
         list.add(new Production("A", new String[]{"B","a"}));
         list.add(new Production("C", new String[]{"A","c"}));
+        list.add(new Production("C", new String[]{}));
         Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
@@ -313,6 +314,7 @@ public class Main {
         list.add(new Production("A", new String[]{"B","a"}));
         list.add(new Production("B", new String[]{"C","b"}));
         list.add(new Production("C", new String[]{"A","c"}));
+        list.add(new Production("C", new String[]{}));
         Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
@@ -328,6 +330,7 @@ public class Main {
         list.add(new Production("C", new String[]{"A","c"}));
         list.add(new Production("A", new String[]{"B","a"}));
         list.add(new Production("B", new String[]{"C","b"}));
+        list.add(new Production("B", new String[]{}));
         
         Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
         Grammar g1 = l.remove_left_recursion(g);
@@ -342,8 +345,10 @@ public class Main {
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("B", new String[]{"C","b"}));
-        list.add(new Production("C", new String[]{"A","c"}));
-        list.add(new Production("A", new String[]{"B","a"}));
+        list.add(new Production("C", new String[]{"B","c"}));
+        list.add(new Production("C", new String[]{}));
+        list.add(new Production("A", new String[]{"C","a"}));
+        list.add(new Production("A", new String[]{}));
         Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
