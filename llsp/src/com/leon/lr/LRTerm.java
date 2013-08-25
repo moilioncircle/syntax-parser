@@ -17,9 +17,9 @@ public class LRTerm {
         this.look_ahead = look_ahead;
     }
     
-    Production p;
-    int        index;
-    String     look_ahead;
+    public Production p;
+    public int        index;
+    public String     look_ahead;
     
     @Override
     public int hashCode() {
