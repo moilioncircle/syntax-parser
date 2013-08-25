@@ -10,6 +10,7 @@ import java.util.Set;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
+import com.leon.lr.LR1;
 import com.leon.tree.cpt.CPNode;
 import com.leon.tree.cpt.CPT;
 import com.leon.tree.cpt.NodeType;
@@ -23,24 +24,29 @@ import com.leon.util.Token;
 
 public class Main {
     public static void main(String[] args) {
-        new Main().do_1_gammar();
-        new Main().do_2_gammar();
-        new Main().do_3_gammar();
-        new Main().do_4_gammar();
-        new Main().do_5_gammar();
-        new Main().do_6_gammar();
-        new Main().do_7_gammar();
-        new Main().do_8_gammar();
-        new Main().do_9_gammar();
-        new Main().do_10_gammar();
-        new Main().do_11_gammar();
-        new Main().do_12_gammar();
-        new Main().do_13_gammar();
-        new Main().do_14_gammar();
-        new Main().do_15_gammar();
+        new Main().do_1_grammar();
+        new Main().do_2_grammar();
+        new Main().do_3_grammar();
+        new Main().do_4_grammar();
+        new Main().do_5_grammar();
+        new Main().do_6_grammar();
+        new Main().do_7_grammar();
+        new Main().do_8_grammar();
+        new Main().do_9_grammar();
+        new Main().do_10_grammar();
+        new Main().do_11_grammar();
+        new Main().do_12_grammar();
+        new Main().do_13_grammar();
+        new Main().do_14_grammar();
+        new Main().do_15_grammar();
+        new Main().do_16_grammar();
+        new Main().do_17_grammar();
+        new Main().do_18_grammar();
+        new Main().do_19_grammar();
+        new Main().do_20_grammar();
     }
     
-    public void do_1_gammar(){
+    public void do_1_grammar(){
         List<Production> list = new ArrayList<Production>();
         String[] terminals = new String[]{"a","b","c","d","e"};
         String start_symbol = "S";
@@ -63,7 +69,7 @@ public class Main {
         }
     }
     
-    public void do_2_gammar(){
+    public void do_2_grammar(){
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S",new String[]{"A","B","c"}));
         list.add(new Production("A",new String[]{"a"}));
@@ -83,7 +89,7 @@ public class Main {
         }
     }
     
-    public void do_3_gammar(){
+    public void do_3_grammar(){
         LL1 c= new LL1();
         List<Production> list = new ArrayList<Production>();
         String[] terminals = new String[]{"ID","INTLIT",":=",",",";","+","*","(",")","begin","end","read","write","$"};
@@ -175,7 +181,7 @@ public class Main {
         System.out.println("}");
     }
     
-    public void do_4_gammar(){
+    public void do_4_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("stmt", new String[]{"if","expr","then","stmt_list","end_if"}));
@@ -187,7 +193,7 @@ public class Main {
         }
     }
     
-    public void do_5_gammar(){
+    public void do_5_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[]{"a","b","B"}));
@@ -208,7 +214,7 @@ public class Main {
         }
     }
     
-    public void do_6_gammar(){
+    public void do_6_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[]{"a","D"}));
@@ -222,7 +228,7 @@ public class Main {
         }
     }
     
-    public void do_7_gammar(){
+    public void do_7_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[]{"a"}));
@@ -236,7 +242,7 @@ public class Main {
         }
     }
     
-    public void do_8_gammar(){
+    public void do_8_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[]{"a","B"}));
@@ -251,7 +257,7 @@ public class Main {
         }
     }
     
-    public void do_9_gammar(){
+    public void do_9_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("E", new String[]{"E","+","T"}));
@@ -267,7 +273,7 @@ public class Main {
         }
     }
     
-    public void do_10_gammar(){
+    public void do_10_grammar(){
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[]{"E","$"}));
@@ -291,8 +297,8 @@ public class Main {
         }
     }
 
-    public void do_11_gammar(){
-        System.out.println("do_11_gammar");
+    public void do_11_grammar(){
+        System.out.println("do_11_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("B", new String[]{"C","b"}));
@@ -307,8 +313,8 @@ public class Main {
         }
     }
     
-    public void do_12_gammar(){
-        System.out.println("do_12_gammar");
+    public void do_12_grammar(){
+        System.out.println("do_12_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[]{"B","a"}));
@@ -323,8 +329,8 @@ public class Main {
         }
     }
     
-    public void do_13_gammar(){
-        System.out.println("do_13_gammar");
+    public void do_13_grammar(){
+        System.out.println("do_13_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("C", new String[]{"A","c"}));
@@ -340,8 +346,8 @@ public class Main {
         }
     }
     
-    public void do_14_gammar(){
-        System.out.println("do_14_gammar");
+    public void do_14_grammar(){
+        System.out.println("do_14_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("B", new String[]{"C","b"}));
@@ -357,8 +363,8 @@ public class Main {
         }
     }
     
-    public void do_15_gammar(){
-        System.out.println("do_15_gammar");
+    public void do_15_grammar(){
+        System.out.println("do_15_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[]{"E","$"}));
@@ -377,5 +383,71 @@ public class Main {
         }
         CPT cpt = new CPT(new Token("id + ( id - num ) $".split(" ")),g);
         System.out.println(cpt.toString());
+    }
+    
+    public void do_16_grammar() {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("program", new String[] { "begin", "stmts", "end", "$" }));
+        list.add(new Production("stmts", new String[] { "simplestmt", ";", "stmts" }));
+        list.add(new Production("stmts", new String[] { "begin", "stmts", "end", ";", "stmts" }));
+        list.add(new Production("stmts", new String[] {}));
+        
+        Grammar g = new Grammar("program", list, new String[] { "begin", "end", ";", "simplestmt", "$" });
+        System.out.println(g.eog);
+        Token t = new Token(new String[] { "begin", "simplestmt", ";", "simplestmt", ";", "end", "$" });
+        LR1 lr = new LR1(t);
+        lr.lr1_driver(g);
+    }
+    
+    public void do_17_grammar() {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S'", new String[] { "S", "$" }));
+        list.add(new Production("S", new String[] { "C", "C" }));
+        list.add(new Production("C", new String[] { "c", "C" }));
+        list.add(new Production("C", new String[] { "d" }));
+        Grammar g = new Grammar("S'", list, new String[] { "$", "c", "d" });
+        Token t = new Token(new String[] { "c", "d", "c", "d", "$" });
+        LR1 lr = new LR1(t);
+        lr.lr1_driver(g);
+    }
+    
+    public void do_18_grammar() {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("K", new String[] { "S", "$" }));
+        list.add(new Production("S", new String[] { "V", "=", "E" }));
+        list.add(new Production("S", new String[] { "E" }));
+        list.add(new Production("E", new String[] { "V" }));
+        list.add(new Production("V", new String[] { "x" }));
+        list.add(new Production("V", new String[] { "*", "E" }));
+        Grammar g = new Grammar("K", list, new String[] { "x", "*", "=", "$" });
+        Token t = new Token(new String[] { "x", "=", "*", "x", "$" });
+        LR1 lr = new LR1(t);
+        lr.lr1_driver(g);
+    }
+    
+    public void do_19_grammar() {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S", new String[] { "E", "$" }));
+        list.add(new Production("E", new String[] { "E", "+", "T" }));
+        list.add(new Production("E", new String[] { "T" }));
+        list.add(new Production("T", new String[] { "T", "*", "P" }));
+        list.add(new Production("T", new String[] { "P" }));
+        list.add(new Production("P", new String[] { "i" }));
+        list.add(new Production("P", new String[] { "(", "E", ")" }));
+        Grammar g = new Grammar("S", list, new String[] { "+", "*", "i", "(", ")", "$" });
+        Token t = new Token(new String[] { "(", "i", "+", "i", ")", "*", "i", "$" });
+        LR1 lr = new LR1(t);
+        lr.lr1_driver(g);
+    }
+    
+    public void do_20_grammar() {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S", new String[] { "E", "$" }));
+        list.add(new Production("E", new String[] { "i" }));
+        list.add(new Production("E", new String[] {}));
+        Grammar g = new Grammar("S", list, new String[] { "i", "$" });
+        Token t = new Token(new String[] { "$" });
+        LR1 lr = new LR1(t);
+        lr.lr1_driver(g);
     }
 }

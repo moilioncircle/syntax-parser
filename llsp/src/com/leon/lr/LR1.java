@@ -48,7 +48,8 @@ public class LR1 {
         while (true) {
             int state = stack.top();
             t = token.current_token();
-            System.out.println("state:" + state + ",t:" + t);
+            System.out.println("state:" + state + ",token:'" + t + "'");
+            
             if (action[index(t, g.vocabulary)][state].type == ActionType.A) {
                 System.out.println("accecped");
                 break;
@@ -60,7 +61,7 @@ public class LR1 {
             }
             else if (action[index(t, g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t, g.vocabulary)][state].p;
-                System.out.println("when " + token.current_token() + " then reduce:" + p);
+                System.out.println("when token='" + token.current_token() + "' then reduce:" + p);
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
                 }
@@ -220,88 +221,4 @@ public class LR1 {
         return new_array;
     }
     
-    public static void main(String[] args) {
-        do_1_grammar();
-        do_2_grammar();
-        do_3_grammar();
-        do_4_grammar();
-        do_5_grammar();
-    }
-    
-    private static void do_1_grammar() {
-        List<Production> list = new ArrayList<Production>();
-        list.add(new Production("program", new String[] { "begin", "stmts", "end", "$" }));
-        list.add(new Production("stmts", new String[] { "simplestmt", ";", "stmts" }));
-        list.add(new Production("stmts", new String[] { "begin", "stmts", "end", ";", "stmts" }));
-        list.add(new Production("stmts", new String[] {}));
-        
-        Grammar g = new Grammar("program", list, new String[] { "begin", "end", ";", "simplestmt", "$" });
-        System.out.println(g.eog);
-        Set<String>[] first_set = fill_first_set(g);
-        LR1 lr = new LR1();
-        LRTerm term = new LRTerm(g.start_production, 0, null);
-        LRState start = new LRState();
-        start.terms.add(term);
-        start = lr.closure1(start, g, first_set);
-        System.out.println(start.terms);
-        Token t = new Token(new String[] { "begin", "simplestmt", ";", "simplestmt", ";", "end", "$" });
-        lr.token = t;
-        lr.lr1_driver(g);
-    }
-    
-    private static void do_2_grammar() {
-        List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S'", new String[] { "S", "$" }));
-        list.add(new Production("S", new String[] { "C", "C" }));
-        list.add(new Production("C", new String[] { "c", "C" }));
-        list.add(new Production("C", new String[] { "d" }));
-        Grammar g = new Grammar("S'", list, new String[] { "$", "c", "d" });
-        LR1 lr = new LR1();
-        Token t = new Token(new String[] { "c", "d", "c", "d", "$" });
-        lr.token = t;
-        lr.lr1_driver(g);
-    }
-    
-    private static void do_3_grammar() {
-        List<Production> list = new ArrayList<Production>();
-        list.add(new Production("K", new String[] { "S", "$" }));
-        list.add(new Production("S", new String[] { "V", "=", "E" }));
-        list.add(new Production("S", new String[] { "E" }));
-        list.add(new Production("E", new String[] { "V" }));
-        list.add(new Production("V", new String[] { "x" }));
-        list.add(new Production("V", new String[] { "*", "E" }));
-        Grammar g = new Grammar("K", list, new String[] { "x", "*", "=", "$" });
-        LR1 lr = new LR1();
-        Token t = new Token(new String[] { "x", "=", "*", "x", "$" });
-        lr.token = t;
-        lr.lr1_driver(g);
-    }
-    
-    private static void do_4_grammar() {
-        List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S", new String[] { "E", "$" }));
-        list.add(new Production("E", new String[] { "E", "+", "T" }));
-        list.add(new Production("E", new String[] { "T" }));
-        list.add(new Production("T", new String[] { "T", "*", "P" }));
-        list.add(new Production("T", new String[] { "P" }));
-        list.add(new Production("P", new String[] { "i" }));
-        list.add(new Production("P", new String[] { "(", "E", ")" }));
-        Grammar g = new Grammar("S", list, new String[] { "+", "*", "i", "(", ")", "$" });
-        LR1 lr = new LR1();
-        Token t = new Token(new String[] { "(", "i", "+", "i", ")", "*", "i", "$" });
-        lr.token = t;
-        lr.lr1_driver(g);
-    }
-    
-    private static void do_5_grammar() {
-        List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S", new String[] { "E", "$" }));
-        list.add(new Production("E", new String[] { "i" }));
-        list.add(new Production("E", new String[] {}));
-        Grammar g = new Grammar("S", list, new String[] { "i", "$" });
-        LR1 lr = new LR1();
-        Token t = new Token(new String[] { "$" });
-        lr.token = t;
-        lr.lr1_driver(g);
-    }
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class LRState {
     
-    Set<LRTerm> terms = new HashSet<LRTerm>();
+    public Set<LRTerm> terms = new HashSet<LRTerm>();
     
     @Override
     public int hashCode() {
