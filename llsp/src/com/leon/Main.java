@@ -346,7 +346,7 @@ public class Main {
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("B", new String[]{"C","b"}));
         list.add(new Production("C", new String[]{"B","c"}));
-        list.add(new Production("C", new String[]{}));
+        list.add(new Production("C", new String[]{"A"}));
         list.add(new Production("A", new String[]{"C","a"}));
         list.add(new Production("A", new String[]{}));
         Grammar g = new Grammar("A", list, new String[]{"a","b","c"});
