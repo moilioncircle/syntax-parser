@@ -1,19 +1,18 @@
 
 package com.leon.ll;
 
+import static com.leon.util.Utils.cut_array_add_end;
+import static com.leon.util.Utils.derivation;
 import static com.leon.util.Utils.fill_first_set;
 import static com.leon.util.Utils.fill_follow_set;
-import static com.leon.util.Utils.longest_common_perfix;
 import static com.leon.util.Utils.first;
 import static com.leon.util.Utils.index;
 import static com.leon.util.Utils.is_nonterminal;
 import static com.leon.util.Utils.is_terminal;
-import static com.leon.util.Utils.cut_array_add_end;
-import static com.leon.util.Utils.derivation;
+import static com.leon.util.Utils.longest_common_perfix;
 import static com.leon.util.Utils.remove_direct_left_recursion;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -60,8 +59,7 @@ public class LL1 {
         if (set.size() == 0) {
             set.addAll(follow_set[index(p.lhs, g.nonterminals)]);
         }
-        for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
-            String symbol = iterator.next();
+        for (String symbol : set) {
             m[index(symbol, g.terminals)][index(p.lhs, g.nonterminals)] = p_index;
         }
     }
@@ -115,11 +113,13 @@ public class LL1 {
         String a = token.next_token();
         while (!stack.is_empty()) {
             CPNode node = stack.pop();
-            if (is_nonterminal(node.name, g.nonterminals) && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
+            if (is_nonterminal(node.name, g.nonterminals)
+                && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
                 Production p = g.productions.get(m[index(a, g.terminals)][index(node.name, g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
-                    CPNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(rhs[i]);
+                    CPNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(
+                            rhs[i]);
                     stack.push(child);
                     node.childs.add(0, child);
                 }

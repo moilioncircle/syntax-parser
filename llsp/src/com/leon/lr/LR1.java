@@ -9,7 +9,6 @@ import static com.leon.util.Utils.match_lhs;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -91,8 +90,7 @@ public class LR1 {
                 List<Production> p_list = match_lhs(symbol, g);
                 for (int j = 0; j < p_list.size(); j++) {
                     Set<String> firsts = first(compute_alpha(term), first_set, g);
-                    for (Iterator<String> iterator = firsts.iterator(); iterator.hasNext();) {
-                        String first = iterator.next();
+                    for (String first : firsts) {
                         LRTerm new_term = new LRTerm(p_list.get(j), 0, first);
                         if (!list.contains(new_term)) {
                             list.add(new_term);
@@ -109,8 +107,7 @@ public class LR1 {
     
     private LRState goto1(LRState state, String symbol, Grammar g, Set<String>[] first_set) {
         LRState result = new LRState();
-        for (Iterator<LRTerm> iterator = state.terms.iterator(); iterator.hasNext();) {
-            LRTerm term = iterator.next();
+        for (LRTerm term : state.terms) {
             if (term.p.rhs.length == term.index) {
                 continue;
             }
@@ -174,8 +171,7 @@ public class LR1 {
         ActionItem[][] m = new ActionItem[g.vocabulary.length][label_list.size()];
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
-            for (Iterator<LRTerm> iterator = state.terms.iterator(); iterator.hasNext();) {
-                LRTerm term = iterator.next();
+            for (LRTerm term : state.terms) {
                 if (term.p.rhs.length != term.index) {
                     String a = term.p.rhs[term.index];
                     if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {

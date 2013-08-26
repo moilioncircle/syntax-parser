@@ -41,21 +41,4 @@ public class Stack<T> {
     public String toString() {
         return list.toString();
     }
-    
-    public static void main(String[] args) {
-        Stack<String> s = new Stack<String>();
-        s.push("a");
-        s.push("b");
-        s.push("c");
-        s.push("d");
-        s.push("e");
-        System.out.println(s.toString());
-        s.pop();
-        s.pop();
-        s.pop();
-        s.pop();
-        System.out.println(s.toString());
-        s.pop();
-        s.pop();
-    }
 }

@@ -2,7 +2,6 @@
 package com.leon.lr;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -43,8 +42,7 @@ public class LRState {
         else if (t1 != null && t2 != null) {
             if (t1.size() == t2.size()) {
                 boolean is_contains = true;
-                for (Iterator<LRTerm> iterator = t1.iterator(); iterator.hasNext();) {
-                    LRTerm t1_term = iterator.next();
+                for (LRTerm t1_term : t1) {
                     if (!t2.contains(t1_term)) {
                         is_contains = false;
                         break;
@@ -69,8 +67,7 @@ public class LRState {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Iterator<LRTerm> iterator = terms.iterator(); iterator.hasNext();) {
-            LRTerm term = iterator.next();
+        for (LRTerm term : terms) {
             sb.append(term.toString() + "\n");
         }
         return sb.toString();
