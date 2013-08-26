@@ -16,10 +16,10 @@ import com.leon.util.Token;
  * @see : concrete syntax tree
  */
 
-public class CRT {
-    public CRTNode root;
+public class CST {
+    public CSTNode root;
     
-    public CRT(Token token,Grammar g) {
+    public CST(Token token,Grammar g) {
         LL1 ll1= new LL1(token);
         int[][] m = ll1.predict_table(g);
         this.root = ll1.ll1_driver(g, m);
@@ -29,14 +29,14 @@ public class CRT {
         StringBuilder sb = new StringBuilder();
         sb.append("\ndigraph g {");
         sb.append("\n\tnode[shape = record, width = .1, height = .1];");
-        Stack<CRTNode> stack = new Stack<CRTNode>();
+        Stack<CSTNode> stack = new Stack<CSTNode>();
         int k = 0;
         Stack<Integer> k_stack = new Stack<Integer>();
         stack.push(root);
         k_stack.push(k);
         sb.append("\n\tnode" + k + "[label = \"{<n> " + root.name + " }\", color = lightgray, style = filled];");
         while (!stack.is_empty()) {
-            CRTNode parent = stack.pop();
+            CSTNode parent = stack.pop();
             String parentNode = "node" + k_stack.pop();
             for (int i = 0; i < parent.childs.size(); i++) {
                 String childNode = "node" + (++k);
@@ -84,7 +84,7 @@ public class CRT {
         list.add(new Production("add_op",new String[]{"*"}));
         list.add(new Production("system_goal",new String[]{"program","$"}));
         Grammar g = new Grammar(start_symbol,list,terminals);
-        CRT cpt = new CRT(new Token("begin ID := ID * INTLIT + ID ; end $".split(" ")), g);
+        CST cpt = new CST(new Token("begin ID := ID * INTLIT + ID ; end $".split(" ")), g);
         System.out.println(cpt);
     }
 }

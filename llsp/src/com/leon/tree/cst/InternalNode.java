@@ -7,7 +7,7 @@ package com.leon.tree.cst;
  * @see    : 
  */
 
-public class InternalNode extends CRTNode{
+public class InternalNode extends CSTNode{
     
     public InternalNode(String name){
         this.name = name;

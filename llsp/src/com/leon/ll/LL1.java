@@ -19,7 +19,7 @@ import java.util.Set;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
-import com.leon.tree.cst.CRTNode;
+import com.leon.tree.cst.CSTNode;
 import com.leon.tree.cst.InternalNode;
 import com.leon.tree.cst.LeafNode;
 import com.leon.util.Stack;
@@ -81,8 +81,8 @@ public class LL1 {
     }
     
     public void make_parsing_proc(String nonterminal, int[][] m, Grammar g) {
-        System.out.println("public CRTNode " + nonterminal + "(){");
-        System.out.println("\tCRTNode node = new InternalNode(\"" + nonterminal + "\");");
+        System.out.println("public CSTNode " + nonterminal + "(){");
+        System.out.println("\tCSTNode node = new InternalNode(\"" + nonterminal + "\");");
         System.out.println("\tString tok = current_token();");
         System.out.println("\tswitch(tok){");
         for (int j = 0; j < g.terminals.length; j++) {
@@ -106,19 +106,19 @@ public class LL1 {
         System.out.println("}");
     }
     
-    public CRTNode ll1_driver(Grammar g, int[][] m) {
-        Stack<CRTNode> stack = new Stack<CRTNode>();
-        CRTNode root = new InternalNode(g.start_symbol);
+    public CSTNode ll1_driver(Grammar g, int[][] m) {
+        Stack<CSTNode> stack = new Stack<CSTNode>();
+        CSTNode root = new InternalNode(g.start_symbol);
         stack.push(root);
         String a = token.next_token();
         while (!stack.is_empty()) {
-            CRTNode node = stack.pop();
+            CSTNode node = stack.pop();
             if (is_nonterminal(node.name, g.nonterminals)
                 && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
                 Production p = g.productions.get(m[index(a, g.terminals)][index(node.name, g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
-                    CRTNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(
+                    CSTNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(
                             rhs[i]);
                     stack.push(child);
                     node.childs.add(0, child);

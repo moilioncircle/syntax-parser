@@ -6,7 +6,7 @@ package com.leon.tree.cst;
  * @see    : 
  */
 
-public class LeafNode extends CRTNode{
+public class LeafNode extends CSTNode{
     public LeafNode(String name){
         this.name = name;
         this.type = NodeType.LEAF;
