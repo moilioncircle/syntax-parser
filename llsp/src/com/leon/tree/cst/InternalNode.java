@@ -1,4 +1,4 @@
-package com.leon.tree.cpt;
+package com.leon.tree.cst;
 
 
 
@@ -7,7 +7,7 @@ package com.leon.tree.cpt;
  * @see    : 
  */
 
-public class InternalNode extends CPNode{
+public class InternalNode extends CRTNode{
     
     public InternalNode(String name){
         this.name = name;

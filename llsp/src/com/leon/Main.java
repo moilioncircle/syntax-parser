@@ -11,9 +11,9 @@ import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
 import com.leon.lr.LR1;
-import com.leon.tree.cpt.CPNode;
-import com.leon.tree.cpt.CPT;
-import com.leon.tree.cpt.NodeType;
+import com.leon.tree.cst.CRTNode;
+import com.leon.tree.cst.CRT;
+import com.leon.tree.cst.NodeType;
 import com.leon.util.Stack;
 import com.leon.util.Token;
 
@@ -151,17 +151,17 @@ public class Main {
         }
         c.token = new Token("begin ID := ID * INTLIT + ID ; end $".split(" "));
 
-        CPNode root = c.ll1_driver(g, m);
+        CRTNode root = c.ll1_driver(g, m);
         System.out.println("digraph g {");
         System.out.println("\tnode[shape = record, width = .1, height = .1];");
-        Stack<CPNode> stack = new Stack<CPNode>();
+        Stack<CRTNode> stack = new Stack<CRTNode>();
         int k = 0;
         Stack<Integer> k_stack = new Stack<Integer>();
         stack.push(root);
         k_stack.push(k);
         System.out.println("\tnode" + k + "[label = \"{<n> " + root.name + " }\", color = lightgray, style = filled];");
         while (!stack.is_empty()) {
-            CPNode parent = stack.pop();
+            CRTNode parent = stack.pop();
             String parentNode = "node" + k_stack.pop();
             for (int i = 0; i < parent.childs.size(); i++) {
                 String childNode = "node" + (++k);
@@ -381,7 +381,7 @@ public class Main {
         for (int i = 0; i < g.nonterminals.length; i++) {
             l.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        CPT cpt = new CPT(new Token("id + ( id - num ) $".split(" ")),g);
+        CRT cpt = new CRT(new Token("id + ( id - num ) $".split(" ")),g);
         System.out.println(cpt.toString());
     }
     

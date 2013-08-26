@@ -1,4 +1,4 @@
-package com.leon.tree.cpt;
+package com.leon.tree.cst;
 
 
 /** @author : Leon
@@ -6,7 +6,7 @@ package com.leon.tree.cpt;
  * @see    : 
  */
 
-public class LeafNode extends CPNode{
+public class LeafNode extends CRTNode{
     public LeafNode(String name){
         this.name = name;
         this.type = NodeType.LEAF;

@@ -1,4 +1,4 @@
-package com.leon.tree.cpt;
+package com.leon.tree.cst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,13 +6,13 @@ import java.util.List;
 
 /** @author : Leon
  * @since   : 2013-8-12
- * @see    : concrete parse tree node
+ * @see    : concrete syntax tree node
  */
 
-public abstract class CPNode {
+public abstract class CRTNode {
     public String name;
     public NodeType type;
-    public List<CPNode> childs = new ArrayList<CPNode>();
+    public List<CRTNode> childs = new ArrayList<CRTNode>();
     @Override
     public String toString() {
         return this.name;
