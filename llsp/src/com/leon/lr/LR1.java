@@ -43,10 +43,9 @@ public class LR1 {
         ActionItem[][] action = build_action1(g, first_set, go_to, label_list);
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
-        String t;
+        String t = token.next_token();
         while (true) {
             int state = stack.top();
-            t = token.current_token();
             System.out.println("state:" + state + ",token:'" + t + "'");
             
             if (action[index(t, g.vocabulary)][state].type == ActionType.A) {
@@ -55,12 +54,12 @@ public class LR1 {
             }
             else if (action[index(t, g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t, g.vocabulary)][state]);
-                System.out.println("shift:" + token.current_token());
+                System.out.println("shift:" + t);
                 t = token.next_token();
             }
             else if (action[index(t, g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t, g.vocabulary)][state].p;
-                System.out.println("when token='" + token.current_token() + "' then reduce:" + p);
+                System.out.println("when token='" + t + "' then reduce:" + p);
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
                 }

@@ -22,11 +22,5 @@ public class Token {
         }
         return null;
     }
-    
-    public String current_token() {
-        if (index < str.length) {
-            return str[index];
-        }
-        return null;
-    }
+
 }
