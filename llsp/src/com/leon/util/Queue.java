@@ -37,4 +37,8 @@ public class Queue<T> {
     public boolean is_empty() {
         return list.isEmpty();
     }
+    
+    public String toString() {
+        return list.toString();
+    }
 }

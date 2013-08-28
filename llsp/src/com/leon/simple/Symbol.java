@@ -35,10 +35,6 @@ public class Symbol implements ISymbol<LexerType>{
         }
         return sb.toString();
     }
-    
-    public static void main(String[] args) {
-        System.out.println(LexerType.NUM);
-    }
 
     @Override
     public LexerType get_type() {
