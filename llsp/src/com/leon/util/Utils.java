@@ -11,7 +11,6 @@ import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
 
-
 /**
  * @author : Leon
  * @since : 2013-8-13
@@ -181,7 +180,7 @@ public class Utils {
         return is_in(symbol, nonterminals);
     }
     
-    public static List<Production> match_lhs(String symbol,Grammar g){
+    public static List<Production> match_lhs(String symbol, Grammar g) {
         List<Production> result = new ArrayList<Production>();
         for (int i = 0; i < g.productions.size(); i++) {
             if (g.productions.get(i).lhs.equals(symbol)) {
@@ -194,7 +193,7 @@ public class Utils {
     public static boolean is_terminal(String symbol, String[] terminals) {
         return is_in(symbol, terminals);
     }
-
+    
     private static boolean is_in(String symbol, String[] symbols) {
         for (int i = 0; i < symbols.length; i++) {
             if (symbols[i].equals(symbol)) {
@@ -225,11 +224,11 @@ public class Utils {
         }
         return result;
     }
-
+    
     public static int longest_common_perfix(String[] pi, String[] pj) {
         int index = 0;
         for (int i = 0; i < Math.min(pi.length, pj.length); i++) {
-            if(pi[index].equals(pj[index])){
+            if (pi[index].equals(pj[index])) {
                 index++;
             }
         }
@@ -255,8 +254,8 @@ public class Utils {
         return result;
     }
     
-    public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai,ProductionSet temp) {
-        System.out.println("ai:"+ai);
+    public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai, ProductionSet temp) {
+        System.out.println("ai:" + ai);
         List<Production> ai_ps = ai.get_productions();
         ProductionSet new_ai = new ProductionSet(ai.lhs);
         ProductionSet new_ai_tail = new ProductionSet(ai.lhs + "_tail");
@@ -300,21 +299,5 @@ public class Utils {
             result[k++] = rhs[i];
         }
         return result;
-    }
-    
-    public static void main(String[] args) {
-        ProductionSet ai = new ProductionSet("A");
-        ProductionSet aj = new ProductionSet("B");
-        ai.add_rhs(new String[]{"A","B"});
-        ai.add_rhs(new String[]{"B","b"});
-        aj.add_rhs(new String[]{"A","c"});
-        aj.add_rhs(new String[]{"d"});
-//        ProductionSet rs = substitute(ai, aj);
-//        System.out.println(rs);
-//        System.out.println("=============");
-        List<ProductionSet> list = remove_direct_left_recursion(ai,ai);
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(list.get(i));
-        }
     }
 }

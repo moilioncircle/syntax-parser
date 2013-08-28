@@ -11,6 +11,11 @@ import java.util.Arrays;
 
 public class Production {
     
+    public Production(String lhs, String[] rhs, String semantic_action) {
+        this(lhs, rhs);
+        this.semantic_action = semantic_action;
+    }
+    
     public Production(String lhs, String[] rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
@@ -18,6 +23,7 @@ public class Production {
     
     public String[] rhs;
     public String   lhs;
+    public String   semantic_action;
     
     @Override
     public int hashCode() {

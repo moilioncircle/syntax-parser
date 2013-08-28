@@ -12,6 +12,7 @@ import static com.leon.util.Utils.is_terminal;
 import static com.leon.util.Utils.longest_common_perfix;
 import static com.leon.util.Utils.remove_direct_left_recursion;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +23,9 @@ import com.leon.grammar.ProductionSet;
 import com.leon.tree.cst.CSTNode;
 import com.leon.tree.cst.InternalNode;
 import com.leon.tree.cst.LeafNode;
+import com.leon.util.ISymbol;
+import com.leon.util.IToken;
 import com.leon.util.Stack;
-import com.leon.util.Token;
 
 /**
  * @author : Leon
@@ -32,16 +34,6 @@ import com.leon.util.Token;
  */
 
 public class LL1 {
-    
-    public Token token;
-    
-    public LL1() {
-        
-    }
-    
-    public LL1(Token token) {
-        this.token = token;
-    }
     
     public int[][] predict_table(Grammar g) {
         Set<String>[] first_set = fill_first_set(g);
@@ -106,16 +98,17 @@ public class LL1 {
         System.out.println("}");
     }
     
-    public CSTNode ll1_driver(Grammar g, int[][] m) {
+    public CSTNode ll1_driver(Grammar g, int[][] m, IToken<?> token) throws IOException {
         Stack<CSTNode> stack = new Stack<CSTNode>();
         CSTNode root = new InternalNode(g.start_symbol);
         stack.push(root);
-        String a = token.next_token();
+        ISymbol<?> a = token.next_token();
         while (!stack.is_empty()) {
             CSTNode node = stack.pop();
             if (is_nonterminal(node.name, g.nonterminals)
-                && m[index(a, g.terminals)][index(node.name, g.nonterminals)] > 0) {
-                Production p = g.productions.get(m[index(a, g.terminals)][index(node.name, g.nonterminals)] - 1);
+                && m[index(a.get_type().toString(), g.terminals)][index(node.name, g.nonterminals)] > 0) {
+                Production p = g.productions.get(m[index(a.get_type().toString(), g.terminals)][index(node.name,
+                        g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
                     CSTNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(
@@ -124,7 +117,7 @@ public class LL1 {
                     node.childs.add(0, child);
                 }
             }
-            else if (node.name.equals(a)) {
+            else if (node.name.equals(a.get_type().toString())) {
                 a = token.next_token();
             }
             else {

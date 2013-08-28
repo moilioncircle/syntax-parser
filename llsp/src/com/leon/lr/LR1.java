@@ -7,6 +7,7 @@ import static com.leon.util.Utils.index;
 import static com.leon.util.Utils.is_terminal;
 import static com.leon.util.Utils.match_lhs;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,9 +15,10 @@ import java.util.Set;
 
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
+import com.leon.util.ISymbol;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
-import com.leon.util.Token;
+import com.leon.util.IToken;
 
 /**
  * @author : Leon
@@ -26,39 +28,29 @@ import com.leon.util.Token;
 
 public class LR1 {
     
-    private Token token;
-    
-    public LR1() {
-        
-    }
-    
-    public LR1(Token token) {
-        this.token = token;
-    }
-    
-    public void lr1_driver(Grammar g) {
+    public void lr1_driver(Grammar g, IToken<?> token) throws IOException {
         Set<String>[] first_set = fill_first_set(g);
         List<LRState> label_list = build_label(g, first_set);
         int[][] go_to = build_goto1(g, first_set, label_list);
         ActionItem[][] action = build_action1(g, first_set, go_to, label_list);
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
-        String t = token.next_token();
+        ISymbol<?> t = token.next_token();
         while (true) {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
             
-            if (action[index(t, g.vocabulary)][state].type == ActionType.A) {
+            if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
                 System.out.println("accecped");
                 break;
             }
-            else if (action[index(t, g.vocabulary)][state].type == ActionType.S) {
-                stack.push(go_to[index(t, g.vocabulary)][state]);
+            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.S) {
+                stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
                 System.out.println("shift:" + t);
                 t = token.next_token();
             }
-            else if (action[index(t, g.vocabulary)][state].type == ActionType.R) {
-                Production p = action[index(t, g.vocabulary)][state].p;
+            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.R) {
+                Production p = action[index(t.get_type().toString(), g.vocabulary)][state].p;
                 System.out.println("when token='" + t + "' then reduce:" + p);
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
