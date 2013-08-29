@@ -24,6 +24,8 @@ import com.leon.util.IToken;
     return symbol(LexerType.EOF);
 %eofval} 
 %eofclose 
+%line
+%column
 LineTerminator = \r|\n|\r\n
 WhiteSpace = {LineTerminator}|[ \t\f]
 NUM = 0|[1-9][0-9]*

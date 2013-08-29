@@ -15,8 +15,7 @@ public class Grammar {
     public String   start_symbol;
     public String[] nonterminals;
     public String[] terminals;
-    public String   eof;         //end of grammar;
-                                  
+    
     public Grammar(String start_symbol, String[] terminals, List<ProductionSet> production_set) {
         this(start_symbol, terminals);
         this.production_set = production_set;
@@ -101,5 +100,6 @@ public class Grammar {
     public List<Production>    productions    = new ArrayList<Production>();
     public String[]            vocabulary;
     public Production          start_production;
+    public String              eof;
     
 }

@@ -8,15 +8,5 @@ package com.leon.lr;
  */
 
 public enum ActionType {
-    A("A"), S("S"), R("R"), G("G");
-    
-    private ActionType(String str) {
-        this.str = str;
-    }
-    
-    private String str;
-    
-    public String toString() {
-        return str;
-    }
+    A, S, R, G;
 }
