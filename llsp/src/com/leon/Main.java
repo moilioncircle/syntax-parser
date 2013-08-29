@@ -47,31 +47,30 @@ public class Main {
         new Main().do_14_grammar();
         new Main().do_15_grammar();
         new Main().do_16_grammar();
-        
     }
     
     public void do_1_grammar() throws IOException {
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S", new String[] { "E", "EOG" }, "new S($0)"));
+        list.add(new Production("S", new String[] { "E", "EOF" }, "new S($0)"));
         list.add(new Production("E", new String[] { "E", "PLUS", "T" }, "new E($0,$2)"));
         list.add(new Production("E", new String[] { "T" }, "new E($0)"));
         list.add(new Production("T", new String[] { "T", "TIMES", "P" }));
         list.add(new Production("T", new String[] { "P" }, "new T($0)"));
         list.add(new Production("P", new String[] { "NUM" }, "new P(\"$0\")"));
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
-        Grammar g = new Grammar("S", list, new String[] { "PLUS", "TIMES", "NUM", "LPAREN", "RPAREN", "EOG" });
-        IToken<LexerType> t = new Token(new StringReader("(2+3)*5$"));
+        Grammar g = new Grammar("S", list, new String[] { "PLUS", "TIMES", "NUM", "LPAREN", "RPAREN", "EOF" });
+        IToken<LexerType> t = new Token(new StringReader("(2+3)*5"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }
     
     public void do_2_grammar() throws IOException {
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S", new String[] { "E", "EOG" }));
+        list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] {}));
-        Grammar g = new Grammar("S", list, new String[] { "ID", "EOG" });
-        IToken<LexerType> t = new Token(new StringReader("$"));
+        Grammar g = new Grammar("S", list, new String[] { "ID", "EOF" });
+        IToken<LexerType> t = new Token(new StringReader(""));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }
@@ -80,7 +79,7 @@ public class Main {
         LL1 c = new LL1();
         List<Production> list = new ArrayList<Production>();
         String[] terminals = new String[] { "ID", "NUM", "ASSIGN", "COMMA", "SEMI", "PLUS", "TIMES", "LPAREN",
-                "RPAREN", "BEGIN", "END", "READ", "WRITE", "EOG" };
+                "RPAREN", "BEGIN", "END", "READ", "WRITE", "EOF" };
         String start_symbol = "system_goal";
         list.add(new Production("program", new String[] { "BEGIN", "statement_list", "END" }));
         list.add(new Production("statement_list", new String[] { "statement", "statement_tail" }));
@@ -103,7 +102,7 @@ public class Main {
         list.add(new Production("primary", new String[] { "NUM" }));
         list.add(new Production("add_op", new String[] { "PLUS" }));
         list.add(new Production("add_op", new String[] { "TIMES" }));
-        list.add(new Production("system_goal", new String[] { "program", "EOG" }));
+        list.add(new Production("system_goal", new String[] { "program", "EOF" }));
         Grammar g = new Grammar(start_symbol, list, terminals);
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
@@ -137,7 +136,7 @@ public class Main {
         for (int i = 0; i < g.nonterminals.length; i++) {
             c.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        IToken<LexerType> t = new Token(new StringReader("begin a:=b*5+c;end$"));
+        IToken<LexerType> t = new Token(new StringReader("begin a:=b*5+c;end"));
         CSTNode root = c.ll1_driver(g, m, t);
         System.out.println("digraph g {");
         System.out.println("\tnode[shape = record, width = .1, height = .1];");
@@ -355,7 +354,7 @@ public class Main {
         System.out.println("do_15_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("S", new String[] { "E", "EOG" }));
+        list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "T", "E_tail" }));
         list.add(new Production("E_tail", new String[] { "PLUS", "T", "E_tail" }));
         list.add(new Production("E_tail", new String[] { "MINUS", "T", "E_tail" }));
@@ -364,26 +363,26 @@ public class Main {
         list.add(new Production("T", new String[] { "ID" }));
         list.add(new Production("T", new String[] { "NUM" }));
         
-        Grammar g = new Grammar("S", list, new String[] { "PLUS", "MINUS", "LPAREN", "RPAREN", "ID", "NUM", "EOG" });
+        Grammar g = new Grammar("S", list, new String[] { "PLUS", "MINUS", "LPAREN", "RPAREN", "ID", "NUM", "EOF" });
         int[][] m = l.predict_table(g);
         for (int i = 0; i < g.nonterminals.length; i++) {
             l.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        IToken<LexerType> t = new Token(new StringReader("a+(a-4)$"));
+        IToken<LexerType> t = new Token(new StringReader("a+(a-4)"));
         CST cpt = new CST(t, g);
         System.out.println(cpt.toString());
     }
     
     public void do_16_grammar() throws IOException {
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("K", new String[] { "S", "EOG" }));
+        list.add(new Production("K", new String[] { "S", "EOF" }));
         list.add(new Production("S", new String[] { "V", "ASSIGN", "E" }));
         list.add(new Production("S", new String[] { "E" }));
         list.add(new Production("E", new String[] { "V" }));
         list.add(new Production("V", new String[] { "ID" }));
         list.add(new Production("V", new String[] { "TIMES", "E" }));
-        Grammar g = new Grammar("K", list, new String[] { "ID", "TIMES", "ASSIGN", "EOG" });
-        IToken<LexerType> t = new Token(new StringReader("x:=*x$"));
+        Grammar g = new Grammar("K", list, new String[] { "ID", "TIMES", "ASSIGN", "EOF" });
+        IToken<LexerType> t = new Token(new StringReader("x:=*x"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }

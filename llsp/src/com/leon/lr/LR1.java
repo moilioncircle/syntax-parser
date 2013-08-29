@@ -166,7 +166,7 @@ public class LR1 {
                 if (term.p.rhs.length != term.index) {
                     String a = term.p.rhs[term.index];
                     if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {
-                        if (!a.equals(g.eog)) {
+                        if (!a.equals(g.eof)) {
                             m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.S);
                         }
                         else {

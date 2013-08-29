@@ -15,7 +15,7 @@ public class Grammar {
     public String   start_symbol;
     public String[] nonterminals;
     public String[] terminals;
-    public String   eog;         //end of grammar;
+    public String   eof;         //end of grammar;
                                   
     public Grammar(String start_symbol, String[] terminals, List<ProductionSet> production_set) {
         this(start_symbol, terminals);
@@ -26,7 +26,7 @@ public class Grammar {
         set_nonterminals();
         set_vocabulary();
         set_start_production();
-        set_eog();
+        set_eof();
     }
     
     public Grammar(String start_symbol, List<Production> productions, String[] terminals) {
@@ -47,7 +47,7 @@ public class Grammar {
         set_nonterminals();
         set_vocabulary();
         set_start_production();
-        set_eog();
+        set_eof();
     }
     
     private void set_vocabulary() {
@@ -78,9 +78,9 @@ public class Grammar {
         }
     }
     
-    private void set_eog() {
+    private void set_eof() {
         String[] rhs = this.start_production.rhs;
-        this.eog = rhs[rhs.length - 1];
+        this.eof = rhs[rhs.length - 1];
     }
     
     private Grammar(String start_symbol, String[] terminals) {

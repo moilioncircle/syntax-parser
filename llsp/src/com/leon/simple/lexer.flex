@@ -20,6 +20,10 @@ import com.leon.util.IToken;
         return new Symbol(type, yyline, yycolumn, value);
     }
 %}
+%eofval{ 
+    return symbol(LexerType.EOF);
+%eofval} 
+%eofclose 
 LineTerminator = \r|\n|\r\n
 WhiteSpace = {LineTerminator}|[ \t\f]
 NUM = 0|[1-9][0-9]*
@@ -39,7 +43,6 @@ ID = [A-Za-z_][A-Za-z0-9_]*
     ";"                { return symbol(LexerType.SEMI); }
     "read"                { return symbol(LexerType.READ); }
     "write"                { return symbol(LexerType.WRITE); }
-    "$"                { return symbol(LexerType.EOG); }
     {NUM}              { return symbol(LexerType.NUM,new Integer(yytext())); }
     {ID}               { return symbol(LexerType.ID,yytext()); }
     {WhiteSpace}       {/* SKIP */}
