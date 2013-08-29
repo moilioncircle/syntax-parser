@@ -74,10 +74,10 @@ public class LR1 {
             before_size = list.size();
             for (int i = 0; i < list.size(); i++) {
                 LRTerm term = list.get(i);
-                if (term.p.rhs.length == term.index) {
+                if (term.p.rhs.length == term.dot) {
                     continue;
                 }
-                String symbol = term.p.rhs[term.index];
+                String symbol = term.p.rhs[term.dot];
                 List<Production> p_list = match_lhs(symbol, g);
                 for (int j = 0; j < p_list.size(); j++) {
                     Set<String> firsts = first(compute_alpha(term), first_set, g);
@@ -99,11 +99,11 @@ public class LR1 {
     private LRState goto1(LRState state, String symbol, Grammar g, Set<String>[] first_set) {
         LRState result = new LRState();
         for (LRTerm term : state.terms) {
-            if (term.p.rhs.length == term.index) {
+            if (term.p.rhs.length == term.dot) {
                 continue;
             }
-            if (term.p.rhs[term.index].equals(symbol)) {
-                LRTerm new_term = new LRTerm(term.p, term.index + 1, term.look_ahead);
+            if (term.p.rhs[term.dot].equals(symbol)) {
+                LRTerm new_term = new LRTerm(term.p, term.dot + 1, term.look_ahead);
                 result.terms.add(new_term);
             }
         }
@@ -163,8 +163,8 @@ public class LR1 {
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
-                if (term.p.rhs.length != term.index) {
-                    String a = term.p.rhs[term.index];
+                if (term.p.rhs.length != term.dot) {
+                    String a = term.p.rhs[term.dot];
                     if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {
                         if (!a.equals(g.eof)) {
                             m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.S);
@@ -199,9 +199,9 @@ public class LR1 {
     }
     
     private String[] compute_alpha(LRTerm term) {
-        String[] new_array = new String[term.p.rhs.length - term.index];
+        String[] new_array = new String[term.p.rhs.length - term.dot];
         int j = 0;
-        for (int i = term.index + 1; i < term.p.rhs.length; i++) {
+        for (int i = term.dot + 1; i < term.p.rhs.length; i++) {
             new_array[j++] = term.p.rhs[i];
         }
         new_array[j] = term.look_ahead;

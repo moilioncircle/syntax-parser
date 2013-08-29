@@ -13,19 +13,19 @@ public class LRTerm {
     
     public LRTerm(Production p, int index, String look_ahead) {
         this.p = p;
-        this.index = index;
+        this.dot = index;
         this.look_ahead = look_ahead;
     }
     
     public Production p;
-    public int        index;
+    public int        dot;
     public String     look_ahead;
     
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + index;
+        result = prime * result + dot;
         result = prime * result + ((look_ahead == null) ? 0 : look_ahead.hashCode());
         result = prime * result + ((p == null) ? 0 : p.hashCode());
         return result;
@@ -37,7 +37,7 @@ public class LRTerm {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         LRTerm other = (LRTerm) obj;
-        if (index != other.index) return false;
+        if (dot != other.dot) return false;
         if (look_ahead == null) {
             if (other.look_ahead != null) return false;
         }
@@ -51,6 +51,6 @@ public class LRTerm {
     
     @Override
     public String toString() {
-        return "LRTerm [p=" + p + ", index=" + index + ", look_ahead=" + look_ahead + "]";
+        return "LRTerm [p=" + p + ", dot=" + dot + ", look_ahead=" + look_ahead + "]";
     }
 }
