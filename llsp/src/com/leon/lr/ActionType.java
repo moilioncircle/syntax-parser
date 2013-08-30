@@ -8,5 +8,5 @@ package com.leon.lr;
  */
 
 public enum ActionType {
-    A, S, R, G;
+    A, S, R;
 }
