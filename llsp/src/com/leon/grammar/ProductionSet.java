@@ -27,8 +27,9 @@ public class ProductionSet {
         return result;
     }
     
-    public void add_rhs(String[] rhs) {
+    public ProductionSet add_rhs(String... rhs) {
         rhs_set.add(rhs);
+        return this;
     }
     
     @Override

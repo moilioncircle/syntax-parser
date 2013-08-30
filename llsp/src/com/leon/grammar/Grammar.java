@@ -3,6 +3,9 @@ package com.leon.grammar;
 
 import java.util.ArrayList;
 import java.util.List;
+import static com.leon.util.Utils.is_nonterminal;
+
+;
 
 /**
  * @author : Leon
@@ -12,24 +15,25 @@ import java.util.List;
 
 public class Grammar {
     
-    public String   start_symbol;
-    public String[] nonterminals;
-    public String[] terminals;
+    public String              start_symbol;
+    public List<ProductionSet> production_set = new ArrayList<ProductionSet>();
+    public List<Production>    productions    = new ArrayList<Production>();
     
-    public Grammar(String start_symbol, String[] terminals, List<ProductionSet> production_set) {
-        this(start_symbol, terminals);
+    public Grammar(String start_symbol, List<ProductionSet> production_set) {
+        this(start_symbol);
         this.production_set = production_set;
         for (int i = 0; i < production_set.size(); i++) {
             productions.addAll(production_set.get(i).get_productions());
         }
         set_nonterminals();
+        set_terminals();
         set_vocabulary();
         set_start_production();
         set_eof();
     }
     
-    public Grammar(String start_symbol, List<Production> productions, String[] terminals) {
-        this(start_symbol, terminals);
+    public Grammar(List<Production> productions, String start_symbol) {
+        this(start_symbol);
         this.productions = productions;
         for (int i = 0; i < productions.size(); i++) {
             Production production = productions.get(i);
@@ -44,6 +48,7 @@ public class Grammar {
             }
         }
         set_nonterminals();
+        set_terminals();
         set_vocabulary();
         set_start_production();
         set_eof();
@@ -67,6 +72,22 @@ public class Grammar {
         }
     }
     
+    private void set_terminals() {
+        List<String> terminals_list = new ArrayList<String>();
+        for (int i = 0; i < this.productions.size(); i++) {
+            Production p = this.productions.get(i);
+            for (int j = 0; j < p.rhs.length; j++) {
+                if (!is_nonterminal(p.rhs[j], this.nonterminals)) {
+                    if (!terminals_list.contains(p.rhs[j])) {
+                        terminals_list.add(p.rhs[j]);
+                    }
+                }
+            }
+        }
+        String[] terminals = new String[terminals_list.size()];
+        this.terminals = terminals_list.toArray(terminals);
+    }
+    
     private void set_start_production() {
         for (int i = 0; i < productions.size(); i++) {
             Production p = productions.get(i);
@@ -82,9 +103,8 @@ public class Grammar {
         this.eof = rhs[rhs.length - 1];
     }
     
-    private Grammar(String start_symbol, String[] terminals) {
+    private Grammar(String start_symbol) {
         this.start_symbol = start_symbol;
-        this.terminals = terminals;
     }
     
     private ProductionSet contain_lhs(String lhs) {
@@ -96,10 +116,9 @@ public class Grammar {
         return null;
     }
     
-    public List<ProductionSet> production_set = new ArrayList<ProductionSet>();
-    public List<Production>    productions    = new ArrayList<Production>();
-    public String[]            vocabulary;
-    public Production          start_production;
-    public String              eof;
-    
+    public String[]   vocabulary;
+    public Production start_production;
+    public String     eof;
+    public String[]   nonterminals;
+    public String[]   terminals;
 }

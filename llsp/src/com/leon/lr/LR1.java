@@ -39,8 +39,11 @@ public class LR1 {
         while (true) {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
-            
-            if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
+            if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
+                System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
+                break;
+            }
+            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
                 System.out.println("accecped");
                 break;
             }
@@ -57,9 +60,6 @@ public class LR1 {
                 }
                 int top = stack.top();
                 stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
-            }
-            else {
-                System.out.println("syntax error:" + t);
             }
             System.out.println(stack);
         }

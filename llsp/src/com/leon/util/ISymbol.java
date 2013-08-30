@@ -8,6 +8,9 @@ package com.leon.util;
  */
 
 public interface ISymbol<T> {
+    public int get_line();
+    
+    public int get_column();
     
     public T get_type();
     

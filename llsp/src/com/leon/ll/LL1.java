@@ -146,7 +146,7 @@ public class LL1 {
             for (int i = 0; i < struct.list.size(); i++) {
                 new_productions.remove(struct.list.get(i));
             }
-            temp = new Grammar(temp.start_symbol, new_productions, temp.terminals);
+            temp = new Grammar(new_productions,temp.start_symbol);
         }
         return temp;
     }
@@ -164,7 +164,7 @@ public class LL1 {
             substitute_list.add(ai);
             list.addAll(remove_direct_left_recursion(ai, temp));
         }
-        return new Grammar(g.start_symbol, g.terminals, list);
+        return new Grammar(g.start_symbol, list);
     }
     
     private CommonPerfixStruct common_perfix(List<Production> productions) {

@@ -194,7 +194,7 @@ public class Utils {
         return is_in(symbol, terminals);
     }
     
-    private static boolean is_in(String symbol, String[] symbols) {
+    public static boolean is_in(String symbol, String[] symbols) {
         for (int i = 0; i < symbols.length; i++) {
             if (symbols[i].equals(symbol)) {
                 return true;

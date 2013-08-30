@@ -9,7 +9,7 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public class Symbol implements ISymbol<LexerType>{
+public class Symbol implements ISymbol<LexerType> {
     
     public int       yyline;
     public int       yycolumn;
@@ -26,7 +26,7 @@ public class Symbol implements ISymbol<LexerType>{
         this.yyline = yyline;
         this.yycolumn = yycolumn;
     }
-
+    
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("type:" + type.toString());
@@ -35,14 +35,24 @@ public class Symbol implements ISymbol<LexerType>{
         }
         return sb.toString();
     }
-
+    
     @Override
     public LexerType get_type() {
         return this.type;
     }
-
+    
     @Override
     public Object get_value() {
         return this.value;
+    }
+    
+    @Override
+    public int get_line() {
+        return this.yyline+1;
+    }
+    
+    @Override
+    public int get_column() {
+        return this.yycolumn+1;
     }
 }

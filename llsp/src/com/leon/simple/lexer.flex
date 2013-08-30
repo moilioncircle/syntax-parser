@@ -38,13 +38,13 @@ ID = [A-Za-z_][A-Za-z0-9_]*
     "/"                { return symbol(LexerType.DIVIDE); }
     "("                { return symbol(LexerType.LPAREN); }
     ")"                { return symbol(LexerType.RPAREN); }
-    "begin"                { return symbol(LexerType.BEGIN); }
-    "end"                { return symbol(LexerType.END); }
-    ":="                { return symbol(LexerType.ASSIGN); }
+    "begin"            { return symbol(LexerType.BEGIN); }
+    "end"              { return symbol(LexerType.END); }
+    ":="               { return symbol(LexerType.ASSIGN); }
     ","                { return symbol(LexerType.COMMA); }
     ";"                { return symbol(LexerType.SEMI); }
-    "read"                { return symbol(LexerType.READ); }
-    "write"                { return symbol(LexerType.WRITE); }
+    "read"             { return symbol(LexerType.READ); }
+    "write"            { return symbol(LexerType.WRITE); }
     {NUM}              { return symbol(LexerType.NUM,new Integer(yytext())); }
     {ID}               { return symbol(LexerType.ID,yytext()); }
     {WhiteSpace}       {/* SKIP */}

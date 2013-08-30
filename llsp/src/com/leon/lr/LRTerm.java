@@ -11,9 +11,9 @@ import com.leon.grammar.Production;
 
 public class LRTerm {
     
-    public LRTerm(Production p, int index, String look_ahead) {
+    public LRTerm(Production p, int dot, String look_ahead) {
         this.p = p;
-        this.dot = index;
+        this.dot = dot;
         this.look_ahead = look_ahead;
     }
     
