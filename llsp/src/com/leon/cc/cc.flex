@@ -57,7 +57,7 @@ OctDigit = [0-7]
 }
 <ACTION> {
     "#"                             { yybegin(YYINITIAL);return symbol(CCType.ACTION,action.toString());}
-    [^\n\r\"\'\t\\\#]*              { action.append( yytext() );}
+    [^\n\r\"\'\t\\\#]*              { action.append(yytext());}
     \"                              { string.setLength(0); yybegin(STRING);string.append("\""); }
     \'                              { yybegin(CHARLITERAL); }
     \\t                             { action.append('\t'); }
@@ -76,14 +76,14 @@ OctDigit = [0-7]
     {StringCharacter}+              { string.append( yytext() ); }
   
     /* escape sequences */
-    "\\b"                           { string.append( '\b' ); }
-    "\\t"                           { string.append( '\t' ); }
-    "\\n"                           { string.append( '\n' ); }
-    "\\f"                           { string.append( '\f' ); }
-    "\\r"                           { string.append( '\r' ); }
-    "\\\""                          { string.append( '\"' ); }
-    "\\'"                           { string.append( '\'' ); }
-    "\\\\"                          { string.append( '\\' ); }
+    "\\b"                           { string.append('\b'); }
+    "\\t"                           { string.append('\t'); }
+    "\\n"                           { string.append('\n'); }
+    "\\f"                           { string.append('\f'); }
+    "\\r"                           { string.append('\r'); }
+    "\\\""                          { string.append('\"'); }
+    "\\'"                           { string.append('\''); }
+    "\\\\"                          { string.append('\\'); }
     \\[0-3]?{OctDigit}?{OctDigit}   { char val = (char) Integer.parseInt(yytext().substring(1),8);
                                            string.append( val ); }
   
@@ -103,7 +103,7 @@ OctDigit = [0-7]
     "\\r"\'                         { yybegin(ACTION); action.append("'"+new Character('\r')+"'");}
     "\\\""\'                        { yybegin(ACTION); action.append("'"+new Character('\"')+"'");}
     "\\'"\'                         { yybegin(ACTION); action.append("'"+new Character('\'')+"'");}
-    "\\\\"\'                        { yybegin(ACTION); action.append("'"+new Character('\\')+"'"); }
+    "\\\\"\'                        { yybegin(ACTION); action.append("'"+new Character('\\')+"'");}
     \\[0-3]?{OctDigit}?{OctDigit}\' { yybegin(ACTION); int val = Integer.parseInt(yytext().substring(1,yylength()-1),8);
                                         action.append("'"+new Character((char)val)+"'"); }
   
