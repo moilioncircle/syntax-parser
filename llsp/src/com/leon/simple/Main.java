@@ -387,7 +387,7 @@ public class Main {
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "E", "PLUS", "E" }));
-        list.add(new Production("E", new String[] { "E", "MINUS", "T" }));
+        list.add(new Production("E", new String[] { "E", "MINUS", "E" }));
         list.add(new Production("E", new String[] { "E", "TIMES", "E" }));
         list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
         list.add(new Production("E", new String[] { "ID" }));

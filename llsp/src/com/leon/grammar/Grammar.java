@@ -18,6 +18,7 @@ public class Grammar {
     public String              start_symbol;
     public List<ProductionSet> production_set = new ArrayList<ProductionSet>();
     public List<Production>    productions    = new ArrayList<Production>();
+    public List<Assoc>         assoc_list     = new ArrayList<Assoc>();
     
     public Grammar(String start_symbol, List<ProductionSet> production_set) {
         this(start_symbol);
@@ -30,6 +31,11 @@ public class Grammar {
         set_vocabulary();
         set_start_production();
         set_eof();
+    }
+    
+    public Grammar(String start_symbol, List<ProductionSet> production_set, List<Assoc> assoc_list) {
+        this(start_symbol, production_set);
+        this.assoc_list = assoc_list;
     }
     
     public Grammar(List<Production> productions, String start_symbol) {
@@ -52,6 +58,15 @@ public class Grammar {
         set_vocabulary();
         set_start_production();
         set_eof();
+    }
+    
+    public Grammar(List<Production> productions, String start_symbol, List<Assoc> assoc_list) {
+        this(productions, start_symbol);
+        this.assoc_list = assoc_list;
+    }
+    
+    private Grammar(String start_symbol) {
+        this.start_symbol = start_symbol;
     }
     
     private void set_vocabulary() {
@@ -101,10 +116,6 @@ public class Grammar {
     private void set_eof() {
         String[] rhs = this.start_production.rhs;
         this.eof = rhs[rhs.length - 1];
-    }
-    
-    private Grammar(String start_symbol) {
-        this.start_symbol = start_symbol;
     }
     
     private ProductionSet contain_lhs(String lhs) {
