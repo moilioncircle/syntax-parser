@@ -47,6 +47,7 @@ public class Main {
         new Main().do_14_grammar();
         new Main().do_15_grammar();
         new Main().do_16_grammar();
+        new Main().do_17_grammar();
     }
     
     public void do_1_grammar() throws IOException {
@@ -378,6 +379,21 @@ public class Main {
         list.add(new Production("V", new String[] { "TIMES", "E" }));
         Grammar g = new Grammar(list,"K");
         IToken<LexerType> t = new Token(new StringReader("x:=*x"));
+        LR1 lr = new LR1();
+        lr.lr1_driver(g, t);
+    }
+    
+    public void do_17_grammar() throws IOException {
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("S", new String[] { "E", "EOF" }));
+        list.add(new Production("E", new String[] { "E", "PLUS", "E" }));
+        list.add(new Production("E", new String[] { "E", "MINUS", "T" }));
+        list.add(new Production("E", new String[] { "E", "TIMES", "E" }));
+        list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
+        list.add(new Production("E", new String[] { "ID" }));
+        list.add(new Production("E", new String[] { "NUM" }));
+        Grammar g = new Grammar(list,"S");
+        IToken<LexerType> t = new Token(new StringReader("5+4/3"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }

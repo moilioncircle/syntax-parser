@@ -167,6 +167,12 @@ public class LR1 {
                     String a = term.p.rhs[term.dot];
                     if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {
                         if (!a.equals(g.eof)) {
+                            if (m[index(a, g.vocabulary)][i] != null) {
+                                ActionItem ai = m[index(a, g.vocabulary)][i];
+                                if (ai.type == ActionType.R) {
+                                    System.out.println("shift:" + a + ";reduce:" + ai.p + " conflict");
+                                }
+                            }
                             m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.S);
                         }
                         else {
@@ -176,6 +182,15 @@ public class LR1 {
                 }
                 else {
                     if (term.look_ahead != null) {
+                        if (m[index(term.look_ahead, g.vocabulary)][i] != null) {
+                            ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
+                            if (ai.type == ActionType.S) {
+                                System.out.println("shift:" + term.look_ahead + ";reduce:" + term.p + " conflict");
+                            }
+                            else if (ai.type == ActionType.R) {
+                                System.out.println("reduce:" + ai.p + ";reduce:" + term.p + " conflict");
+                            }
+                        }
                         m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p);
                     }
                 }
