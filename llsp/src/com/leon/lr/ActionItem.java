@@ -13,21 +13,26 @@ public class ActionItem {
     
     public ActionType type;
     public Production p;
+    public String     symbol;
     
     public ActionItem(ActionType type, Production p) {
-        this(type);
+        this(type, (String) null);
         this.p = p;
     }
     
-    public ActionItem(ActionType type) {
+    public ActionItem(ActionType type, String symbol) {
         this.type = type;
+        this.symbol = symbol;
     }
     
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(type.toString());
-        if(p!=null){
-            sb.append(":"+p);
+        if (symbol != null) {
+            sb.append(":" + symbol);
+        }
+        if (p != null) {
+            sb.append(":" + p);
         }
         return sb.toString();
     }

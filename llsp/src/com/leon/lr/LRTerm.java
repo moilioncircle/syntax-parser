@@ -51,6 +51,21 @@ public class LRTerm {
     
     @Override
     public String toString() {
-        return "LRTerm [p=" + p + ", dot=" + dot + ", look_ahead=" + look_ahead + "]";
+        int i = 0;
+        StringBuilder sb = new StringBuilder();
+        while (i <= p.rhs.length) {
+            if (i == dot) {
+                if (sb.length() > 0) {
+                    sb.deleteCharAt(sb.length() - 1);
+                }
+                sb.append(".");
+            }
+            if (i < p.rhs.length) {
+                sb.append(p.rhs[i] + " ");
+            }
+            i++;
+        }
+        
+        return "LRTerm [p=" + p.lhs + "->" + sb.toString() + "  look_ahead=" + look_ahead + "]";
     }
 }

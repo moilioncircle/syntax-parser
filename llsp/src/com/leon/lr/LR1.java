@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.leon.grammar.Assoc;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.util.ISymbol;
@@ -49,12 +50,12 @@ public class LR1 {
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
-                System.out.println("shift:" + t);
+                System.out.println("shift:" + action[index(t.get_type().toString(), g.vocabulary)][state].symbol);
                 t = token.next_token();
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t.get_type().toString(), g.vocabulary)][state].p;
-                System.out.println("when token='" + t + "' then reduce:" + p);
+                System.out.println("reduce:" + p);
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
                 }
@@ -164,19 +165,20 @@ public class LR1 {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
                 if (term.p.rhs.length != term.dot) {
-                    String a = term.p.rhs[term.dot];
-                    if (is_terminal(a, g.terminals) && go_to[index(a, g.vocabulary)][i] != -1) {
-                        if (!a.equals(g.eof)) {
-                            if (m[index(a, g.vocabulary)][i] != null) {
-                                ActionItem ai = m[index(a, g.vocabulary)][i];
+                    String symbol = term.p.rhs[term.dot];
+                    if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
+                        if (!symbol.equals(g.eof)) {
+                            if (m[index(symbol, g.vocabulary)][i] != null) {
+                                ActionItem ai = m[index(symbol, g.vocabulary)][i];
                                 if (ai.type == ActionType.R) {
-                                    System.out.println("shift:" + a + ";reduce:" + ai.p + " conflict");
+                                    System.out.println("state:" + i + ";shift:" + symbol + ";reduce:" + ai.p
+                                                       + " conflict");
                                 }
                             }
-                            m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.S);
+                            m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
                         }
                         else {
-                            m[index(a, g.vocabulary)][i] = new ActionItem(ActionType.A);
+                            m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
                         }
                     }
                 }
@@ -185,13 +187,15 @@ public class LR1 {
                         if (m[index(term.look_ahead, g.vocabulary)][i] != null) {
                             ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
                             if (ai.type == ActionType.S) {
-                                System.out.println("shift:" + term.look_ahead + ";reduce:" + term.p + " conflict");
+                                System.out.println("state:" + i + ";shift:" + ai.symbol + ";reduce:" + term.p
+                                                   + " conflict");
                             }
                             else if (ai.type == ActionType.R) {
-                                System.out.println("reduce:" + ai.p + ";reduce:" + term.p + " conflict");
+                                System.out.println("state:" + i + ";reduce:" + ai.p + ";reduce:" + term.p + " conflict");
                             }
                         }
                         m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p);
+                        
                     }
                 }
             }
@@ -221,6 +225,12 @@ public class LR1 {
         }
         new_array[j] = term.look_ahead;
         return new_array;
+    }
+    
+    private void resolveShiftReduceConflict(ActionItem[][] m, String symbol, List<Assoc> assoc) {
+    }
+    
+    private void resolveReduceReduceConflict(ActionItem[][] m, String symbol, List<Assoc> assoc) {
     }
     
 }
