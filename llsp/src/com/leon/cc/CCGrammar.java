@@ -1,8 +1,8 @@
 
 package com.leon.cc;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +22,10 @@ public class CCGrammar {
     public Grammar getGrammar() {
         List<ProductionSet> list = new ArrayList<ProductionSet>();
         list.add(new ProductionSet("program").add_rhs("Descriptor", "EOF"));
-        list.add(new ProductionSet("Descriptor").add_rhs("Declarations", "SectionMarker", "Productions",
-                "Usercode").add_rhs("SectionMarker", "Productions", "Usercode"));
-        list.add(new ProductionSet("Usercode").add_rhs("SectionMarker","ACTION").add_rhs(new String[]{"SectionMarker"}));
+        list.add(new ProductionSet("Descriptor").add_rhs("Declarations", "SectionMarker", "Productions", "Usercode")
+                                                .add_rhs("SectionMarker", "Productions", "Usercode"));
+        list.add(new ProductionSet("Usercode").add_rhs("SectionMarker", "ACTION").add_rhs(
+                new String[] { "SectionMarker" }));
         list.add(new ProductionSet("SectionMarker").add_rhs("MARK"));
         list.add(new ProductionSet("Declarations").add_rhs("Declarations", "Declaration").add_rhs("Declaration"));
         list.add(new ProductionSet("Declaration").add_rhs("SEMI")
@@ -45,8 +46,8 @@ public class CCGrammar {
     
     public static void main(String[] args) throws IOException {
         Grammar g = new CCGrammar().getGrammar();
-        IToken<CCType> t = new CCToken(new FileReader(
-                "C:/Users/chenbaoyi/Documents/GitHub/sparser/llsp/src/com/leon/cc/test.g"));
+        InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("test.g"), "UTF8");
+        IToken<CCType> t = new CCToken(reader);
         LR1 lr1 = new LR1();
         lr1.lr1_driver(g, t);
     }
