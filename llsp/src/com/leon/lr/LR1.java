@@ -83,7 +83,7 @@ public class LR1 {
                 for (int j = 0; j < p_list.size(); j++) {
                     Set<String> firsts = first(compute_alpha(term), first_set, g);
                     for (String first : firsts) {
-                        LRTerm new_term = new LRTerm(p_list.get(j), 0, first);
+                        LRTerm new_term = new LRTerm(new LRCoreTerm(p_list.get(j), 0), first);
                         if (!list.contains(new_term)) {
                             list.add(new_term);
                         }
@@ -104,7 +104,7 @@ public class LR1 {
                 continue;
             }
             if (term.p.rhs[term.dot].equals(symbol)) {
-                LRTerm new_term = new LRTerm(term.p, term.dot + 1, term.look_ahead);
+                LRTerm new_term = new LRTerm(new LRCoreTerm(term.p, term.dot + 1), term.look_ahead);
                 result.terms.add(new_term);
             }
         }
@@ -112,7 +112,7 @@ public class LR1 {
     }
     
     private List<LRState> build_label(Grammar g, Set<String>[] first_set) {
-        LRTerm term = new LRTerm(g.start_production, 0, null);
+        LRTerm term = new LRTerm(new LRCoreTerm(g.start_production, 0), null);
         LRState start = new LRState();
         start.terms.add(term);
         start = closure1(start, g, first_set);

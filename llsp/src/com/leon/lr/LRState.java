@@ -3,7 +3,6 @@ package com.leon.lr;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,18 +72,17 @@ public class LRState {
     public String toString() {
         Map<LRCoreTerm, List<String>> mergeTerm = new LinkedHashMap<LRCoreTerm, List<String>>();
         for (LRTerm term : terms) {
-            LRCoreTerm core = new LRCoreTerm(term.p, term.dot);
+            LRCoreTerm core = term.core_item;
             List<String> value = mergeTerm.get(core);
-            if(value == null){
+            if (value == null) {
                 value = new ArrayList<String>();
             }
             value.add(term.look_ahead);
             mergeTerm.put(core, value);
         }
         StringBuilder sb = new StringBuilder();
-        for (Iterator<LRCoreTerm> iterator = mergeTerm.keySet().iterator(); iterator.hasNext();) {
-            LRCoreTerm core = iterator.next();
-            sb.append(core.toString()+",look_ahead "+mergeTerm.get(core)+"\n");
+        for (LRCoreTerm core : mergeTerm.keySet()) {
+            sb.append(core.toString() + ",look_ahead " + mergeTerm.get(core) + "\n");
         }
         return sb.toString();
     }
