@@ -291,7 +291,7 @@ public class Utils {
         Associativity association = Associativity.NONASSOC;
         for (int i = 0; i < p.rhs.length; i++) {
             if (is_terminal(p.rhs[i], terminals)) {
-                Assoc assoc = Utils.get_symbol_assoc(p.rhs[i], assoc_list);
+                Assoc assoc = get_symbol_assoc(p.rhs[i], assoc_list);
                 precedence = assoc.precedence;
                 association = assoc.association;
             }
