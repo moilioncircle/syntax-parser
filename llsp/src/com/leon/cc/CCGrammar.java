@@ -49,6 +49,9 @@ public class CCGrammar {
         InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("test.g"), "UTF8");
         IToken<CCType> t = new CCToken(reader);
         LR1 lr1 = new LR1();
+        long start = System.currentTimeMillis();
         lr1.lr1_driver(g, t);
+        long end = System.currentTimeMillis();
+        System.out.println((end-start)+"");
     }
 }

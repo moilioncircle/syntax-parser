@@ -1,8 +1,6 @@
 
 package com.leon.util;
 
-import static com.leon.util.Utils.is_terminal;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
