@@ -21,25 +21,29 @@ public class CCGrammar {
     
     public Grammar getGrammar() {
         List<ProductionSet> list = new ArrayList<ProductionSet>();
-        list.add(new ProductionSet("program").add_rhs("Descriptor", "EOF"));
-        list.add(new ProductionSet("Descriptor").add_rhs("Declarations", "SectionMarker", "Productions", "Usercode")
-                                                .add_rhs("SectionMarker", "Productions", "Usercode"));
-        list.add(new ProductionSet("Usercode").add_rhs("SectionMarker", "ACTION").add_rhs(
-                new String[] { "SectionMarker" }));
-        list.add(new ProductionSet("SectionMarker").add_rhs("MARK"));
-        list.add(new ProductionSet("Declarations").add_rhs("Declarations", "Declaration").add_rhs("Declaration"));
-        list.add(new ProductionSet("Declaration").add_rhs("SEMI")
-                                                 .add_rhs("Precedence", "Tokens")
-                                                 .add_rhs("NAME", "COLON", "Token")
-                                                 .add_rhs("ACTION"));
-        list.add(new ProductionSet("Precedence").add_rhs("LEFT").add_rhs("RIGHT"));
-        list.add(new ProductionSet("Tokens").add_rhs("Tokens", "COMMA", "Token").add_rhs("Token"));
-        list.add(new ProductionSet("Token").add_rhs("TOKEN"));
-        list.add(new ProductionSet("Productions").add_rhs("Productions", "TOKEN", "COLON", "Rules", "SEMI").add_rhs(
-                "TOKEN", "COLON", "Rules", "SEMI"));
-        list.add(new ProductionSet("Rules").add_rhs("Rules", "OR", "GrammarRule").add_rhs("GrammarRule"));
-        list.add(new ProductionSet("GrammarRule").add_rhs("Rule", "ACTION").add_rhs(new String[] { "ACTION" }));
-        list.add(new ProductionSet("Rule").add_rhs("Rule", "TOKEN").add_rhs("TOKEN"));
+        list.add(new ProductionSet("program").or("Descriptor", "EOF"));
+        list.add(new ProductionSet("Descriptor").or("Declarations", "SectionMarker", "Productions", "Usercode").or(
+                "SectionMarker", "Productions", "Usercode"));
+        list.add(new ProductionSet("Usercode").or("SectionMarker", "ACTION").or(new String[] { "SectionMarker" }));
+        list.add(new ProductionSet("SectionMarker").or("MARK"));
+        list.add(new ProductionSet("Declarations").or("Declarations", "Declaration").or("Declaration"));
+        list.add(new ProductionSet("Declaration").or("SEMI")
+                                                 .or("Precedence", "Tokens")
+                                                 .or("NAME", "COLON", "Token")
+                                                 .or("START", "COLON", "Token")
+                                                 .or("ACTION"));
+        list.add(new ProductionSet("Precedence").or("LEFT").or("RIGHT").or("NONASSOC").or("BINARY"));
+        list.add(new ProductionSet("Tokens").or("Tokens", "COMMA", "Token").or("Token"));
+        list.add(new ProductionSet("Token").or("TOKEN"));
+        list.add(new ProductionSet("Productions").or("Productions", "TOKEN", "COLON", "Rules", "SEMI").or("TOKEN",
+                "COLON", "Rules", "SEMI"));
+        list.add(new ProductionSet("Rules").or("Rules", "OR", "GrammarRule").or("GrammarRule"));
+        list.add(new ProductionSet("GrammarRule").or("Rule", "Prec", "ACTION")
+                                                 .or("Rule", "ACTION")
+                                                 .or("ACTION")
+                                                 .or());
+        list.add(new ProductionSet("Rule").or("Rule", "TOKEN").or("TOKEN"));
+        list.add(new ProductionSet("Prec").or("PREC", "TOKEN"));
         Grammar g = new Grammar("program", list);
         return g;
     }
@@ -52,6 +56,6 @@ public class CCGrammar {
         long start = System.currentTimeMillis();
         lr1.lr1_driver(g, t);
         long end = System.currentTimeMillis();
-        System.out.println((end-start)+"");
+        System.out.println((end - start) + "");
     }
 }

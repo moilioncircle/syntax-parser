@@ -245,11 +245,11 @@ public class Utils {
             if (rhs.length != 0 && rhs[0].equals(symbol)) {
                 List<Production> aj_ps = aj.get_productions();
                 for (int j = 0; j < aj_ps.size(); j++) {
-                    result.add_rhs(cut_array_add_before(rhs, 1, rhs.length, aj_ps.get(j).rhs));
+                    result.or(cut_array_add_before(rhs, 1, rhs.length, aj_ps.get(j).rhs));
                 }
             }
             else {
-                result.add_rhs(rhs);
+                result.or(rhs);
             }
         }
         
@@ -265,16 +265,16 @@ public class Utils {
             Production p = ai_ps.get(i);
             if (p.rhs.length != 0 && p.rhs[0].equals(p.lhs)) {
                 String[] new_rhs = cut_array_add_end(p.rhs, 1, p.rhs.length, new_ai_tail.lhs);
-                new_ai_tail.add_rhs(new_rhs);
+                new_ai_tail.or(new_rhs);
             }
             else {
                 String[] new_rhs = cut_array_add_end(p.rhs, 0, p.rhs.length, new_ai_tail.lhs);
-                new_ai.add_rhs(new_rhs);
+                new_ai.or(new_rhs);
             }
         }
         List<ProductionSet> rs = new ArrayList<ProductionSet>();
         if (new_ai_tail.rhs_set.size() != 0) {
-            new_ai_tail.add_rhs(new String[] {});
+            new_ai_tail.or(new String[] {});
             rs.add(new_ai);
             rs.add(new_ai_tail);
         }
@@ -287,6 +287,9 @@ public class Utils {
     public static Assoc get_production_assoc(Production p, List<Assoc> assoc_list, String[] terminals) {
         int precedence = 0;
         Associativity association = Associativity.NONASSOC;
+        if (p.has_prec()) {
+            return get_symbol_assoc(p.prec_symbol, assoc_list);
+        }
         for (int i = 0; i < p.rhs.length; i++) {
             if (is_terminal(p.rhs[i], terminals)) {
                 Assoc assoc = get_symbol_assoc(p.rhs[i], assoc_list);

@@ -16,13 +16,23 @@ public class Production {
         this.semantic_action = semantic_action;
     }
     
+    public Production(String lhs, String[] rhs, String prec_symbol, String semantic_action) {
+        this(lhs, rhs,semantic_action);
+        this.prec_symbol = prec_symbol;
+    }
+    
     public Production(String lhs, String[] rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
     }
     
+    public boolean has_prec() {
+        return prec_symbol != null;
+    }
+    
     public String[] rhs;
     public String   lhs;
+    public String   prec_symbol;
     public String   semantic_action;
     
     @Override

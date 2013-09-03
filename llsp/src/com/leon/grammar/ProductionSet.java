@@ -27,7 +27,7 @@ public class ProductionSet {
         return result;
     }
     
-    public ProductionSet add_rhs(String... rhs) {
+    public ProductionSet or(String... rhs) {
         rhs_set.add(rhs);
         return this;
     }

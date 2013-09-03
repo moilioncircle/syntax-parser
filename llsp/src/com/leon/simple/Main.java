@@ -61,7 +61,7 @@ public class Main {
         list.add(new Production("T", new String[] { "P" }, "new T($0)"));
         list.add(new Production("P", new String[] { "NUM" }, "new P(\"$0\")"));
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
-        Grammar g = new Grammar(list,"S");
+        Grammar g = new Grammar(list, "S");
         IToken<LexerType> t = new Token(new StringReader("(2+3)*5"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
@@ -72,7 +72,7 @@ public class Main {
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] {}));
-        Grammar g = new Grammar(list,"S");
+        Grammar g = new Grammar(list, "S");
         IToken<LexerType> t = new Token(new StringReader(""));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
@@ -104,7 +104,7 @@ public class Main {
         list.add(new Production("add_op", new String[] { "PLUS" }));
         list.add(new Production("add_op", new String[] { "TIMES" }));
         list.add(new Production("system_goal", new String[] { "program", "EOF" }));
-        Grammar g = new Grammar(list,start_symbol);
+        Grammar g = new Grammar(list, start_symbol);
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
         }
@@ -174,7 +174,7 @@ public class Main {
         list.add(new Production("stmt", new String[] { "if", "expr", "then", "stmt_list", "end_if" }));
         list.add(new Production("stmt",
                 new String[] { "if", "expr", "then", "stmt_list", "else", "stmt_list", "end_if" }));
-        Grammar g = new Grammar(list,"stmt");
+        Grammar g = new Grammar(list, "stmt");
         Grammar g1 = l.factor(g);
         for (int i = 0; i < g1.productions.size(); i++) {
             System.out.println(g1.productions.get(i));
@@ -188,7 +188,7 @@ public class Main {
         list.add(new Production("A", new String[] { "a", "D" }));
         list.add(new Production("A", new String[] { "a", "b", "c", "C" }));
         list.add(new Production("E", new String[] { "a", "b" }));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.factor(g);
         System.out.println("=========");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -207,7 +207,7 @@ public class Main {
         list.add(new Production("A", new String[] { "a", "D" }));
         list.add(new Production("E", new String[] { "a", "b" }));
         list.add(new Production("A", new String[] { "a", "b", "C" }));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.factor(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -221,7 +221,7 @@ public class Main {
         list.add(new Production("A", new String[] { "a" }));
         list.add(new Production("E", new String[] { "a", "b" }));
         list.add(new Production("A", new String[] { "a", "b", "C" }));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.factor(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -236,7 +236,7 @@ public class Main {
         list.add(new Production("A", new String[] { "B", "b" }));
         list.add(new Production("B", new String[] { "A", "c" }));
         list.add(new Production("B", new String[] { "d" }));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -252,7 +252,7 @@ public class Main {
         list.add(new Production("T", new String[] { "T", "*", "P" }));
         list.add(new Production("T", new String[] { "P" }));
         list.add(new Production("P", new String[] { "ID" }));
-        Grammar g = new Grammar(list,"E");
+        Grammar g = new Grammar(list, "E");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -273,7 +273,7 @@ public class Main {
         list.add(new Production("F", new String[] { "ID" }));
         list.add(new Production("F", new String[] { "NUM" }));
         list.add(new Production("F", new String[] { "(", "E", ")" }));
-        Grammar g = new Grammar(list,"S");
+        Grammar g = new Grammar(list, "S");
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
         }
@@ -292,7 +292,7 @@ public class Main {
         list.add(new Production("A", new String[] { "B", "a" }));
         list.add(new Production("C", new String[] { "A", "c" }));
         list.add(new Production("C", new String[] {}));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -308,7 +308,7 @@ public class Main {
         list.add(new Production("B", new String[] { "C", "b" }));
         list.add(new Production("C", new String[] { "A", "c" }));
         list.add(new Production("C", new String[] {}));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -324,7 +324,7 @@ public class Main {
         list.add(new Production("A", new String[] { "B", "a" }));
         list.add(new Production("B", new String[] { "C", "b" }));
         list.add(new Production("B", new String[] {}));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -341,7 +341,7 @@ public class Main {
         list.add(new Production("C", new String[] { "A" }));
         list.add(new Production("A", new String[] { "C", "a" }));
         list.add(new Production("A", new String[] {}));
-        Grammar g = new Grammar(list,"A");
+        Grammar g = new Grammar(list, "A");
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -361,7 +361,7 @@ public class Main {
         list.add(new Production("T", new String[] { "LPAREN", "E", "RPAREN" }));
         list.add(new Production("T", new String[] { "ID" }));
         list.add(new Production("T", new String[] { "NUM" }));
-        Grammar g = new Grammar(list,"S");
+        Grammar g = new Grammar(list, "S");
         int[][] m = l.predict_table(g);
         for (int i = 0; i < g.nonterminals.length; i++) {
             l.make_parsing_proc(g.nonterminals[i], m, g);
@@ -379,7 +379,7 @@ public class Main {
         list.add(new Production("E", new String[] { "V" }));
         list.add(new Production("V", new String[] { "ID" }));
         list.add(new Production("V", new String[] { "TIMES", "E" }));
-        Grammar g = new Grammar(list,"K");
+        Grammar g = new Grammar(list, "K");
         IToken<LexerType> t = new Token(new StringReader("x:=*x"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
@@ -389,6 +389,7 @@ public class Main {
         List<Assoc> assoc_list = new ArrayList<Assoc>();
         assoc_list.add(new Assoc(1, Associativity.LEFT).add_symbol("PLUS").add_symbol("MINUS"));
         assoc_list.add(new Assoc(2, Associativity.LEFT).add_symbol("TIMES").add_symbol("DIVIDE"));
+        assoc_list.add(new Assoc(3, Associativity.RIGHT).add_symbol("UMINUS"));
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "E", "PLUS", "E" }));
@@ -397,10 +398,10 @@ public class Main {
         list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] { "NUM" }));
-        Grammar g = new Grammar(list,"S",assoc_list);
-        IToken<LexerType> t = new Token(new StringReader("5+4/3"));
+        list.add(new Production("E", new String[] { "MINUS", "NUM" },"UMINUS"));
+        Grammar g = new Grammar(list, "S", assoc_list);
+        IToken<LexerType> t = new Token(new StringReader("3-5*-4/3"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }
-    
 }

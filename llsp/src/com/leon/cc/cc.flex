@@ -44,7 +44,12 @@ OctDigit = [0-7]
     ":"                             { return symbol(CCType.COLON); }
     "%left"                         { return symbol(CCType.LEFT); }
     "%right"                        { return symbol(CCType.RIGHT); }
+    "%nonassoc"                     { return symbol(CCType.NONASSOC); }
+    "%binary"                       { return symbol(CCType.BINARY); }
+    "%prec"                         { return symbol(CCType.PREC); }
+    "%start"                        { return symbol(CCType.START); }
     ","                             { return symbol(CCType.COMMA); }
+    "="                             { return symbol(CCType.ASSIGN); }
     "["                             { return symbol(CCType.LBRACKET); }
     "]"                             { return symbol(CCType.RBRACKET); }
     "|"                             { return symbol(CCType.OR); }

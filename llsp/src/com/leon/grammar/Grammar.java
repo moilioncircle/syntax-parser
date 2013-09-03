@@ -46,11 +46,11 @@ public class Grammar {
             ProductionSet p_set = contain_lhs(production.lhs);
             if (p_set == null) {
                 p_set = new ProductionSet(production.lhs);
-                p_set.add_rhs(production.rhs);
+                p_set.or(production.rhs);
                 this.production_set.add(p_set);
             }
             else {
-                p_set.add_rhs(production.rhs);
+                p_set.or(production.rhs);
             }
         }
         set_nonterminals();
