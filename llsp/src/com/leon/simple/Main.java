@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.leon.grammar.Assoc;
+import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
@@ -384,6 +386,9 @@ public class Main {
     }
     
     public void do_17_grammar() throws IOException {
+        List<Assoc> assoc_list = new ArrayList<Assoc>();
+        assoc_list.add(new Assoc(1, Associativity.LEFT).add_symbol("PLUS").add_symbol("MINUS"));
+        assoc_list.add(new Assoc(2, Associativity.LEFT).add_symbol("TIMES").add_symbol("DIVIDE"));
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "E", "PLUS", "E" }));
@@ -392,7 +397,7 @@ public class Main {
         list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] { "NUM" }));
-        Grammar g = new Grammar(list,"S");
+        Grammar g = new Grammar(list,"S",assoc_list);
         IToken<LexerType> t = new Token(new StringReader("5+4/3"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);

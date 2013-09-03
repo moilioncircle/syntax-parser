@@ -3,6 +3,8 @@ package com.leon.lr;
 
 import static com.leon.util.Utils.fill_first_set;
 import static com.leon.util.Utils.first;
+import static com.leon.util.Utils.get_production_assoc;
+import static com.leon.util.Utils.get_symbol_assoc;
 import static com.leon.util.Utils.index;
 import static com.leon.util.Utils.is_terminal;
 import static com.leon.util.Utils.match_lhs;
@@ -14,12 +16,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.leon.grammar.Assoc;
+import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.util.ISymbol;
+import com.leon.util.IToken;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
-import com.leon.util.IToken;
 
 /**
  * @author : Leon
@@ -171,11 +174,15 @@ public class LR1 {
                             if (m[index(symbol, g.vocabulary)][i] != null) {
                                 ActionItem ai = m[index(symbol, g.vocabulary)][i];
                                 if (ai.type == ActionType.R) {
-                                    System.out.println("state:" + i + ";shift:" + symbol + ";reduce:" + ai.p
-                                                       + " conflict");
+                                    if (!resolveShiftReduceConflict(m, symbol, i, ai.p, g)) {
+                                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:"
+                                                           + symbol + ";Reduce: " + ai.p + ";");
+                                    }
                                 }
                             }
-                            m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
+                            else {
+                                m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
+                            }
                         }
                         else {
                             m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
@@ -187,15 +194,19 @@ public class LR1 {
                         if (m[index(term.look_ahead, g.vocabulary)][i] != null) {
                             ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
                             if (ai.type == ActionType.S) {
-                                System.out.println("state:" + i + ";shift:" + ai.symbol + ";reduce:" + term.p
-                                                   + " conflict");
+                                if (!resolveShiftReduceConflict(m, term.look_ahead, i, term.p, g)) {
+                                    System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:"
+                                                       + term.look_ahead + ";Reduce: " + term.p + ";");
+                                }
                             }
                             else if (ai.type == ActionType.R) {
-                                System.out.println("state:" + i + ";reduce:" + ai.p + ";reduce:" + term.p + " conflict");
+                                resolveReduceReduceConflict(m, term.look_ahead, i, ai.p, term.p, g);
                             }
                         }
-                        m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p);
-                        
+                        else {
+                            m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p,
+                                    term.look_ahead);
+                        }
                     }
                 }
             }
@@ -227,10 +238,49 @@ public class LR1 {
         return new_array;
     }
     
-    private void resolveShiftReduceConflict(ActionItem[][] m, String symbol, List<Assoc> assoc) {
+    private boolean resolveShiftReduceConflict(ActionItem[][] m, String symbol, int state, Production p, Grammar g) {
+        Associativity association;
+        Assoc symbol_assoc = get_symbol_assoc(symbol, g.assoc_list);
+        Assoc production_assoc = get_production_assoc(p, g.assoc_list, g.terminals);
+        if (symbol_assoc.precedence == 0 || production_assoc.precedence == 0) {
+            return false;
+        }
+        
+        if (symbol_assoc.precedence == production_assoc.precedence) {
+            association = symbol_assoc.association;
+        }
+        else if (symbol_assoc.precedence > production_assoc.precedence) {
+            association = Associativity.RIGHT;
+        }
+        else {
+            association = Associativity.LEFT;
+        }
+        
+        switch (association) {
+            case NONASSOC:
+            case BINARY:
+                return false;
+            case LEFT:
+                //reduce;
+                m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+                break;
+            
+            case RIGHT:
+                //shift;
+                m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.S, p, symbol);
+                break;
+        }
+        return true;
+        
     }
     
-    private void resolveReduceReduceConflict(ActionItem[][] m, String symbol, List<Assoc> assoc) {
+    private boolean resolveReduceReduceConflict(ActionItem[][] m, String symbol, int state, Production p1,
+                                                Production p2, Grammar g) {
+        int index_p1 = g.productions.indexOf(p1);
+        int index_p2 = g.productions.indexOf(p2);
+        Production p = index_p1 > index_p2 ? p1 : p2;
+        m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+        return true;
     }
     
 }

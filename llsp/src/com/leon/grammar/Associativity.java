@@ -7,6 +7,6 @@ package com.leon.grammar;
  * @see :
  */
 
-public enum AssocType {
-    LEFT, RIGHT, NONASSOC;
+public enum Associativity {
+    LEFT, RIGHT, NONASSOC, BINARY;
 }

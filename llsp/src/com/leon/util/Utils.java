@@ -1,12 +1,16 @@
 
 package com.leon.util;
 
+import static com.leon.util.Utils.is_terminal;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.leon.grammar.Assoc;
+import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
@@ -280,6 +284,30 @@ public class Utils {
             rs.add(temp);
         }
         return rs;
+    }
+    
+    public static Assoc get_production_assoc(Production p, List<Assoc> assoc_list, String[] terminals) {
+        int precedence = 0;
+        Associativity association = Associativity.NONASSOC;
+        for (int i = 0; i < p.rhs.length; i++) {
+            if (is_terminal(p.rhs[i], terminals)) {
+                Assoc assoc = Utils.get_symbol_assoc(p.rhs[i], assoc_list);
+                precedence = assoc.precedence;
+                association = assoc.association;
+            }
+        }
+        return new Assoc(precedence, association);
+    }
+    
+    public static Assoc get_symbol_assoc(String symbol, List<Assoc> assoc_list) {
+        for (Assoc assoc : assoc_list) {
+            for (String assoc_symbol : assoc.symbol_list) {
+                if (symbol.equals(assoc_symbol)) {
+                    return assoc;
+                }
+            }
+        }
+        return new Assoc(0, Associativity.NONASSOC);
     }
     
     private static boolean have_derives(String nonterminal, String terminal, Grammar g) {

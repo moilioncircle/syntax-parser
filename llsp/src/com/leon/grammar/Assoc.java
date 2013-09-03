@@ -12,17 +12,21 @@ import java.util.List;
 
 public class Assoc {
     
-    public int          priority;
-    public AssocType    type;
-    public List<String> lexer_list = new ArrayList<String>();
+    public int           precedence  = 0;
+    public Associativity association = Associativity.NONASSOC;
+    public List<String>  symbol_list = new ArrayList<String>();
     
-    public void add_lexer(String lexer) {
-        lexer_list.add(lexer);
+    public Assoc add_symbol(String lexer) {
+        symbol_list.add(lexer);
+        return this;
     }
     
-    public Assoc(int priority, AssocType type, List<String> lexer_list) {
-        this.priority = priority;
-        this.type = type;
-        this.lexer_list = lexer_list;
+    public Assoc(int precedence, Associativity association) {
+        this.precedence = precedence;
+        this.association = association;
+    }
+    
+    public Assoc() {
+        
     }
 }
