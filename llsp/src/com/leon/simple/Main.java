@@ -13,6 +13,7 @@ import java.util.Set;
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
+import com.leon.grammar.Prec;
 import com.leon.grammar.Production;
 import com.leon.ll.LL1;
 import com.leon.lr.LR1;
@@ -398,7 +399,7 @@ public class Main {
         list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] { "NUM" }));
-        list.add(new Production("E", new String[] { "MINUS", "NUM" },"UMINUS"));
+        list.add(new Production("E", new String[] { "MINUS", "NUM" },new Prec("UMINUS")));
         Grammar g = new Grammar(list, "S", assoc_list);
         IToken<LexerType> t = new Token(new StringReader("3-5*-4/3"));
         LR1 lr = new LR1();

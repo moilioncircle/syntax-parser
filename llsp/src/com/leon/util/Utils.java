@@ -288,7 +288,7 @@ public class Utils {
         int precedence = 0;
         Associativity association = Associativity.NONASSOC;
         if (p.has_prec()) {
-            return get_symbol_assoc(p.prec_symbol, assoc_list);
+            return get_symbol_assoc(p.prec.perc_symbol, assoc_list);
         }
         for (int i = 0; i < p.rhs.length; i++) {
             if (is_terminal(p.rhs[i], terminals)) {

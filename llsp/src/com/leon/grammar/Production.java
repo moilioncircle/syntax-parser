@@ -16,9 +16,14 @@ public class Production {
         this.semantic_action = semantic_action;
     }
     
-    public Production(String lhs, String[] rhs, String prec_symbol, String semantic_action) {
-        this(lhs, rhs,semantic_action);
-        this.prec_symbol = prec_symbol;
+    public Production(String lhs, String[] rhs, Prec prec, String semantic_action) {
+        this(lhs, rhs, semantic_action);
+        this.prec = prec;
+    }
+    
+    public Production(String lhs, String[] rhs, Prec prec) {
+        this(lhs, rhs);
+        this.prec = prec;
     }
     
     public Production(String lhs, String[] rhs) {
@@ -27,12 +32,12 @@ public class Production {
     }
     
     public boolean has_prec() {
-        return prec_symbol != null;
+        return prec != null && prec.perc_symbol != null;
     }
     
     public String[] rhs;
     public String   lhs;
-    public String   prec_symbol;
+    public Prec     prec;
     public String   semantic_action;
     
     @Override

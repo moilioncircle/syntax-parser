@@ -122,14 +122,14 @@ public class LR1 {
         Queue<LRState> queue = new Queue<LRState>();
         queue.put(start);
         List<LRState> label_list = new ArrayList<LRState>();
-        label(start, label_list);
+        label_list.add(start);
         while (!queue.is_empty()) {
             LRState state = queue.poll();
             for (int i = 0; i < g.vocabulary.length; i++) {
                 LRState to_state = goto1(state, g.vocabulary[i], g, first_set);
                 if (to_state.terms.size() != 0) {
                     if (!is_labeled(to_state, label_list)) {
-                        label(to_state, label_list);
+                        label_list.add(to_state);
                         queue.put(to_state);
                     }
                 }
@@ -145,6 +145,7 @@ public class LR1 {
     
     private int[][] build_goto1(Grammar g, Set<String>[] first_set, List<LRState> label_list) {
         int[][] go_to = new int[g.vocabulary.length][label_list.size()];
+        // initialize go_to table;
         for (int i = 0; i < go_to.length; i++) {
             for (int j = 0; j < go_to[i].length; j++) {
                 go_to[i][j] = -1;
@@ -168,54 +169,55 @@ public class LR1 {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
                 if (term.p.rhs.length != term.dot) {
-                    String symbol = term.p.rhs[term.dot];
-                    if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
-                        if (!symbol.equals(g.eof)) {
-                            if (m[index(symbol, g.vocabulary)][i] != null) {
-                                ActionItem ai = m[index(symbol, g.vocabulary)][i];
-                                if (ai.type == ActionType.R) {
-                                    if (!resolveShiftReduceConflict(m, symbol, i, ai.p, g)) {
-                                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:"
-                                                           + symbol + ";Reduce: " + ai.p + ";");
-                                    }
-                                }
-                            }
-                            else {
-                                m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
-                            }
-                        }
-                        else {
-                            m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
-                        }
-                    }
+                    compute_shift(g, go_to, m, i, term);
                 }
                 else {
-                    if (term.look_ahead != null) {
-                        if (m[index(term.look_ahead, g.vocabulary)][i] != null) {
-                            ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
-                            if (ai.type == ActionType.S) {
-                                if (!resolveShiftReduceConflict(m, term.look_ahead, i, term.p, g)) {
-                                    System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:"
-                                                       + term.look_ahead + ";Reduce: " + term.p + ";");
-                                }
-                            }
-                            else if (ai.type == ActionType.R) {
-                                resolveReduceReduceConflict(m, term.look_ahead, i, ai.p, term.p, g);
-                            }
-                        }
-                        else {
-                            m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p,
-                                    term.look_ahead);
-                        }
-                    }
+                    compute_reduce(g, m, i, term);
                 }
             }
         }
         return m;
     }
     
-    private void label(LRState state, List<LRState> list) {
-        list.add(state);
+    private void compute_reduce(Grammar g, ActionItem[][] m, int i, LRTerm term) {
+        if (term.look_ahead != null) {
+            ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
+            if (ai != null) {
+                if (ai.type == ActionType.S) {
+                    if (!resolveShiftReduceConflict(m, term.look_ahead, i, term.p, g)) {
+                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + term.look_ahead
+                                           + ";Reduce: " + term.p + ";");
+                    }
+                }
+                else if (ai.type == ActionType.R) {
+                    resolveReduceReduceConflict(m, term.look_ahead, i, ai.p, term.p, g);
+                }
+            }
+            else {
+                m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p, term.look_ahead);
+            }
+        }
+    }
+    
+    private void compute_shift(Grammar g, int[][] go_to, ActionItem[][] m, int i, LRTerm term) {
+        String symbol = term.p.rhs[term.dot];
+        if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
+            if (!symbol.equals(g.eof)) {
+                ActionItem ai = m[index(symbol, g.vocabulary)][i];
+                if (ai != null && ai.type == ActionType.R) {
+                    if (!resolveShiftReduceConflict(m, symbol, i, ai.p, g)) {
+                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + symbol
+                                           + ";Reduce: " + ai.p + ";");
+                    }
+                }
+                else {
+                    m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
+                }
+            }
+            else {
+                m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
+            }
+        }
     }
     
     private boolean is_labeled(LRState state, List<LRState> list) {
