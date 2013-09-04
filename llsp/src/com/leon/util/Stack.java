@@ -10,7 +10,7 @@ import java.util.List;
  * @see :
  */
 
-public class Stack<T> {
+public class Stack<T> implements Cloneable{
     
     private List<T> list = new ArrayList<T>();
     
@@ -41,4 +41,11 @@ public class Stack<T> {
     public String toString() {
         return list.toString();
     }
+    
+    public Stack<T> copy(){
+        Stack<T> stack = new Stack<T>();
+        stack.list = new ArrayList<T>(this.list);
+        return stack;
+    }
+
 }
