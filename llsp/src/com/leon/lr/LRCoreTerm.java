@@ -59,7 +59,7 @@ public class LRCoreTerm {
             i++;
         }
         
-        return "LRCoreTerm [p=" + p.lhs + "->" + sb.toString() + "]";
+        return "LRCoreTerm [" + p.lhs + "->" + sb.toString() + "]";
     }
     
 }
