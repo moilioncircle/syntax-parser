@@ -11,6 +11,7 @@ import static com.leon.util.Utils.match_lhs;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,9 @@ public class LR1 {
                 break;
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
+                stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
                 System.out.println("accecped");
+                System.out.println(stack);
                 break;
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.S) {
@@ -283,6 +286,124 @@ public class LR1 {
         Production p = index_p1 > index_p2 ? p1 : p2;
         m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
         return true;
+    }
+    
+    private String choose_validated_insert(Stack<Integer> parse_stack, String prefix, Grammar g, int[][] go_to,
+                                           ActionItem[][] action) {
+        String[] terminals = g.terminals;
+        String insert = null;
+        //sort by cost
+        Arrays.sort(terminals);
+        String continuation = get_continuation(parse_stack);
+        if (lr_validate(parse_stack, prefix, g, go_to, action)) {
+            return null;
+        }
+        for (int i = 0; i < terminals.length; i++) {
+            if (lr_validate(parse_stack, terminals[i], g, go_to, action)) {
+                insert = terminals[i];
+                break;
+            }
+        }
+        for (int i = 1; i < continuation.length(); i++) {
+            if (cost(continuation.substring(0, i)) >= cost(insert)) {
+                return insert;
+            }
+            if (lr_validate(parse_stack, continuation.substring(0, i), g, go_to, action)) {
+                return continuation.substring(0, i);
+            }
+        }
+        return insert;
+    }
+    
+    private boolean lr_validate(Stack<Integer> parse_stack, String symbols, Grammar g, int[][] go_to,
+                                ActionItem[][] action) {
+        Stack<Integer> temp_stack = parse_stack.copy();
+        //pop error state
+        temp_stack.pop();
+        String[] strs = symbols.split("@");
+        for (int i = 0; i < strs.length; i++) {
+            String symbol = strs[i];
+            int state = temp_stack.top();
+            if (action[index(symbol, g.vocabulary)][state] == null) {
+                return false;
+            }
+            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.A) {
+                if (i == strs.length - 1) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.S) {
+                temp_stack.push(go_to[index(symbol, g.vocabulary)][state]);
+                continue;
+            }
+            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.R) {
+                Production p = action[index(symbol, g.vocabulary)][state].p;
+                System.out.println("reduce:" + p);
+                for (int j = 0; j < p.rhs.length; j++) {
+                    temp_stack.pop();
+                }
+                int top = temp_stack.top();
+                temp_stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
+            }
+        }
+        
+        return true;
+    }
+    
+    private void validated_lr_repair(String[] insert, int d, int v) {
+        /**
+         * 1.假删除D个Symbol直到有正确的后缀,计算代价cost(D)
+         * 2.根据choose_validated_insert得到最小代价的插入Symbol,最小代价记做cost(Insert)
+         * 3.假插入2得到的Symbol并假删除D1个后续Symbol直到有正确的后缀,总代价cost(ID1) = cost(Insert)+cost(D1)
+         * 4.比较cost(D)与cost(ID1)来选择具体哪种策略
+         * 5.执行具体(删除)或(插入删除)操作修复错误
+         */
+    }
+    
+    private int cost(String insert) {
+        // 计算代价
+        return 0;
+    }
+    
+    private String get_continuation(Stack<Integer> parse_stack) {
+          // 计算延拓
+        /**
+        String continuation = "";
+        
+        while(true){
+            if(ca[parse_stack.top()] == "ACCEPT"){
+                return null;
+            }else if(ca[parse_stack.top()] belongs to terminals){
+                continuation = continuation +"@"+ca[parse_stack.top()];
+                parse_stack.push(go_to[ca[parse_stack.top()]][parse_stack.top()]);
+            }else{
+                Production p = ca[parse_stack.top()];
+                parse_stack.pop(p.rhs.length);
+                parse_stack.push(go_to[p.lhs][parse_stack.top()]);
+            }
+        }
+        return continuation;
+        */
+        return null;
+    }
+    
+    private String[] label_continuation_action(List<LRState> state_list){
+        /**
+        if A->E.aE ca[state] = a
+        if S->A$.  ca[state] = ACCEPT
+        if A->E.   ca[state] = production number;
+        */
+        return null;
+    }
+    
+    public static void main(String[] args) {
+        String symbols = "aaa";
+        for (String symbol : symbols.split("@")) {
+            System.out.println(symbol);
+        }
     }
     
 }
