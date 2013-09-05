@@ -48,11 +48,26 @@ public class Symbol implements ISymbol<LexerType> {
     
     @Override
     public int get_line() {
-        return this.yyline+1;
+        return this.yyline + 1;
     }
     
     @Override
     public int get_column() {
-        return this.yycolumn+1;
+        return this.yycolumn + 1;
+    }
+    
+    @Override
+    public int get_insert_cost() {
+        return type.get_insert_cost();
+    }
+    
+    @Override
+    public int get_delete_cost() {
+        return type.get_delete_cost();
+    }
+    
+    @Override
+    public ISymbol<LexerType> new_object(String name) {
+        return new Symbol(LexerType.valueOf(name), yyline, yycolumn);
     }
 }

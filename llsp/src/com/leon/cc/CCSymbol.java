@@ -48,11 +48,26 @@ public class CCSymbol implements ISymbol<CCType> {
     
     @Override
     public int get_line() {
-        return this.yyline+1;
+        return this.yyline + 1;
     }
     
     @Override
     public int get_column() {
-        return this.yycolumn+1;
+        return this.yycolumn + 1;
+    }
+    
+    @Override
+    public int get_insert_cost() {
+        return 0;
+    }
+    
+    @Override
+    public int get_delete_cost() {
+        return 0;
+    }
+    
+    @Override
+    public ISymbol<CCType> new_object(String type_name) {
+        return null;
     }
 }

@@ -12,7 +12,9 @@ import static com.leon.util.Utils.match_lhs;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,6 +39,7 @@ public class LR1 {
         Set<String>[] first_set = fill_first_set(g);
         List<LRState> label_list = build_label(g, first_set);
         int[][] go_to = build_goto1(g, first_set, label_list);
+        Continuation[] ca = label_continuation_action(label_list, g);
         ActionItem[][] action = build_action1(g, first_set, go_to, label_list);
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
@@ -45,6 +48,12 @@ public class LR1 {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
             if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
+                List<ISymbol<?>> suffix = new ArrayList<ISymbol<?>>();
+                suffix.add(t);
+                List<ISymbol<?>> insert = choose_validated_insert(stack, suffix, g, go_to, action, ca, t);
+                for (ISymbol<?> s : insert) {
+                    System.out.println("insert:" + s.get_type().toString());
+                }
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 break;
             }
@@ -73,7 +82,7 @@ public class LR1 {
         
     }
     
-    private LRState closure1(LRState state, Grammar g, Set<String>[] first_set) {
+    private LRState closure2(LRState state, Grammar g, Set<String>[] first_set) {
         int before_size = 0;
         int after_size = 0;
         List<LRTerm> list = new ArrayList<LRTerm>(state.terms);
@@ -99,8 +108,36 @@ public class LR1 {
             after_size = list.size();
         }
         while (before_size != after_size);
-        state.terms = new HashSet<LRTerm>(list);
+        state.terms = new LinkedHashSet<LRTerm>(list);
         return state;
+    }
+    
+    private LRState closure1(LRState state, Grammar g, Set<String>[] first_set) {
+        List<LRTerm> list = new ArrayList<LRTerm>(state.terms);
+        for (int i = 0; i < list.size(); i++) {
+            LRTerm term = list.get(i);
+            dfs(term, list, first_set, g);
+        }
+        state.terms = new LinkedHashSet<LRTerm>(list);
+        return state;
+    }
+    
+    private void dfs(LRTerm term, List<LRTerm> list, Set<String>[] first_set, Grammar g) {
+        if (term.p.rhs.length == term.dot) {
+            return;
+        }
+        String symbol = term.p.rhs[term.dot];
+        List<Production> p_list = match_lhs(symbol, g);
+        for (int j = 0; j < p_list.size(); j++) {
+            Set<String> firsts = first(compute_alpha(term), first_set, g);
+            for (String first : firsts) {
+                LRTerm new_term = new LRTerm(new LRCoreTerm(p_list.get(j), 0), first);
+                if (!list.contains(new_term)) {
+                    list.add(new_term);
+                    dfs(new_term, list, first_set, g);
+                }
+            }
+        }
     }
     
     private LRState goto1(LRState state, String symbol, Grammar g, Set<String>[] first_set) {
@@ -138,12 +175,39 @@ public class LR1 {
                 }
             }
         }
-        for (int i = 0; i < label_list.size(); i++) {
-            LRState state = label_list.get(i);
-            System.out.println("state i:" + i);
-            System.out.println(state.toString());
-        }
         return label_list;
+    }
+    
+    private Continuation[] label_continuation_action(List<LRState> state_list, Grammar g) {
+        Continuation[] c = new Continuation[state_list.size()];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = new Continuation();
+            LRState state = state_list.get(i);
+            for (LRTerm term : state.terms) {
+                if (term.p.rhs.length == term.dot) {
+                    if (term.p.rhs[term.dot - 1].equals(g.eof)) {
+                        c[i].type = ContinuationType.ACCEPT;
+                    }
+                    else {
+                        c[i].type = ContinuationType.PRODUCTION;
+                        c[i].p = term.p;
+                    }
+                    break;
+                }
+                else {
+                    String symbol = term.p.rhs[term.dot];
+                    if (is_terminal(symbol, g.terminals)) {
+                        c[i].type = ContinuationType.TERMINAL;
+                        c[i].symbol = symbol;
+                        break;
+                    }
+                    else {
+                        continue;
+                    }
+                }
+            }
+        }
+        return c;
     }
     
     private int[][] build_goto1(Grammar g, Set<String>[] first_set, List<LRState> label_list) {
@@ -288,47 +352,70 @@ public class LR1 {
         return true;
     }
     
-    private String choose_validated_insert(Stack<Integer> parse_stack, String prefix, Grammar g, int[][] go_to,
-                                           ActionItem[][] action) {
-        String[] terminals = g.terminals;
-        String insert = null;
+    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix, Grammar g,
+                                                     int[][] go_to, ActionItem[][] action, Continuation[] ca,
+                                                     final ISymbol<?> t) {
+        List<String> terminals = new ArrayList<String>(Arrays.asList(g.terminals));
+        List<ISymbol<?>> insert = new ArrayList<ISymbol<?>>();
         //sort by cost
-        Arrays.sort(terminals);
-        String continuation = get_continuation(parse_stack);
-        if (lr_validate(parse_stack, prefix, g, go_to, action)) {
+        Collections.sort(terminals, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                int x = t.new_object(o1).get_insert_cost();
+                int y = t.new_object(o2).get_insert_cost();
+                return (x < y) ? -1 : ((x == y) ? 0 : 1);
+            }
+        });
+        System.out.println(terminals);
+        List<ISymbol<?>> continuation = get_continuation(parse_stack, ca, g, go_to, t);
+        if (lr_validate(parse_stack, suffix, g, go_to, action)) {
             return null;
         }
-        for (int i = 0; i < terminals.length; i++) {
-            if (lr_validate(parse_stack, terminals[i], g, go_to, action)) {
-                insert = terminals[i];
+        for (int i = 0; i < terminals.size(); i++) {
+            List<ISymbol<?>> list = new ArrayList<ISymbol<?>>(suffix);
+            list.add(0, t.new_object(terminals.get(i)));
+            System.out.println("----------------------------");
+            for (ISymbol<?> s : list) {
+                System.out.println(s.get_type().toString());
+            }
+            if (lr_validate(parse_stack, list, g, go_to, action)) {
+                insert.add(t.new_object(terminals.get(i)));
                 break;
             }
         }
-        for (int i = 1; i < continuation.length(); i++) {
-            if (cost(continuation.substring(0, i)) >= cost(insert)) {
+        for (int i = 2; i < continuation.size(); i++) {
+            if (cost(get_continuation_range(continuation, 0, i), CostType.INSERT) >= cost(insert, CostType.INSERT)) {
                 return insert;
             }
-            if (lr_validate(parse_stack, continuation.substring(0, i), g, go_to, action)) {
-                return continuation.substring(0, i);
+            List<ISymbol<?>> list = get_continuation_range(continuation, 0, i);
+            list.addAll(suffix);
+            if (lr_validate(parse_stack, list, g, go_to, action)) {
+                return get_continuation_range(continuation, 0, i);
             }
         }
         return insert;
     }
     
-    private boolean lr_validate(Stack<Integer> parse_stack, String symbols, Grammar g, int[][] go_to,
+    private List<ISymbol<?>> get_continuation_range(List<ISymbol<?>> continuation, int from, int to) {
+        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
+        for (int i = from; i < to; i++) {
+            rs.add(continuation.get(i));
+        }
+        return rs;
+    }
+    
+    private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol<?>> strs, Grammar g, int[][] go_to,
                                 ActionItem[][] action) {
         Stack<Integer> temp_stack = parse_stack.copy();
-        //pop error state
-        temp_stack.pop();
-        String[] strs = symbols.split("@");
-        for (int i = 0; i < strs.length; i++) {
-            String symbol = strs[i];
+        int i = 0;
+        String symbol = strs.get(i).get_type().toString();
+        while (i < strs.size()) {
             int state = temp_stack.top();
             if (action[index(symbol, g.vocabulary)][state] == null) {
                 return false;
             }
             else if (action[index(symbol, g.vocabulary)][state].type == ActionType.A) {
-                if (i == strs.length - 1) {
+                if (i == strs.size() - 1) {
                     return true;
                 }
                 else {
@@ -337,11 +424,13 @@ public class LR1 {
             }
             else if (action[index(symbol, g.vocabulary)][state].type == ActionType.S) {
                 temp_stack.push(go_to[index(symbol, g.vocabulary)][state]);
-                continue;
+                i++;
+                if (i < strs.size()) {
+                    symbol = strs.get(i).get_type().toString();
+                }
             }
             else if (action[index(symbol, g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(symbol, g.vocabulary)][state].p;
-                System.out.println("reduce:" + p);
                 for (int j = 0; j < p.rhs.length; j++) {
                     temp_stack.pop();
                 }
@@ -349,11 +438,13 @@ public class LR1 {
                 temp_stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
             }
         }
-        
         return true;
     }
     
-    private void validated_lr_repair(String[] insert, int d, int v) {
+    private void validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> suffix, Grammar g, int[][] go_to,
+                                     ActionItem[][] action, Continuation[] ca, final ISymbol<?> t) {
+        
+        List<ISymbol<?>> insert = choose_validated_insert(parse_stack, suffix, g, go_to, action, ca, t);
         /**
          * 1.假删除D个Symbol直到有正确的后缀,计算代价cost(D)
          * 2.根据choose_validated_insert得到最小代价的插入Symbol,最小代价记做cost(Insert)
@@ -363,46 +454,42 @@ public class LR1 {
          */
     }
     
-    private int cost(String insert) {
-        // 计算代价
-        return 0;
-    }
-    
-    private String get_continuation(Stack<Integer> parse_stack) {
-          // 计算延拓
-        /**
-        String continuation = "";
-        
-        while(true){
-            if(ca[parse_stack.top()] == "ACCEPT"){
-                return null;
-            }else if(ca[parse_stack.top()] belongs to terminals){
-                continuation = continuation +"@"+ca[parse_stack.top()];
-                parse_stack.push(go_to[ca[parse_stack.top()]][parse_stack.top()]);
-            }else{
-                Production p = ca[parse_stack.top()];
-                parse_stack.pop(p.rhs.length);
-                parse_stack.push(go_to[p.lhs][parse_stack.top()]);
+    private int cost(List<ISymbol<?>> inserts, CostType type) {
+        if (type == CostType.INSERT) {
+            int total = 0;
+            for (int i = 0; i < inserts.size(); i++) {
+                total += inserts.get(i).get_insert_cost();
             }
+            return total;
         }
-        return continuation;
-        */
-        return null;
+        else {
+            int total = 0;
+            for (int i = 0; i < inserts.size(); i++) {
+                total += inserts.get(i).get_delete_cost();
+            }
+            return total;
+        }
     }
     
-    private String[] label_continuation_action(List<LRState> state_list){
-        /**
-        if A->E.aE ca[state] = a
-        if S->A$.  ca[state] = ACCEPT
-        if A->E.   ca[state] = production number;
-        */
-        return null;
-    }
-    
-    public static void main(String[] args) {
-        String symbols = "aaa";
-        for (String symbol : symbols.split("@")) {
-            System.out.println(symbol);
+    private List<ISymbol<?>> get_continuation(Stack<Integer> stack, Continuation[] ca, Grammar g, int[][] go_to,
+                                              ISymbol<?> t) {
+        List<ISymbol<?>> continuation = new ArrayList<ISymbol<?>>();
+        Stack<Integer> parse_stack = stack.copy();
+        while (true) {
+            if (ca[parse_stack.top()].type == ContinuationType.ACCEPT) {
+                return continuation;
+            }
+            else if (ca[parse_stack.top()].type == ContinuationType.TERMINAL) {
+                continuation.add(t.new_object(ca[parse_stack.top()].symbol));
+                parse_stack.push(go_to[index(ca[parse_stack.top()].symbol, g.vocabulary)][parse_stack.top()]);
+            }
+            else {
+                Production p = ca[parse_stack.top()].p;
+                for (int i = 0; i < p.rhs.length; i++) {
+                    parse_stack.pop();
+                }
+                parse_stack.push(go_to[index(p.lhs, g.vocabulary)][parse_stack.top()]);
+            }
         }
     }
     

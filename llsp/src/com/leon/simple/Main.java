@@ -35,22 +35,22 @@ public class Main {
     
     public static void main(String[] args) throws IOException {
         new Main().do_1_grammar();
-        new Main().do_2_grammar();
-        new Main().do_3_grammar();
-        new Main().do_4_grammar();
-        new Main().do_5_grammar();
-        new Main().do_6_grammar();
-        new Main().do_7_grammar();
-        new Main().do_8_grammar();
-        new Main().do_9_grammar();
-        new Main().do_10_grammar();
-        new Main().do_11_grammar();
-        new Main().do_12_grammar();
-        new Main().do_13_grammar();
-        new Main().do_14_grammar();
-        new Main().do_15_grammar();
-        new Main().do_16_grammar();
-        new Main().do_17_grammar();
+//        new Main().do_2_grammar();
+//        new Main().do_3_grammar();
+//        new Main().do_4_grammar();
+//        new Main().do_5_grammar();
+//        new Main().do_6_grammar();
+//        new Main().do_7_grammar();
+//        new Main().do_8_grammar();
+//        new Main().do_9_grammar();
+//        new Main().do_10_grammar();
+//        new Main().do_11_grammar();
+//        new Main().do_12_grammar();
+//        new Main().do_13_grammar();
+//        new Main().do_14_grammar();
+//        new Main().do_15_grammar();
+//        new Main().do_16_grammar();
+//        new Main().do_17_grammar();
     }
     
     public void do_1_grammar() throws IOException {
@@ -63,7 +63,7 @@ public class Main {
         list.add(new Production("P", new String[] { "NUM" }, "new P(\"$0\")"));
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
         Grammar g = new Grammar(list, "S");
-        IToken<LexerType> t = new Token(new StringReader("(2+3)*5"));
+        IToken<LexerType> t = new Token(new StringReader("(3+(4+))"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }

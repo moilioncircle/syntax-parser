@@ -8,6 +8,7 @@ package com.leon.util;
  */
 
 public interface ISymbol<T> {
+    
     public int get_line();
     
     public int get_column();
@@ -15,4 +16,10 @@ public interface ISymbol<T> {
     public T get_type();
     
     public Object get_value();
+    
+    public int get_insert_cost();
+    
+    public int get_delete_cost();
+    
+    public ISymbol<T> new_object(String type_name);
 }

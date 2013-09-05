@@ -2,8 +2,8 @@
 package com.leon.lr;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class LRState {
     
-    public Set<LRTerm> terms = new HashSet<LRTerm>();
+    public Set<LRTerm> terms = new LinkedHashSet<LRTerm>();
     
     @Override
     public int hashCode() {
@@ -68,8 +68,7 @@ public class LRState {
         }
     }
     
-    @Override
-    public String toString() {
+    public String toString1() {
         Map<LRCoreTerm, List<String>> mergeTerm = new LinkedHashMap<LRCoreTerm, List<String>>();
         for (LRTerm term : terms) {
             LRCoreTerm core = term.core_item;
@@ -86,5 +85,13 @@ public class LRState {
         }
         return sb.toString();
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (LRTerm term : terms) {
+            sb.append(term+"\n");
+        }
+        return sb.toString();
+    }
 }
