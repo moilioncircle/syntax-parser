@@ -455,6 +455,9 @@ public class LR1 {
     }
     
     private int cost(List<ISymbol<?>> inserts, CostType type) {
+        if(inserts.size() == 0){
+            return Integer.MAX_VALUE;
+        }
         if (type == CostType.INSERT) {
             int total = 0;
             for (int i = 0; i < inserts.size(); i++) {
