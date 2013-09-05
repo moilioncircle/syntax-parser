@@ -166,6 +166,8 @@ public class Utils {
                 break;
             }
         }
+        //sort by cost;
+        //TODO
         return set;
     }
     

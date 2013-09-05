@@ -63,7 +63,7 @@ public class Main {
         list.add(new Production("P", new String[] { "NUM" }, "new P(\"$0\")"));
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
         Grammar g = new Grammar(list, "S");
-        IToken<LexerType> t = new Token(new StringReader("(3+(4+))"));
+        IToken<LexerType> t = new Token(new StringReader("(3+(4+5)))"));
         LR1 lr = new LR1();
         lr.lr1_driver(g, t);
     }
