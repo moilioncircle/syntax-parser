@@ -681,5 +681,10 @@ public class Token implements IToken<LexerType> {
             }
         }
     }
+
+    @Override
+    public boolean has_next() {
+        return !zzAtEOF;
+    }
     
 }

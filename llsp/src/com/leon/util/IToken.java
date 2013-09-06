@@ -12,4 +12,6 @@ import java.io.IOException;
 public interface IToken<T> {
     
     public ISymbol<T> next_token() throws IOException;
+    
+    public boolean has_next();
 }

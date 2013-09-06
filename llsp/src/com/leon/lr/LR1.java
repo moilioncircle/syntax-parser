@@ -23,7 +23,6 @@ import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.util.ISymbol;
-import com.leon.util.IToken;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
 
@@ -35,7 +34,7 @@ import com.leon.util.Stack;
 
 public class LR1 {
     
-    public void lr1_driver(Grammar g, IToken<?> token) throws IOException {
+    public void lr1_driver(Grammar g, List<ISymbol<?>> token) throws IOException {
         Set<String>[] first_set = fill_first_set(g);
         List<LRState> label_list = build_label(g, first_set);
         int[][] go_to = build_goto1(g, first_set, label_list);
@@ -43,19 +42,23 @@ public class LR1 {
         ActionItem[][] action = build_action1(g, first_set, go_to, label_list);
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
-        ISymbol<?> t = token.next_token();
+        int index = 0;
+        ISymbol<?> t = token.get(index);
         while (true) {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
             if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
-                List<ISymbol<?>> suffix = new ArrayList<ISymbol<?>>();
-                suffix.add(t);
-                List<ISymbol<?>> insert = choose_validated_insert(stack, suffix, g, go_to, action, ca, t);
-                for (ISymbol<?> s : insert) {
-                    System.out.println("insert:" + s.get_type().toString());
-                }
+                Repair repair = validated_lr_repair(stack, token, index, g, go_to, action, ca, t);
+                System.out.println(repair);
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
-                break;
+                int delete_size = repair.delete_size;
+                List<ISymbol<?>> insert = repair.insert;
+                index = index+delete_size;
+                if(insert != null){
+                    token.addAll(index, insert);
+                }
+                t = token.get(index);
+                continue;
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
@@ -66,7 +69,8 @@ public class LR1 {
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
                 System.out.println("shift:" + action[index(t.get_type().toString(), g.vocabulary)][state].symbol);
-                t = token.next_token();
+                index++;
+                t = token.get(index);
             }
             else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t.get_type().toString(), g.vocabulary)][state].p;
@@ -359,6 +363,7 @@ public class LR1 {
         List<ISymbol<?>> insert = new ArrayList<ISymbol<?>>();
         //sort by cost
         Collections.sort(terminals, new Comparator<String>() {
+            
             @Override
             public int compare(String o1, String o2) {
                 int x = t.new_object(o1).get_insert_cost();
@@ -384,22 +389,23 @@ public class LR1 {
             }
         }
         for (int i = 2; i < continuation.size(); i++) {
-            if (cost(get_continuation_range(continuation, 0, i), CostType.INSERT) >= cost(insert, CostType.INSERT)) {
+            if (cost(get_range(continuation, 0, i), CostType.INSERT) >= cost(insert, CostType.INSERT)) {
                 return insert;
             }
-            List<ISymbol<?>> list = get_continuation_range(continuation, 0, i);
+            List<ISymbol<?>> list = get_range(continuation, 0, i);
             list.addAll(suffix);
             if (lr_validate(parse_stack, list, g, go_to, action)) {
-                return get_continuation_range(continuation, 0, i);
+                return get_range(continuation, 0, i);
             }
         }
+        System.out.println("choose_validated_insert:" + insert);
         return insert;
     }
     
-    private List<ISymbol<?>> get_continuation_range(List<ISymbol<?>> continuation, int from, int to) {
+    private List<ISymbol<?>> get_range(List<ISymbol<?>> symobls, int from, int to) {
         List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
         for (int i = from; i < to; i++) {
-            rs.add(continuation.get(i));
+            rs.add(symobls.get(i));
         }
         return rs;
     }
@@ -441,22 +447,59 @@ public class LR1 {
         return true;
     }
     
-    private void validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> suffix, Grammar g, int[][] go_to,
-                                     ActionItem[][] action, Continuation[] ca, final ISymbol<?> t) {
-        
-        List<ISymbol<?>> insert = choose_validated_insert(parse_stack, suffix, g, go_to, action, ca, t);
-        /**
-         * 1.假删除D个Symbol直到有正确的后缀,计算代价cost(D)
-         * 2.根据choose_validated_insert得到最小代价的插入Symbol,最小代价记做cost(Insert)
-         * 3.假插入2得到的Symbol并假删除D1个后续Symbol直到有正确的后缀,总代价cost(ID1) = cost(Insert)+cost(D1)
-         * 4.比较cost(D)与cost(ID1)来选择具体哪种策略
-         * 5.执行具体(删除)或(插入删除)操作修复错误
-         */
+    private Repair validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index, Grammar g,
+                                       int[][] go_to, ActionItem[][] action, Continuation[] ca, final ISymbol<?> t) {
+        int d = 0;
+        int v = 3;
+        List<ISymbol<?>> suffix = get_suffix(token, index);
+        List<ISymbol<?>> ins = new ArrayList<ISymbol<?>>();
+        for (int i = 0; i < suffix.size(); i++) {
+            System.out.println(i);
+            if (cost(delete(suffix, 0, i), CostType.DELETE) >= cost(ins, CostType.INSERT)
+                                                               + cost(delete(suffix, 0, d), CostType.DELETE)) {
+                break;
+            }
+            int len = Math.min(i + v, suffix.size());
+            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len), g, go_to, action,
+                    ca, t);
+            if (cost(insert, CostType.INSERT) + cost(delete(suffix, 0, i), CostType.DELETE) < cost(ins, CostType.INSERT)
+                                                                                              + cost(delete(suffix, 0,
+                                                                                                      d),
+                                                                                                      CostType.DELETE)) {
+                ins = insert;
+                d = i;
+            }
+        }
+        Repair r = new Repair();
+        r.delete_size = d;
+        r.insert = ins;
+        return r;
+    }
+    
+    private List<ISymbol<?>> get_suffix(List<ISymbol<?>> token, int index) {
+        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
+        for (int i = index; i < token.size(); i++) {
+            rs.add(token.get(i));
+        }
+        return rs;
+    }
+    
+    private List<ISymbol<?>> delete(List<ISymbol<?>> suffix, int from, int to) {
+        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
+        for (int i = from; i < to; i++) {
+            rs.add(suffix.get(i));
+        }
+        return rs;
     }
     
     private int cost(List<ISymbol<?>> inserts, CostType type) {
-        if(inserts.size() == 0){
-            return Integer.MAX_VALUE;
+        if (inserts == null) {
+            //why 0 because can parse by insert nothing;
+            return 0;
+        }
+        if (inserts.size() == 0) {
+            //why 1000000 because can not find any insert symbol;
+            return 1000000;
         }
         if (type == CostType.INSERT) {
             int total = 0;

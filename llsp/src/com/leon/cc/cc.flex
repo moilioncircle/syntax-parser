@@ -21,6 +21,11 @@ import com.leon.util.IToken;
     private ISymbol<CCType> symbol(CCType type, Object value) {
         return new CCSymbol(type, yyline, yycolumn, value);
     }
+
+    @Override
+    public boolean has_next() {
+        return !zzAtEOF;
+    }
 %}
 %eofval{ 
     return symbol(CCType.EOF);

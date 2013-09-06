@@ -9,6 +9,7 @@ import java.util.List;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.ProductionSet;
 import com.leon.lr.LR1;
+import com.leon.util.ISymbol;
 import com.leon.util.IToken;
 
 /**
@@ -52,9 +53,13 @@ public class CCGrammar {
         Grammar g = new CCGrammar().getGrammar();
         InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("test.g"), "UTF8");
         IToken<CCType> t = new CCToken(reader);
+        List<ISymbol<?>> list = new ArrayList<ISymbol<?>>();
+        while(t.has_next()){
+            list.add(t.next_token());
+        }
         LR1 lr1 = new LR1();
         long start = System.currentTimeMillis();
-        lr1.lr1_driver(g, t);
+        lr1.lr1_driver(g, list);
         long end = System.currentTimeMillis();
         System.out.println((end - start) + "");
     }

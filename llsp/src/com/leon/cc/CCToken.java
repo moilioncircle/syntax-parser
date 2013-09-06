@@ -921,5 +921,10 @@ public class CCToken implements IToken<CCType> {
             }
         }
     }
+
+    @Override
+    public boolean has_next() {
+        return !zzAtEOF;
+    }
     
 }
