@@ -53,8 +53,8 @@ public class LR1 {
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 int delete_size = repair.delete_size;
                 List<ISymbol<?>> insert = repair.insert;
-                index = index+delete_size;
-                if(insert != null){
+                index = index + delete_size;
+                if (insert != null) {
                     token.addAll(index, insert);
                 }
                 t = token.get(index);
@@ -402,14 +402,6 @@ public class LR1 {
         return insert;
     }
     
-    private List<ISymbol<?>> get_range(List<ISymbol<?>> symobls, int from, int to) {
-        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
-        for (int i = from; i < to; i++) {
-            rs.add(symobls.get(i));
-        }
-        return rs;
-    }
-    
     private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol<?>> strs, Grammar g, int[][] go_to,
                                 ActionItem[][] action) {
         Stack<Integer> temp_stack = parse_stack.copy();
@@ -451,21 +443,19 @@ public class LR1 {
                                        int[][] go_to, ActionItem[][] action, Continuation[] ca, final ISymbol<?> t) {
         int d = 0;
         int v = 3;
-        List<ISymbol<?>> suffix = get_suffix(token, index);
+        List<ISymbol<?>> suffix = get_range(token, index, token.size());
         List<ISymbol<?>> ins = new ArrayList<ISymbol<?>>();
         for (int i = 0; i < suffix.size(); i++) {
             System.out.println(i);
-            if (cost(delete(suffix, 0, i), CostType.DELETE) >= cost(ins, CostType.INSERT)
-                                                               + cost(delete(suffix, 0, d), CostType.DELETE)) {
+            if (cost(get_range(suffix, 0, i), CostType.DELETE) >= cost(ins, CostType.INSERT)
+                                                                  + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 break;
             }
             int len = Math.min(i + v, suffix.size());
             List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len), g, go_to, action,
                     ca, t);
-            if (cost(insert, CostType.INSERT) + cost(delete(suffix, 0, i), CostType.DELETE) < cost(ins, CostType.INSERT)
-                                                                                              + cost(delete(suffix, 0,
-                                                                                                      d),
-                                                                                                      CostType.DELETE)) {
+            if (cost(insert, CostType.INSERT) + cost(get_range(suffix, 0, i), CostType.DELETE) < cost(ins,
+                    CostType.INSERT) + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 ins = insert;
                 d = i;
             }
@@ -476,18 +466,10 @@ public class LR1 {
         return r;
     }
     
-    private List<ISymbol<?>> get_suffix(List<ISymbol<?>> token, int index) {
-        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
-        for (int i = index; i < token.size(); i++) {
-            rs.add(token.get(i));
-        }
-        return rs;
-    }
-    
-    private List<ISymbol<?>> delete(List<ISymbol<?>> suffix, int from, int to) {
+    private List<ISymbol<?>> get_range(List<ISymbol<?>> symobls, int from, int to) {
         List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
         for (int i = from; i < to; i++) {
-            rs.add(suffix.get(i));
+            rs.add(symobls.get(i));
         }
         return rs;
     }
