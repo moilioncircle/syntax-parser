@@ -22,6 +22,7 @@ import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.Terminal;
+import com.leon.util.Constant;
 import com.leon.util.FakeSymbol;
 import com.leon.util.ISymbol;
 import com.leon.util.Queue;
@@ -451,12 +452,12 @@ public class LR1 {
     
     private int cost(List<ISymbol> inserts, CostType type) {
         if (inserts == null) {
-            //why 0 because can parse by insert nothing;
-            return 0;
+            //why min_cost because can parse by insert nothing;
+            return Constant.MIN_COST;
         }
         if (inserts.size() == 0) {
-            //why 1000000 because can not find any insert symbol;
-            return 1000000;
+            //why max_cost because can not find any insert symbol;
+            return Constant.MAX_COST;
         }
         if (type == CostType.INSERT) {
             int total = 0;
