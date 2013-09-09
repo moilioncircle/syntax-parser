@@ -43,21 +43,21 @@ OctDigit = [0-7]
 %state ACTION,STRING,CHARLITERAL
 %%
 <YYINITIAL> {
-    "%%"                            { return symbol(CCType.MARK); }
-    ";"                             { return symbol(CCType.SEMI); }
-    "%name"                         { return symbol(CCType.NAME); }
-    ":"                             { return symbol(CCType.COLON); }
-    "%left"                         { return symbol(CCType.LEFT); }
-    "%right"                        { return symbol(CCType.RIGHT); }
-    "%nonassoc"                     { return symbol(CCType.NONASSOC); }
-    "%binary"                       { return symbol(CCType.BINARY); }
-    "%prec"                         { return symbol(CCType.PREC); }
-    "%start"                        { return symbol(CCType.START); }
-    ","                             { return symbol(CCType.COMMA); }
-    "="                             { return symbol(CCType.ASSIGN); }
-    "["                             { return symbol(CCType.LBRACKET); }
-    "]"                             { return symbol(CCType.RBRACKET); }
-    "|"                             { return symbol(CCType.OR); }
+    "%%"                            { return symbol(CCType.MARK,yytext()); }
+    ";"                             { return symbol(CCType.SEMI,yytext()); }
+    "%name"                         { return symbol(CCType.NAME,yytext()); }
+    ":"                             { return symbol(CCType.COLON,yytext()); }
+    "%left"                         { return symbol(CCType.LEFT,yytext()); }
+    "%right"                        { return symbol(CCType.RIGHT,yytext()); }
+    "%nonassoc"                     { return symbol(CCType.NONASSOC,yytext()); }
+    "%binary"                       { return symbol(CCType.BINARY,yytext()); }
+    "%prec"                         { return symbol(CCType.PREC,yytext()); }
+    "%start"                        { return symbol(CCType.START,yytext()); }
+    ","                             { return symbol(CCType.COMMA,yytext()); }
+    "="                             { return symbol(CCType.ASSIGN,yytext()); }
+    "["                             { return symbol(CCType.LBRACKET,yytext()); }
+    "]"                             { return symbol(CCType.RBRACKET,yytext()); }
+    "|"                             { return symbol(CCType.OR,yytext()); }
     {NUM}                           { return symbol(CCType.NUM,new Integer(yytext())); }
     {TOKEN}                         { return symbol(CCType.TOKEN,yytext()); }
     {WhiteSpace}                    {/* SKIP */}

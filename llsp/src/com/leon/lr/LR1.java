@@ -59,7 +59,7 @@ public class LR1 {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
             if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
-                Repair repair = validated_lr_repair(stack, token, index, t);
+                Repair repair = validated_lr_repair(stack, token, index,t);
                 System.out.println(repair);
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 int delete_size = repair.delete_size;
@@ -335,8 +335,7 @@ public class LR1 {
         return true;
     }
     
-    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix,
-                                                     final ISymbol<?> t) {
+    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix,final ISymbol<?> t) {
         List<String> terminals = new ArrayList<String>(Arrays.asList(g.terminals));
         List<ISymbol<?>> insert = new ArrayList<ISymbol<?>>();
         //sort by cost
@@ -350,8 +349,8 @@ public class LR1 {
             }
         });
         System.out.println(terminals);
-        List<ISymbol<?>> continuation = get_continuation(parse_stack, t);
-        if (lr_validate(parse_stack, suffix, g, go_to, action)) {
+        List<ISymbol<?>> continuation = get_continuation(parse_stack,t);
+        if (lr_validate(parse_stack, suffix)) {
             return null;
         }
         for (int i = 0; i < terminals.size(); i++) {
@@ -361,7 +360,7 @@ public class LR1 {
             for (ISymbol<?> s : list) {
                 System.out.println(s.get_type().toString());
             }
-            if (lr_validate(parse_stack, list, g, go_to, action)) {
+            if (lr_validate(parse_stack, list)) {
                 insert.add(t.new_object(terminals.get(i)));
                 break;
             }
@@ -372,7 +371,7 @@ public class LR1 {
             }
             List<ISymbol<?>> list = get_range(continuation, 0, i);
             list.addAll(suffix);
-            if (lr_validate(parse_stack, list, g, go_to, action)) {
+            if (lr_validate(parse_stack, list)) {
                 return get_range(continuation, 0, i);
             }
         }
@@ -380,8 +379,7 @@ public class LR1 {
         return insert;
     }
     
-    private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol<?>> strs, Grammar g, int[][] go_to,
-                                ActionItem[][] action) {
+    private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol<?>> strs) {
         Stack<Integer> temp_stack = parse_stack.copy();
         int i = 0;
         String symbol = strs.get(i).get_type().toString();
@@ -418,7 +416,7 @@ public class LR1 {
     }
     
     private Repair
-            validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index, final ISymbol<?> t) {
+            validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index,ISymbol<?> t) {
         int d = 0;
         int v = 3;
         List<ISymbol<?>> suffix = get_range(token, index, token.size());
@@ -430,7 +428,7 @@ public class LR1 {
                 break;
             }
             int len = Math.min(i + v, suffix.size());
-            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len), t);
+            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len),t);
             if (cost(insert, CostType.INSERT) + cost(get_range(suffix, 0, i), CostType.DELETE) < cost(ins,
                     CostType.INSERT) + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 ins = insert;
@@ -476,7 +474,7 @@ public class LR1 {
         }
     }
     
-    private List<ISymbol<?>> get_continuation(Stack<Integer> stack, ISymbol<?> t) {
+    private List<ISymbol<?>> get_continuation(Stack<Integer> stack,ISymbol<?> t) {
         List<ISymbol<?>> continuation = new ArrayList<ISymbol<?>>();
         Stack<Integer> parse_stack = stack.copy();
         while (true) {
