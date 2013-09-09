@@ -65,12 +65,12 @@ public class Main {
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
         Grammar g = new Grammar(list, "S");
         IToken<LexerType> t = new Token(new StringReader(")3+(4+"));
-        LR1 lr = new LR1();
+        LR1 lr = new LR1(g);
         List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
         while(t.has_next()){
             ss.add(t.next_token());
         }
-        lr.lr1_driver(g, ss);
+        lr.lr1_driver(ss);
     }
     
     public void do_2_grammar() throws IOException {
@@ -80,12 +80,12 @@ public class Main {
         list.add(new Production("E", new String[] {}));
         Grammar g = new Grammar(list, "S");
         IToken<LexerType> t = new Token(new StringReader(""));
-        LR1 lr = new LR1();
+        LR1 lr = new LR1(g);
         List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
         while(t.has_next()){
             ss.add(t.next_token());
         }
-        lr.lr1_driver(g, ss);
+        lr.lr1_driver(ss);
     }
     
     public void do_3_grammar() throws IOException {
@@ -391,12 +391,12 @@ public class Main {
         list.add(new Production("V", new String[] { "TIMES", "E" }));
         Grammar g = new Grammar(list, "K");
         IToken<LexerType> t = new Token(new StringReader("x:=*x"));
-        LR1 lr = new LR1();
+        LR1 lr = new LR1(g);
         List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
         while(t.has_next()){
             ss.add(t.next_token());
         }
-        lr.lr1_driver(g, ss);
+        lr.lr1_driver(ss);
     }
     
     public void do_17_grammar() throws IOException {
@@ -415,11 +415,11 @@ public class Main {
         list.add(new Production("E", new String[] { "MINUS", "NUM" },new Prec("UMINUS")));
         Grammar g = new Grammar(list, "S", assoc_list);
         IToken<LexerType> t = new Token(new StringReader("3-5*-4/3"));
-        LR1 lr = new LR1();
+        LR1 lr = new LR1(g);
         List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
         while(t.has_next()){
             ss.add(t.next_token());
         }
-        lr.lr1_driver(g, ss);
+        lr.lr1_driver(ss);
     }
 }

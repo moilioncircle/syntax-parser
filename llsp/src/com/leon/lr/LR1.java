@@ -34,12 +34,23 @@ import com.leon.util.Stack;
 
 public class LR1 {
     
-    public void lr1_driver(Grammar g, List<ISymbol<?>> token) throws IOException {
-        Set<String>[] first_set = fill_first_set(g);
-        List<LRState> label_list = build_label(g, first_set);
-        int[][] go_to = build_goto1(g, first_set, label_list);
-        Continuation[] ca = label_continuation_action(label_list, g);
-        ActionItem[][] action = build_action1(g, first_set, go_to, label_list);
+    private Grammar        g;
+    private Set<String>[]  first_set;
+    private List<LRState>  label_list;
+    private int[][]        go_to;
+    private Continuation[] ca;
+    private ActionItem[][] action;
+    
+    public LR1(Grammar g) {
+        this.g = g;
+        first_set = fill_first_set(this.g);
+        label_list = build_label();
+        go_to = build_goto1();
+        ca = label_continuation_action();
+        build_action1();
+    }
+    
+    public void lr1_driver(List<ISymbol<?>> token) throws IOException {
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
         int index = 0;
@@ -48,7 +59,7 @@ public class LR1 {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
             if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
-                Repair repair = validated_lr_repair(stack, token, index, g, go_to, action, ca, t);
+                Repair repair = validated_lr_repair(stack, token, index, t);
                 System.out.println(repair);
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 int delete_size = repair.delete_size;
@@ -84,36 +95,6 @@ public class LR1 {
             System.out.println(stack);
         }
         
-    }
-    
-    private LRState closure2(LRState state, Grammar g, Set<String>[] first_set) {
-        int before_size = 0;
-        int after_size = 0;
-        List<LRTerm> list = new ArrayList<LRTerm>(state.terms);
-        do {
-            before_size = list.size();
-            for (int i = 0; i < list.size(); i++) {
-                LRTerm term = list.get(i);
-                if (term.p.rhs.length == term.dot) {
-                    continue;
-                }
-                String symbol = term.p.rhs[term.dot];
-                List<Production> p_list = match_lhs(symbol, g);
-                for (int j = 0; j < p_list.size(); j++) {
-                    Set<String> firsts = first(compute_alpha(term), first_set, g);
-                    for (String first : firsts) {
-                        LRTerm new_term = new LRTerm(new LRCoreTerm(p_list.get(j), 0), first);
-                        if (!list.contains(new_term)) {
-                            list.add(new_term);
-                        }
-                    }
-                }
-            }
-            after_size = list.size();
-        }
-        while (before_size != after_size);
-        state.terms = new LinkedHashSet<LRTerm>(list);
-        return state;
     }
     
     private LRState closure1(LRState state, Grammar g, Set<String>[] first_set) {
@@ -158,7 +139,7 @@ public class LR1 {
         return closure1(result, g, first_set);
     }
     
-    private List<LRState> build_label(Grammar g, Set<String>[] first_set) {
+    private List<LRState> build_label() {
         LRTerm term = new LRTerm(new LRCoreTerm(g.start_production, 0), null);
         LRState start = new LRState();
         start.terms.add(term);
@@ -182,11 +163,11 @@ public class LR1 {
         return label_list;
     }
     
-    private Continuation[] label_continuation_action(List<LRState> state_list, Grammar g) {
-        Continuation[] c = new Continuation[state_list.size()];
+    private Continuation[] label_continuation_action() {
+        Continuation[] c = new Continuation[label_list.size()];
         for (int i = 0; i < c.length; i++) {
             c[i] = new Continuation();
-            LRState state = state_list.get(i);
+            LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
                 if (term.p.rhs.length == term.dot) {
                     if (term.p.rhs[term.dot - 1].equals(g.eof)) {
@@ -214,7 +195,7 @@ public class LR1 {
         return c;
     }
     
-    private int[][] build_goto1(Grammar g, Set<String>[] first_set, List<LRState> label_list) {
+    private int[][] build_goto1() {
         int[][] go_to = new int[g.vocabulary.length][label_list.size()];
         // initialize go_to table;
         for (int i = 0; i < go_to.length; i++) {
@@ -234,59 +215,58 @@ public class LR1 {
         return go_to;
     }
     
-    private ActionItem[][] build_action1(Grammar g, Set<String>[] first_set, int[][] go_to, List<LRState> label_list) {
-        ActionItem[][] m = new ActionItem[g.vocabulary.length][label_list.size()];
+    private void build_action1() {
+        this.action = new ActionItem[g.vocabulary.length][label_list.size()];
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
                 if (term.p.rhs.length != term.dot) {
-                    compute_shift(g, go_to, m, i, term);
+                    compute_shift(i, term);
                 }
                 else {
-                    compute_reduce(g, m, i, term);
+                    compute_reduce(i, term);
                 }
             }
         }
-        return m;
     }
     
-    private void compute_reduce(Grammar g, ActionItem[][] m, int i, LRTerm term) {
+    private void compute_reduce(int i, LRTerm term) {
         if (term.look_ahead != null) {
-            ActionItem ai = m[index(term.look_ahead, g.vocabulary)][i];
+            ActionItem ai = action[index(term.look_ahead, g.vocabulary)][i];
             if (ai != null) {
                 if (ai.type == ActionType.S) {
-                    if (!resolveShiftReduceConflict(m, term.look_ahead, i, term.p, g)) {
+                    if (!resolveShiftReduceConflict(term.look_ahead, i, term.p)) {
                         System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + term.look_ahead
                                            + ";Reduce: " + term.p + ";");
                     }
                 }
                 else if (ai.type == ActionType.R) {
-                    resolveReduceReduceConflict(m, term.look_ahead, i, ai.p, term.p, g);
+                    resolveReduceReduceConflict(term.look_ahead, i, ai.p, term.p);
                 }
             }
             else {
-                m[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p, term.look_ahead);
+                action[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p, term.look_ahead);
             }
         }
     }
     
-    private void compute_shift(Grammar g, int[][] go_to, ActionItem[][] m, int i, LRTerm term) {
+    private void compute_shift(int i, LRTerm term) {
         String symbol = term.p.rhs[term.dot];
         if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
             if (!symbol.equals(g.eof)) {
-                ActionItem ai = m[index(symbol, g.vocabulary)][i];
+                ActionItem ai = action[index(symbol, g.vocabulary)][i];
                 if (ai != null && ai.type == ActionType.R) {
-                    if (!resolveShiftReduceConflict(m, symbol, i, ai.p, g)) {
+                    if (!resolveShiftReduceConflict(symbol, i, ai.p)) {
                         System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + symbol
                                            + ";Reduce: " + ai.p + ";");
                     }
                 }
                 else {
-                    m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
+                    action[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
                 }
             }
             else {
-                m[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
+                action[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
             }
         }
     }
@@ -311,7 +291,7 @@ public class LR1 {
         return new_array;
     }
     
-    private boolean resolveShiftReduceConflict(ActionItem[][] m, String symbol, int state, Production p, Grammar g) {
+    private boolean resolveShiftReduceConflict(String symbol, int state, Production p) {
         Associativity association;
         Assoc symbol_assoc = get_symbol_assoc(symbol, g.assoc_list);
         Assoc production_assoc = get_production_assoc(p, g.assoc_list, g.terminals);
@@ -335,29 +315,27 @@ public class LR1 {
                 return false;
             case LEFT:
                 //reduce;
-                m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+                action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
                 break;
             
             case RIGHT:
                 //shift;
-                m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.S, p, symbol);
+                action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.S, p, symbol);
                 break;
         }
         return true;
         
     }
     
-    private boolean resolveReduceReduceConflict(ActionItem[][] m, String symbol, int state, Production p1,
-                                                Production p2, Grammar g) {
+    private boolean resolveReduceReduceConflict(String symbol, int state, Production p1, Production p2) {
         int index_p1 = g.productions.indexOf(p1);
         int index_p2 = g.productions.indexOf(p2);
         Production p = index_p1 > index_p2 ? p1 : p2;
-        m[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+        action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
         return true;
     }
     
-    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix, Grammar g,
-                                                     int[][] go_to, ActionItem[][] action, Continuation[] ca,
+    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix,
                                                      final ISymbol<?> t) {
         List<String> terminals = new ArrayList<String>(Arrays.asList(g.terminals));
         List<ISymbol<?>> insert = new ArrayList<ISymbol<?>>();
@@ -372,7 +350,7 @@ public class LR1 {
             }
         });
         System.out.println(terminals);
-        List<ISymbol<?>> continuation = get_continuation(parse_stack, ca, g, go_to, t);
+        List<ISymbol<?>> continuation = get_continuation(parse_stack, t);
         if (lr_validate(parse_stack, suffix, g, go_to, action)) {
             return null;
         }
@@ -439,8 +417,8 @@ public class LR1 {
         return true;
     }
     
-    private Repair validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index, Grammar g,
-                                       int[][] go_to, ActionItem[][] action, Continuation[] ca, final ISymbol<?> t) {
+    private Repair
+            validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index, final ISymbol<?> t) {
         int d = 0;
         int v = 3;
         List<ISymbol<?>> suffix = get_range(token, index, token.size());
@@ -452,8 +430,7 @@ public class LR1 {
                 break;
             }
             int len = Math.min(i + v, suffix.size());
-            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len), g, go_to, action,
-                    ca, t);
+            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len), t);
             if (cost(insert, CostType.INSERT) + cost(get_range(suffix, 0, i), CostType.DELETE) < cost(ins,
                     CostType.INSERT) + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 ins = insert;
@@ -499,8 +476,7 @@ public class LR1 {
         }
     }
     
-    private List<ISymbol<?>> get_continuation(Stack<Integer> stack, Continuation[] ca, Grammar g, int[][] go_to,
-                                              ISymbol<?> t) {
+    private List<ISymbol<?>> get_continuation(Stack<Integer> stack, ISymbol<?> t) {
         List<ISymbol<?>> continuation = new ArrayList<ISymbol<?>>();
         Stack<Integer> parse_stack = stack.copy();
         while (true) {
