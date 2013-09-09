@@ -7,19 +7,13 @@ package com.leon.util;
  * @see :
  */
 
-public interface ISymbol<T> {
+public interface ISymbol {
     
     public int get_line();
     
     public int get_column();
     
-    public T get_type();
-    
     public Object get_value();
     
-    public int get_insert_cost();
-    
-    public int get_delete_cost();
-    
-    public ISymbol<T> new_object(String type_name);
+    public String get_type_name();
 }

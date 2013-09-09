@@ -18,7 +18,7 @@ public class CST {
     
     public CSTNode root;
     
-    public CST(IToken<?> token, Grammar g) throws IOException {
+    public CST(IToken token, Grammar g) throws IOException {
         LL1 ll1 = new LL1();
         int[][] m = ll1.predict_table(g);
         this.root = ll1.ll1_driver(g, m, token);

@@ -11,7 +11,6 @@ import static com.leon.util.Utils.match_lhs;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -22,6 +21,8 @@ import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
+import com.leon.grammar.Terminal;
+import com.leon.util.FakeSymbol;
 import com.leon.util.ISymbol;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
@@ -50,20 +51,20 @@ public class LR1 {
         build_action1();
     }
     
-    public void lr1_driver(List<ISymbol<?>> token) throws IOException {
+    public void lr1_driver(List<ISymbol> token) throws IOException {
         Stack<Integer> stack = new Stack<Integer>();
         stack.push(0);
         int index = 0;
-        ISymbol<?> t = token.get(index);
+        ISymbol t = token.get(index);
         while (true) {
             int state = stack.top();
             System.out.println("state:" + state + ",token:'" + t + "'");
-            if (action[index(t.get_type().toString(), g.vocabulary)][state] == null) {
-                Repair repair = validated_lr_repair(stack, token, index,t);
+            if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
+                Repair repair = validated_lr_repair(stack, token, index);
                 System.out.println(repair);
                 System.out.println("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 int delete_size = repair.delete_size;
-                List<ISymbol<?>> insert = repair.insert;
+                List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
                 if (insert != null) {
                     token.addAll(index, insert);
@@ -71,20 +72,20 @@ public class LR1 {
                 t = token.get(index);
                 continue;
             }
-            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.A) {
-                stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
+            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.A) {
+                stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
                 System.out.println("accecped");
                 System.out.println(stack);
                 break;
             }
-            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.S) {
-                stack.push(go_to[index(t.get_type().toString(), g.vocabulary)][state]);
-                System.out.println("shift:" + action[index(t.get_type().toString(), g.vocabulary)][state].symbol);
+            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.S) {
+                stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
+                System.out.println("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol);
                 index++;
                 t = token.get(index);
             }
-            else if (action[index(t.get_type().toString(), g.vocabulary)][state].type == ActionType.R) {
-                Production p = action[index(t.get_type().toString(), g.vocabulary)][state].p;
+            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.R) {
+                Production p = action[index(t.get_type_name(), g.vocabulary)][state].p;
                 System.out.println("reduce:" + p);
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
@@ -335,33 +336,33 @@ public class LR1 {
         return true;
     }
     
-    private List<ISymbol<?>> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol<?>> suffix,final ISymbol<?> t) {
-        List<String> terminals = new ArrayList<String>(Arrays.asList(g.terminals));
-        List<ISymbol<?>> insert = new ArrayList<ISymbol<?>>();
+    private List<ISymbol> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol> suffix) {
+        List<Terminal> terminals = g.terminals_list;
+        List<ISymbol> insert = new ArrayList<ISymbol>();
         //sort by cost
-        Collections.sort(terminals, new Comparator<String>() {
+        Collections.sort(terminals, new Comparator<Terminal>() {
             
             @Override
-            public int compare(String o1, String o2) {
-                int x = t.new_object(o1).get_insert_cost();
-                int y = t.new_object(o2).get_insert_cost();
+            public int compare(Terminal o1, Terminal o2) {
+                int x = o1.insert_cost;
+                int y = o2.insert_cost;
                 return (x < y) ? -1 : ((x == y) ? 0 : 1);
             }
         });
         System.out.println(terminals);
-        List<ISymbol<?>> continuation = get_continuation(parse_stack,t);
+        List<ISymbol> continuation = get_continuation(parse_stack);
         if (lr_validate(parse_stack, suffix)) {
             return null;
         }
         for (int i = 0; i < terminals.size(); i++) {
-            List<ISymbol<?>> list = new ArrayList<ISymbol<?>>(suffix);
-            list.add(0, t.new_object(terminals.get(i)));
+            List<ISymbol> list = new ArrayList<ISymbol>(suffix);
+            list.add(0, new FakeSymbol(terminals.get(i).name));
             System.out.println("----------------------------");
-            for (ISymbol<?> s : list) {
-                System.out.println(s.get_type().toString());
+            for (ISymbol s : list) {
+                System.out.println(s.get_type_name());
             }
             if (lr_validate(parse_stack, list)) {
-                insert.add(t.new_object(terminals.get(i)));
+                insert.add(new FakeSymbol(terminals.get(i).name));
                 break;
             }
         }
@@ -369,7 +370,7 @@ public class LR1 {
             if (cost(get_range(continuation, 0, i), CostType.INSERT) >= cost(insert, CostType.INSERT)) {
                 return insert;
             }
-            List<ISymbol<?>> list = get_range(continuation, 0, i);
+            List<ISymbol> list = get_range(continuation, 0, i);
             list.addAll(suffix);
             if (lr_validate(parse_stack, list)) {
                 return get_range(continuation, 0, i);
@@ -379,10 +380,10 @@ public class LR1 {
         return insert;
     }
     
-    private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol<?>> strs) {
+    private boolean lr_validate(Stack<Integer> parse_stack, List<ISymbol> strs) {
         Stack<Integer> temp_stack = parse_stack.copy();
         int i = 0;
-        String symbol = strs.get(i).get_type().toString();
+        String symbol = strs.get(i).get_type_name();
         while (i < strs.size()) {
             int state = temp_stack.top();
             if (action[index(symbol, g.vocabulary)][state] == null) {
@@ -400,7 +401,7 @@ public class LR1 {
                 temp_stack.push(go_to[index(symbol, g.vocabulary)][state]);
                 i++;
                 if (i < strs.size()) {
-                    symbol = strs.get(i).get_type().toString();
+                    symbol = strs.get(i).get_type_name();
                 }
             }
             else if (action[index(symbol, g.vocabulary)][state].type == ActionType.R) {
@@ -415,12 +416,11 @@ public class LR1 {
         return true;
     }
     
-    private Repair
-            validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol<?>> token, int index,ISymbol<?> t) {
+    private Repair validated_lr_repair(Stack<Integer> parse_stack, List<ISymbol> token, int index) {
         int d = 0;
         int v = 3;
-        List<ISymbol<?>> suffix = get_range(token, index, token.size());
-        List<ISymbol<?>> ins = new ArrayList<ISymbol<?>>();
+        List<ISymbol> suffix = get_range(token, index, token.size());
+        List<ISymbol> ins = new ArrayList<ISymbol>();
         for (int i = 0; i < suffix.size(); i++) {
             System.out.println(i);
             if (cost(get_range(suffix, 0, i), CostType.DELETE) >= cost(ins, CostType.INSERT)
@@ -428,7 +428,7 @@ public class LR1 {
                 break;
             }
             int len = Math.min(i + v, suffix.size());
-            List<ISymbol<?>> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len),t);
+            List<ISymbol> insert = choose_validated_insert(parse_stack, get_range(suffix, i, len));
             if (cost(insert, CostType.INSERT) + cost(get_range(suffix, 0, i), CostType.DELETE) < cost(ins,
                     CostType.INSERT) + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 ins = insert;
@@ -441,15 +441,15 @@ public class LR1 {
         return r;
     }
     
-    private List<ISymbol<?>> get_range(List<ISymbol<?>> symobls, int from, int to) {
-        List<ISymbol<?>> rs = new ArrayList<ISymbol<?>>();
+    private List<ISymbol> get_range(List<ISymbol> symobls, int from, int to) {
+        List<ISymbol> rs = new ArrayList<ISymbol>();
         for (int i = from; i < to; i++) {
             rs.add(symobls.get(i));
         }
         return rs;
     }
     
-    private int cost(List<ISymbol<?>> inserts, CostType type) {
+    private int cost(List<ISymbol> inserts, CostType type) {
         if (inserts == null) {
             //why 0 because can parse by insert nothing;
             return 0;
@@ -461,28 +461,28 @@ public class LR1 {
         if (type == CostType.INSERT) {
             int total = 0;
             for (int i = 0; i < inserts.size(); i++) {
-                total += inserts.get(i).get_insert_cost();
+                total += g.get_terminal_by_name(inserts.get(i).get_type_name()).insert_cost;
             }
             return total;
         }
         else {
             int total = 0;
             for (int i = 0; i < inserts.size(); i++) {
-                total += inserts.get(i).get_delete_cost();
+                total += g.get_terminal_by_name(inserts.get(i).get_type_name()).delete_cost;
             }
             return total;
         }
     }
     
-    private List<ISymbol<?>> get_continuation(Stack<Integer> stack,ISymbol<?> t) {
-        List<ISymbol<?>> continuation = new ArrayList<ISymbol<?>>();
+    private List<ISymbol> get_continuation(Stack<Integer> stack) {
+        List<ISymbol> continuation = new ArrayList<ISymbol>();
         Stack<Integer> parse_stack = stack.copy();
         while (true) {
             if (ca[parse_stack.top()].type == ContinuationType.ACCEPT) {
                 return continuation;
             }
             else if (ca[parse_stack.top()].type == ContinuationType.TERMINAL) {
-                continuation.add(t.new_object(ca[parse_stack.top()].symbol));
+                continuation.add(new FakeSymbol(ca[parse_stack.top()].symbol));
                 parse_stack.push(go_to[index(ca[parse_stack.top()].symbol, g.vocabulary)][parse_stack.top()]);
             }
             else {

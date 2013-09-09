@@ -1,4 +1,4 @@
-%name : EOF;
+%name : EOF 1 2;
 %start : program;
 %left PLUS,MINUS;
 %left TIMES,DIVIDE;

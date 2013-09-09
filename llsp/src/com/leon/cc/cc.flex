@@ -1,6 +1,5 @@
 package com.leon.cc;
 
-import com.leon.cc.CCType;
 import com.leon.cc.CCSymbol;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
@@ -8,17 +7,17 @@ import com.leon.util.IToken;
 %public
 %class CCToken
 %unicode
-%implements IToken<CCType>
+%implements IToken
 %function next_token
-%type ISymbol<CCType>
+%type ISymbol
 %{
     StringBuilder action = new StringBuilder();
     StringBuilder string = new StringBuilder();
-    private ISymbol<CCType> symbol(CCType type) {
+    private ISymbol symbol(String type) {
         return new CCSymbol(type, yyline, yycolumn);
     }
     
-    private ISymbol<CCType> symbol(CCType type, Object value) {
+    private ISymbol symbol(String type, Object value) {
         return new CCSymbol(type, yyline, yycolumn, value);
     }
 
@@ -28,7 +27,7 @@ import com.leon.util.IToken;
     }
 %}
 %eofval{ 
-    return symbol(CCType.EOF);
+    return symbol("EOF");
 %eofval} 
 %eofclose 
 %line
@@ -43,30 +42,30 @@ OctDigit = [0-7]
 %state ACTION,STRING,CHARLITERAL
 %%
 <YYINITIAL> {
-    "%%"                            { return symbol(CCType.MARK,yytext()); }
-    ";"                             { return symbol(CCType.SEMI,yytext()); }
-    "%name"                         { return symbol(CCType.NAME,yytext()); }
-    ":"                             { return symbol(CCType.COLON,yytext()); }
-    "%left"                         { return symbol(CCType.LEFT,yytext()); }
-    "%right"                        { return symbol(CCType.RIGHT,yytext()); }
-    "%nonassoc"                     { return symbol(CCType.NONASSOC,yytext()); }
-    "%binary"                       { return symbol(CCType.BINARY,yytext()); }
-    "%prec"                         { return symbol(CCType.PREC,yytext()); }
-    "%start"                        { return symbol(CCType.START,yytext()); }
-    ","                             { return symbol(CCType.COMMA,yytext()); }
-    "="                             { return symbol(CCType.ASSIGN,yytext()); }
-    "["                             { return symbol(CCType.LBRACKET,yytext()); }
-    "]"                             { return symbol(CCType.RBRACKET,yytext()); }
-    "|"                             { return symbol(CCType.OR,yytext()); }
-    {NUM}                           { return symbol(CCType.NUM,new Integer(yytext())); }
-    {TOKEN}                         { return symbol(CCType.TOKEN,yytext()); }
+    "%%"                            { return symbol("MARK",yytext()); }
+    ";"                             { return symbol("SEMI",yytext()); }
+    "%name"                         { return symbol("NAME",yytext()); }
+    ":"                             { return symbol("COLON",yytext()); }
+    "%left"                         { return symbol("LEFT",yytext()); }
+    "%right"                        { return symbol("RIGHT",yytext()); }
+    "%nonassoc"                     { return symbol("NONASSOC",yytext()); }
+    "%binary"                       { return symbol("BINARY",yytext()); }
+    "%prec"                         { return symbol("PREC",yytext()); }
+    "%start"                        { return symbol("START",yytext()); }
+    ","                             { return symbol("COMMA",yytext()); }
+    "="                             { return symbol("ASSIGN",yytext()); }
+    "["                             { return symbol("LBRACKET",yytext()); }
+    "]"                             { return symbol("RBRACKET",yytext()); }
+    "|"                             { return symbol("OR",yytext()); }
+    {NUM}                           { return symbol("NUM",new Integer(yytext())); }
+    {TOKEN}                         { return symbol("TOKEN",yytext()); }
     {WhiteSpace}                    {/* SKIP */}
     "#"                             { action.setLength(0);yybegin(ACTION);}
     /* error cases */
     \\.                             { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
 }
 <ACTION> {
-    "#"                             { yybegin(YYINITIAL);return symbol(CCType.ACTION,action.toString());}
+    "#"                             { yybegin(YYINITIAL);return symbol("ACTION",action.toString());}
     [^\n\r\"\'\t\\\#]*              { action.append(yytext());}
     \"                              { string.setLength(0); yybegin(STRING);string.append("\""); }
     \'                              { yybegin(CHARLITERAL); }

@@ -98,16 +98,16 @@ public class LL1 {
         System.out.println("}");
     }
     
-    public CSTNode ll1_driver(Grammar g, int[][] m, IToken<?> token) throws IOException {
+    public CSTNode ll1_driver(Grammar g, int[][] m, IToken token) throws IOException {
         Stack<CSTNode> stack = new Stack<CSTNode>();
         CSTNode root = new InternalNode(g.start_symbol);
         stack.push(root);
-        ISymbol<?> a = token.next_token();
+        ISymbol a = token.next_token();
         while (!stack.is_empty()) {
             CSTNode node = stack.pop();
             if (is_nonterminal(node.name, g.nonterminals)
-                && m[index(a.get_type().toString(), g.terminals)][index(node.name, g.nonterminals)] > 0) {
-                Production p = g.productions.get(m[index(a.get_type().toString(), g.terminals)][index(node.name,
+                && m[index(a.get_type_name(), g.terminals)][index(node.name, g.nonterminals)] > 0) {
+                Production p = g.productions.get(m[index(a.get_type_name(), g.terminals)][index(node.name,
                         g.nonterminals)] - 1);
                 String[] rhs = p.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
@@ -117,7 +117,7 @@ public class LL1 {
                     node.childs.add(0, child);
                 }
             }
-            else if (node.name.equals(a.get_type().toString())) {
+            else if (node.name.equals(a.get_type_name())) {
                 a = token.next_token();
             }
             else {
@@ -146,7 +146,7 @@ public class LL1 {
             for (int i = 0; i < struct.list.size(); i++) {
                 new_productions.remove(struct.list.get(i));
             }
-            temp = new Grammar(new_productions,temp.start_symbol);
+            temp = new Grammar(new_productions, temp.start_symbol, temp.terminals_list);
         }
         return temp;
     }
@@ -164,7 +164,7 @@ public class LL1 {
             substitute_list.add(ai);
             list.addAll(remove_direct_left_recursion(ai, temp));
         }
-        return new Grammar(g.start_symbol, list);
+        return new Grammar(g.start_symbol, list, g.terminals_list);
     }
     
     private CommonPerfixStruct common_perfix(List<Production> productions) {

@@ -9,9 +9,9 @@ import java.io.IOException;
  * @see :
  */
 
-public interface IToken<T> {
+public interface IToken {
     
-    public ISymbol<T> next_token() throws IOException;
+    public ISymbol next_token() throws IOException;
     
     public boolean has_next();
 }

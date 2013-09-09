@@ -9,19 +9,19 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public class CCSymbol implements ISymbol<CCType> {
+public class CCSymbol implements ISymbol {
     
     public int    yyline;
     public int    yycolumn;
-    public CCType type;
+    public String type;
     public Object value;
     
-    public CCSymbol(CCType type, int yyline, int yycolumn, Object value) {
+    public CCSymbol(String type, int yyline, int yycolumn, Object value) {
         this(type, yyline, yycolumn);
         this.value = value;
     }
     
-    public CCSymbol(CCType type, int yyline, int yycolumn) {
+    public CCSymbol(String type, int yyline, int yycolumn) {
         this.type = type;
         this.yyline = yyline;
         this.yycolumn = yycolumn;
@@ -37,7 +37,7 @@ public class CCSymbol implements ISymbol<CCType> {
     }
     
     @Override
-    public CCType get_type() {
+    public String get_type_name() {
         return this.type;
     }
     
@@ -54,20 +54,5 @@ public class CCSymbol implements ISymbol<CCType> {
     @Override
     public int get_column() {
         return this.yycolumn + 1;
-    }
-    
-    @Override
-    public int get_insert_cost() {
-        return 0;
-    }
-    
-    @Override
-    public int get_delete_cost() {
-        return 0;
-    }
-    
-    @Override
-    public ISymbol<CCType> new_object(String type_name) {
-        return null;
     }
 }

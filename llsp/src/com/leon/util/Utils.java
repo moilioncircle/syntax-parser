@@ -3,7 +3,10 @@ package com.leon.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -155,8 +158,8 @@ public class Utils {
         return follow_set;
     }
     
-    public static Set<String> first(String[] alpha, Set<String>[] first_set, Grammar g) {
-        Set<String> set = new HashSet<String>();
+    public static Set<String> first(String[] alpha, Set<String>[] first_set, final Grammar g) {
+        Set<String> set = new LinkedHashSet<String>();
         for (int i = 0; i < alpha.length; i++) {
             if (first_set[index(alpha[i], g.vocabulary)].contains(lambda)) {
                 continue;
@@ -166,8 +169,17 @@ public class Utils {
                 break;
             }
         }
-        //sort by cost;
-        //TODO
+        List<String> list = new ArrayList<String>(set);
+        Collections.sort(list, new Comparator<String>() {
+            
+            @Override
+            public int compare(String o1, String o2) {
+                int x = g.get_terminal_by_name(o1).insert_cost;
+                int y = g.get_terminal_by_name(o2).insert_cost;
+                return (x < y) ? -1 : ((x == y) ? 0 : 1);
+            }
+        });
+        set = new LinkedHashSet<String>(list);
         return set;
     }
     

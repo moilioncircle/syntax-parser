@@ -30,7 +30,7 @@ public class CCGrammar {
         list.add(new ProductionSet("Declarations").or("Declarations", "Declaration").or("Declaration"));
         list.add(new ProductionSet("Declaration").or("SEMI")
                                                  .or("Precedence", "Tokens")
-                                                 .or("NAME", "COLON", "Token")
+                                                 .or("NAME", "COLON", "Token", "NUM", "NUM")
                                                  .or("START", "COLON", "Token")
                                                  .or("ACTION"));
         list.add(new ProductionSet("Precedence").or("LEFT").or("RIGHT").or("NONASSOC").or("BINARY"));
@@ -39,22 +39,19 @@ public class CCGrammar {
         list.add(new ProductionSet("Productions").or("Productions", "TOKEN", "COLON", "Rules", "SEMI").or("TOKEN",
                 "COLON", "Rules", "SEMI"));
         list.add(new ProductionSet("Rules").or("Rules", "OR", "GrammarRule").or("GrammarRule"));
-        list.add(new ProductionSet("GrammarRule").or("Rule", "Prec", "ACTION")
-                                                 .or("Rule", "ACTION")
-                                                 .or("ACTION")
-                                                 .or());
+        list.add(new ProductionSet("GrammarRule").or("Rule", "Prec", "ACTION").or("Rule", "ACTION").or("ACTION").or());
         list.add(new ProductionSet("Rule").or("Rule", "TOKEN").or("TOKEN"));
         list.add(new ProductionSet("Prec").or("PREC", "TOKEN"));
-        Grammar g = new Grammar("program", list);
+        Grammar g = new Grammar("program", list, null);
         return g;
     }
     
     public static void main(String[] args) throws IOException {
         Grammar g = new CCGrammar().getGrammar();
         InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("test.g"), "UTF8");
-        IToken<CCType> t = new CCToken(reader);
-        List<ISymbol<?>> list = new ArrayList<ISymbol<?>>();
-        while(t.has_next()){
+        IToken t = new CCToken(reader);
+        List<ISymbol> list = new ArrayList<ISymbol>();
+        while (t.has_next()) {
             list.add(t.next_token());
         }
         LR1 lr1 = new LR1(g);

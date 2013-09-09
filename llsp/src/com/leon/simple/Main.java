@@ -15,10 +15,9 @@ import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Prec;
 import com.leon.grammar.Production;
+import com.leon.grammar.Terminal;
 import com.leon.ll.LL1;
 import com.leon.lr.LR1;
-import com.leon.simple.LexerType;
-import com.leon.simple.Token;
 import com.leon.tree.cst.CST;
 import com.leon.tree.cst.CSTNode;
 import com.leon.tree.cst.NodeType;
@@ -36,25 +35,26 @@ public class Main {
     
     public static void main(String[] args) throws IOException {
         new Main().do_1_grammar();
-//        new Main().do_2_grammar();
-//        new Main().do_3_grammar();
-//        new Main().do_4_grammar();
-//        new Main().do_5_grammar();
-//        new Main().do_6_grammar();
-//        new Main().do_7_grammar();
-//        new Main().do_8_grammar();
-//        new Main().do_9_grammar();
-//        new Main().do_10_grammar();
-//        new Main().do_11_grammar();
-//        new Main().do_12_grammar();
-//        new Main().do_13_grammar();
-//        new Main().do_14_grammar();
-//        new Main().do_15_grammar();
-//        new Main().do_16_grammar();
-//        new Main().do_17_grammar();
+        new Main().do_2_grammar();
+        new Main().do_3_grammar();
+        new Main().do_4_grammar();
+        new Main().do_5_grammar();
+        new Main().do_6_grammar();
+        new Main().do_7_grammar();
+        new Main().do_8_grammar();
+        new Main().do_9_grammar();
+        new Main().do_10_grammar();
+        new Main().do_11_grammar();
+        new Main().do_12_grammar();
+        new Main().do_13_grammar();
+        new Main().do_14_grammar();
+        new Main().do_15_grammar();
+        new Main().do_16_grammar();
+        new Main().do_17_grammar();
     }
     
     public void do_1_grammar() throws IOException {
+        System.out.println("do_1_grammar");
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }, "new S($0)"));
         list.add(new Production("E", new String[] { "E", "PLUS", "T" }, "new E($0,$2)"));
@@ -63,32 +63,44 @@ public class Main {
         list.add(new Production("T", new String[] { "P" }, "new T($0)"));
         list.add(new Production("P", new String[] { "NUM" }, "new P(\"$0\")"));
         list.add(new Production("P", new String[] { "LPAREN", "E", "RPAREN" }, "new P($1)"));
-        Grammar g = new Grammar(list, "S");
-        IToken<LexerType> t = new Token(new StringReader(")3+(4+"));
+        List<Terminal> t_list = new ArrayList<Terminal>();
+        t_list.add(new Terminal("EOF", 20, 20));
+        t_list.add(new Terminal("PLUS", 3, 3));
+        t_list.add(new Terminal("TIMES", 5, 5));
+        t_list.add(new Terminal("NUM", 8, 8));
+        t_list.add(new Terminal("LPAREN", 9, 9));
+        t_list.add(new Terminal("RPAREN", 7, 7));
+        Grammar g = new Grammar(list, "S", t_list);
+        IToken t = new Token(new StringReader(")3+(4+"));
         LR1 lr = new LR1(g);
-        List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
-        while(t.has_next()){
+        List<ISymbol> ss = new ArrayList<ISymbol>();
+        while (t.has_next()) {
             ss.add(t.next_token());
         }
         lr.lr1_driver(ss);
     }
     
     public void do_2_grammar() throws IOException {
+        System.out.println("do_2_grammar");
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] {}));
-        Grammar g = new Grammar(list, "S");
-        IToken<LexerType> t = new Token(new StringReader(""));
+        List<Terminal> t_list = new ArrayList<Terminal>();
+        t_list.add(new Terminal("EOF", 20, 20));
+        t_list.add(new Terminal("ID", 9, 9));
+        Grammar g = new Grammar(list, "S", t_list);
+        IToken t = new Token(new StringReader(""));
         LR1 lr = new LR1(g);
-        List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
-        while(t.has_next()){
+        List<ISymbol> ss = new ArrayList<ISymbol>();
+        while (t.has_next()) {
             ss.add(t.next_token());
         }
         lr.lr1_driver(ss);
     }
     
     public void do_3_grammar() throws IOException {
+        System.out.println("do_3_grammar");
         LL1 c = new LL1();
         List<Production> list = new ArrayList<Production>();
         String start_symbol = "system_goal";
@@ -114,7 +126,22 @@ public class Main {
         list.add(new Production("add_op", new String[] { "PLUS" }));
         list.add(new Production("add_op", new String[] { "TIMES" }));
         list.add(new Production("system_goal", new String[] { "program", "EOF" }));
-        Grammar g = new Grammar(list, start_symbol);
+        List<Terminal> t_list = new ArrayList<Terminal>();
+        t_list.add(new Terminal("EOF", 20, 20));
+        t_list.add(new Terminal("BEGIN", 10, 10));
+        t_list.add(new Terminal("END", 11, 11));
+        t_list.add(new Terminal("ID", 9, 9));
+        t_list.add(new Terminal("ASSIGN", 14, 14));
+        t_list.add(new Terminal("SEMI", 1, 1));
+        t_list.add(new Terminal("READ", 12, 12));
+        t_list.add(new Terminal("LPAREN", 9, 9));
+        t_list.add(new Terminal("RPAREN", 7, 7));
+        t_list.add(new Terminal("WRITE", 13, 13));
+        t_list.add(new Terminal("COMMA", 2, 2));
+        t_list.add(new Terminal("NUM", 8, 8));
+        t_list.add(new Terminal("PLUS", 3, 3));
+        t_list.add(new Terminal("TIMES", 5, 5));
+        Grammar g = new Grammar(list, start_symbol, t_list);
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
         }
@@ -147,7 +174,7 @@ public class Main {
         for (int i = 0; i < g.nonterminals.length; i++) {
             c.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        IToken<LexerType> t = new Token(new StringReader("begin a:=b*5+c;end"));
+        IToken t = new Token(new StringReader("begin a:=b*5+c;end"));
         CSTNode root = c.ll1_driver(g, m, t);
         System.out.println("digraph g {");
         System.out.println("\tnode[shape = record, width = .1, height = .1];");
@@ -179,12 +206,13 @@ public class Main {
     }
     
     public void do_4_grammar() {
+        System.out.println("do_4_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("stmt", new String[] { "if", "expr", "then", "stmt_list", "end_if" }));
         list.add(new Production("stmt",
                 new String[] { "if", "expr", "then", "stmt_list", "else", "stmt_list", "end_if" }));
-        Grammar g = new Grammar(list, "stmt");
+        Grammar g = new Grammar(list, "stmt", null);
         Grammar g1 = l.factor(g);
         for (int i = 0; i < g1.productions.size(); i++) {
             System.out.println(g1.productions.get(i));
@@ -192,13 +220,14 @@ public class Main {
     }
     
     public void do_5_grammar() {
+        System.out.println("do_5_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[] { "a", "b", "B" }));
         list.add(new Production("A", new String[] { "a", "D" }));
         list.add(new Production("A", new String[] { "a", "b", "c", "C" }));
         list.add(new Production("E", new String[] { "a", "b" }));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.factor(g);
         System.out.println("=========");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -212,12 +241,13 @@ public class Main {
     }
     
     public void do_6_grammar() {
+        System.out.println("do_6_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[] { "a", "D" }));
         list.add(new Production("E", new String[] { "a", "b" }));
         list.add(new Production("A", new String[] { "a", "b", "C" }));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.factor(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -226,12 +256,13 @@ public class Main {
     }
     
     public void do_7_grammar() {
+        System.out.println("do_7_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[] { "a" }));
         list.add(new Production("E", new String[] { "a", "b" }));
         list.add(new Production("A", new String[] { "a", "b", "C" }));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.factor(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -240,13 +271,14 @@ public class Main {
     }
     
     public void do_8_grammar() {
+        System.out.println("do_8_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("A", new String[] { "a", "B" }));
         list.add(new Production("A", new String[] { "B", "b" }));
         list.add(new Production("B", new String[] { "A", "c" }));
         list.add(new Production("B", new String[] { "d" }));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -255,6 +287,7 @@ public class Main {
     }
     
     public void do_9_grammar() {
+        System.out.println("do_9_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("E", new String[] { "E", "+", "T" }));
@@ -262,7 +295,7 @@ public class Main {
         list.add(new Production("T", new String[] { "T", "*", "P" }));
         list.add(new Production("T", new String[] { "P" }));
         list.add(new Production("P", new String[] { "ID" }));
-        Grammar g = new Grammar(list, "E");
+        Grammar g = new Grammar(list, "E", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -271,6 +304,7 @@ public class Main {
     }
     
     public void do_10_grammar() {
+        System.out.println("do_10_grammar");
         LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "$" }));
@@ -283,7 +317,7 @@ public class Main {
         list.add(new Production("F", new String[] { "ID" }));
         list.add(new Production("F", new String[] { "NUM" }));
         list.add(new Production("F", new String[] { "(", "E", ")" }));
-        Grammar g = new Grammar(list, "S");
+        Grammar g = new Grammar(list, "S", null);
         for (int i = 0; i < g.production_set.size(); i++) {
             System.out.println(g.production_set.get(i));
         }
@@ -302,7 +336,7 @@ public class Main {
         list.add(new Production("A", new String[] { "B", "a" }));
         list.add(new Production("C", new String[] { "A", "c" }));
         list.add(new Production("C", new String[] {}));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -318,7 +352,7 @@ public class Main {
         list.add(new Production("B", new String[] { "C", "b" }));
         list.add(new Production("C", new String[] { "A", "c" }));
         list.add(new Production("C", new String[] {}));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -334,7 +368,7 @@ public class Main {
         list.add(new Production("A", new String[] { "B", "a" }));
         list.add(new Production("B", new String[] { "C", "b" }));
         list.add(new Production("B", new String[] {}));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -351,7 +385,7 @@ public class Main {
         list.add(new Production("C", new String[] { "A" }));
         list.add(new Production("A", new String[] { "C", "a" }));
         list.add(new Production("A", new String[] {}));
-        Grammar g = new Grammar(list, "A");
+        Grammar g = new Grammar(list, "A", null);
         Grammar g1 = l.remove_left_recursion(g);
         System.out.println("===============");
         for (int i = 0; i < g1.productions.size(); i++) {
@@ -371,17 +405,18 @@ public class Main {
         list.add(new Production("T", new String[] { "LPAREN", "E", "RPAREN" }));
         list.add(new Production("T", new String[] { "ID" }));
         list.add(new Production("T", new String[] { "NUM" }));
-        Grammar g = new Grammar(list, "S");
+        Grammar g = new Grammar(list, "S", null);
         int[][] m = l.predict_table(g);
         for (int i = 0; i < g.nonterminals.length; i++) {
             l.make_parsing_proc(g.nonterminals[i], m, g);
         }
-        IToken<LexerType> t = new Token(new StringReader("a+(a-4)"));
+        IToken t = new Token(new StringReader("a+(a-4)"));
         CST cpt = new CST(t, g);
         System.out.println(cpt.toString());
     }
     
     public void do_16_grammar() throws IOException {
+        System.out.println("do_16_grammar");
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("K", new String[] { "S", "EOF" }));
         list.add(new Production("S", new String[] { "V", "ASSIGN", "E" }));
@@ -389,17 +424,18 @@ public class Main {
         list.add(new Production("E", new String[] { "V" }));
         list.add(new Production("V", new String[] { "ID" }));
         list.add(new Production("V", new String[] { "TIMES", "E" }));
-        Grammar g = new Grammar(list, "K");
-        IToken<LexerType> t = new Token(new StringReader("x:=*x"));
+        Grammar g = new Grammar(list, "K", null);
+        IToken t = new Token(new StringReader("x:=*x"));
         LR1 lr = new LR1(g);
-        List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
-        while(t.has_next()){
+        List<ISymbol> ss = new ArrayList<ISymbol>();
+        while (t.has_next()) {
             ss.add(t.next_token());
         }
         lr.lr1_driver(ss);
     }
     
     public void do_17_grammar() throws IOException {
+        System.out.println("do_17_grammar");
         List<Assoc> assoc_list = new ArrayList<Assoc>();
         assoc_list.add(new Assoc(1, Associativity.LEFT).add_symbol("PLUS").add_symbol("MINUS"));
         assoc_list.add(new Assoc(2, Associativity.LEFT).add_symbol("TIMES").add_symbol("DIVIDE"));
@@ -412,12 +448,12 @@ public class Main {
         list.add(new Production("E", new String[] { "E", "DIVIDE", "E" }));
         list.add(new Production("E", new String[] { "ID" }));
         list.add(new Production("E", new String[] { "NUM" }));
-        list.add(new Production("E", new String[] { "MINUS", "NUM" },new Prec("UMINUS")));
-        Grammar g = new Grammar(list, "S", assoc_list);
-        IToken<LexerType> t = new Token(new StringReader("3-5*-4/3"));
+        list.add(new Production("E", new String[] { "MINUS", "NUM" }, new Prec("UMINUS")));
+        Grammar g = new Grammar(list, "S", null, assoc_list);
+        IToken t = new Token(new StringReader("3-5*-4/3"));
         LR1 lr = new LR1(g);
-        List<ISymbol<?>> ss = new ArrayList<ISymbol<?>>();
-        while(t.has_next()){
+        List<ISymbol> ss = new ArrayList<ISymbol>();
+        while (t.has_next()) {
             ss.add(t.next_token());
         }
         lr.lr1_driver(ss);

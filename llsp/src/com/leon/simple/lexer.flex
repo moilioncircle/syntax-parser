@@ -1,6 +1,5 @@
 package com.leon.simple;
 
-import com.leon.simple.LexerType;
 import com.leon.simple.Symbol;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
@@ -8,20 +7,25 @@ import com.leon.util.IToken;
 %public
 %class Token
 %unicode
-%implements IToken<LexerType>
+%implements IToken
 %function next_token
-%type ISymbol<LexerType>
+%type ISymbol
 %{
-    private ISymbol<LexerType> symbol(LexerType type) {
+    private ISymbol symbol(String type) {
         return new Symbol(type, yyline, yycolumn);
     }
     
-    private ISymbol<LexerType> symbol(LexerType type, Object value) {
+    private ISymbol symbol(String type, Object value) {
         return new Symbol(type, yyline, yycolumn, value);
+    }
+    
+    @Override
+    public boolean has_next() {
+        return !zzAtEOF;
     }
 %}
 %eofval{ 
-    return symbol(LexerType.EOF);
+    return symbol("EOF");
 %eofval} 
 %eofclose 
 %line
@@ -32,20 +36,20 @@ NUM = 0|[1-9][0-9]*
 ID = [A-Za-z_][A-Za-z0-9_]*
 %%
 <YYINITIAL> {
-    "+"                { return symbol(LexerType.PLUS); }
-    "-"                { return symbol(LexerType.MINUS); }
-    "*"                { return symbol(LexerType.TIMES); }
-    "/"                { return symbol(LexerType.DIVIDE); }
-    "("                { return symbol(LexerType.LPAREN); }
-    ")"                { return symbol(LexerType.RPAREN); }
-    "begin"            { return symbol(LexerType.BEGIN); }
-    "end"              { return symbol(LexerType.END); }
-    ":="               { return symbol(LexerType.ASSIGN); }
-    ","                { return symbol(LexerType.COMMA); }
-    ";"                { return symbol(LexerType.SEMI); }
-    "read"             { return symbol(LexerType.READ); }
-    "write"            { return symbol(LexerType.WRITE); }
-    {NUM}              { return symbol(LexerType.NUM,new Integer(yytext())); }
-    {ID}               { return symbol(LexerType.ID,yytext()); }
+    "+"                { return symbol("PLUS"); }
+    "-"                { return symbol("MINUS"); }
+    "*"                { return symbol("TIMES"); }
+    "/"                { return symbol("DIVIDE"); }
+    "("                { return symbol("LPAREN"); }
+    ")"                { return symbol("RPAREN"); }
+    "begin"            { return symbol("BEGIN"); }
+    "end"              { return symbol("END"); }
+    ":="               { return symbol("ASSIGN"); }
+    ","                { return symbol("COMMA"); }
+    ";"                { return symbol("SEMI"); }
+    "read"             { return symbol("READ"); }
+    "write"            { return symbol("WRITE"); }
+    {NUM}              { return symbol("NUM",new Integer(yytext())); }
+    {ID}               { return symbol("ID",yytext()); }
     {WhiteSpace}       {/* SKIP */}
 }

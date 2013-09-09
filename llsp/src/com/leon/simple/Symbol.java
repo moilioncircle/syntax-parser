@@ -9,19 +9,19 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public class Symbol implements ISymbol<LexerType> {
+public class Symbol implements ISymbol {
     
-    public int       yyline;
-    public int       yycolumn;
-    public LexerType type;
-    public Object    value;
+    public int    yyline;
+    public int    yycolumn;
+    public String type;
+    public Object value;
     
-    public Symbol(LexerType type, int yyline, int yycolumn, Object value) {
+    public Symbol(String type, int yyline, int yycolumn, Object value) {
         this(type, yyline, yycolumn);
         this.value = value;
     }
     
-    public Symbol(LexerType type, int yyline, int yycolumn) {
+    public Symbol(String type, int yyline, int yycolumn) {
         this.type = type;
         this.yyline = yyline;
         this.yycolumn = yycolumn;
@@ -29,16 +29,11 @@ public class Symbol implements ISymbol<LexerType> {
     
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("type:" + type.toString());
+        sb.append("type:" + type);
         if (value != null) {
             sb.append(",value:" + value.toString());
         }
         return sb.toString();
-    }
-    
-    @Override
-    public LexerType get_type() {
-        return this.type;
     }
     
     @Override
@@ -57,17 +52,8 @@ public class Symbol implements ISymbol<LexerType> {
     }
     
     @Override
-    public int get_insert_cost() {
-        return type.get_insert_cost();
+    public String get_type_name() {
+        return type;
     }
     
-    @Override
-    public int get_delete_cost() {
-        return type.get_delete_cost();
-    }
-    
-    @Override
-    public ISymbol<LexerType> new_object(String name) {
-        return new Symbol(LexerType.valueOf(name), yyline, yycolumn);
-    }
 }
