@@ -15,7 +15,7 @@ public class ActionItem {
     public Production p;
     public String     symbol;
     
-    public ActionItem(ActionType type, Production p,String symbol) {
+    public ActionItem(ActionType type, Production p, String symbol) {
         this(type, symbol);
         this.p = p;
     }

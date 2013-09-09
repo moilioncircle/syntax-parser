@@ -85,12 +85,12 @@ public class LRState {
         }
         return sb.toString();
     }
-
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (LRTerm term : terms) {
-            sb.append(term+"\n");
+            sb.append(term + "\n");
         }
         return sb.toString();
     }
