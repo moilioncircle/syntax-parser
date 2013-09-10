@@ -77,7 +77,7 @@ public class Main {
         while (t.has_next()) {
             ss.add(t.next_token());
         }
-        lr.lr1_driver(ss);
+        System.out.println(lr.lr1_driver(ss));
     }
     
     public void do_2_grammar() throws IOException {
