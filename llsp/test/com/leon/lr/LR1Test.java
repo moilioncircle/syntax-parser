@@ -59,7 +59,7 @@ public class LR1Test {
         while (t.has_next()) {
             ss.add(t.next_token());
         }
-        Assert.assertEquals(FileUtils.readFile("do_1_grammar.txt",this.getClass()), lr.lr1_driver(ss));
+        Assert.assertEquals(FileUtils.readFile("do_1_grammar.txt", this.getClass()), lr.lr1_driver(ss));
     }
     
     @Test
@@ -79,7 +79,7 @@ public class LR1Test {
         while (t.has_next()) {
             ss.add(t.next_token());
         }
-        Assert.assertEquals(FileUtils.readFile("do_2_grammar.txt",this.getClass()), lr.lr1_driver(ss));
+        Assert.assertEquals(FileUtils.readFile("do_2_grammar.txt", this.getClass()), lr.lr1_driver(ss));
     }
     
     @Test
@@ -139,7 +139,7 @@ public class LR1Test {
         IToken t = new Token(new StringReader("begin a:=b*5+c;end"));
         CST cst = new CST(t, g);
         System.out.println(cst.toString());
-        Assert.assertEquals(FileUtils.readFile("do_3_grammar.txt",this.getClass()), cst.toString());
+        Assert.assertEquals(FileUtils.readFile("do_3_grammar.txt", this.getClass()), cst.toString());
     }
     
     @Test
@@ -154,9 +154,9 @@ public class LR1Test {
         Grammar g1 = l.factor(g);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_4_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_4_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -173,14 +173,14 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("=========\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
         sb.append("=========\n");
         Grammar g2 = l.factor(g1);
         for (int i = 0; i < g2.productions.size(); i++) {
-            sb.append(g2.productions.get(i)+"\n");
+            sb.append(g2.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_5_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_5_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -196,9 +196,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_6_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_6_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -214,11 +214,11 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_7_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_7_grammar.txt", this.getClass()), sb.toString());
     }
-
+    
     @Test
     public void do_8_grammar() {
         System.out.println("do_8_grammar");
@@ -233,9 +233,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_8_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_8_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -253,9 +253,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_9_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_9_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -278,9 +278,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_10_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_10_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -297,9 +297,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_11_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_11_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -316,9 +316,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_12_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_12_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -335,9 +335,9 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_13_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_13_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
@@ -355,15 +355,14 @@ public class LR1Test {
         StringBuilder sb = new StringBuilder();
         sb.append("===============\n");
         for (int i = 0; i < g1.productions.size(); i++) {
-            sb.append(g1.productions.get(i)+"\n");
+            sb.append(g1.productions.get(i) + "\n");
         }
-        Assert.assertEquals(FileUtils.readFile("do_14_grammar.txt",this.getClass()), sb.toString());
+        Assert.assertEquals(FileUtils.readFile("do_14_grammar.txt", this.getClass()), sb.toString());
     }
     
     @Test
     public void do_15_grammar() throws IOException {
         System.out.println("do_15_grammar");
-        LL1 l = new LL1();
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }));
         list.add(new Production("E", new String[] { "T", "E_tail" }));
@@ -376,7 +375,7 @@ public class LR1Test {
         Grammar g = new Grammar(list, "S", null);
         IToken t = new Token(new StringReader("a+(a-4)"));
         CST cst = new CST(t, g);
-        Assert.assertEquals(FileUtils.readFile("do_15_grammar.txt",this.getClass()), cst.toString());
+        Assert.assertEquals(FileUtils.readFile("do_15_grammar.txt", this.getClass()), cst.toString());
     }
     
     @Test
@@ -396,7 +395,7 @@ public class LR1Test {
         while (t.has_next()) {
             ss.add(t.next_token());
         }
-        Assert.assertEquals(FileUtils.readFile("do_16_grammar.txt",this.getClass()), lr.lr1_driver(ss));
+        Assert.assertEquals(FileUtils.readFile("do_16_grammar.txt", this.getClass()), lr.lr1_driver(ss));
     }
     
     @Test
@@ -422,6 +421,6 @@ public class LR1Test {
         while (t.has_next()) {
             ss.add(t.next_token());
         }
-        Assert.assertEquals(FileUtils.readFile("do_17_grammar.txt",this.getClass()), lr.lr1_driver(ss));
+        Assert.assertEquals(FileUtils.readFile("do_17_grammar.txt", this.getClass()), lr.lr1_driver(ss));
     }
 }
