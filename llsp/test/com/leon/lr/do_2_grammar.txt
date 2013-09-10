@@ -1,0 +1,6 @@
+state:0,token:'type:EOF'
+reduce:E->
+[1, 0]
+state:1,token:'type:EOF'
+accecped
+[3, 1, 0]

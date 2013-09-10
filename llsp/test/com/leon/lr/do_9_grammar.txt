@@ -1,0 +1,8 @@
+===============
+E->T E_tail 
+E_tail->+ T E_tail 
+E_tail->
+T->P T_tail 
+T_tail->* P T_tail 
+T_tail->
+P->ID 

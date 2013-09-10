@@ -1,0 +1,48 @@
+state:0,token:'type:NUM,value:3'
+shift:NUM
+[4, 0]
+state:4,token:'type:MINUS'
+reduce:E->NUM 
+[1, 0]
+state:1,token:'type:MINUS'
+shift:MINUS
+[7, 1, 0]
+state:7,token:'type:NUM,value:5'
+shift:NUM
+[4, 7, 1, 0]
+state:4,token:'type:TIMES'
+reduce:E->NUM 
+[12, 7, 1, 0]
+state:12,token:'type:TIMES'
+shift:TIMES
+[8, 12, 7, 1, 0]
+state:8,token:'type:MINUS'
+shift:MINUS
+[2, 8, 12, 7, 1, 0]
+state:2,token:'type:NUM,value:4'
+shift:NUM
+[10, 2, 8, 12, 7, 1, 0]
+state:10,token:'type:DIVIDE'
+reduce:E->MINUS NUM 
+[13, 8, 12, 7, 1, 0]
+state:13,token:'type:DIVIDE'
+reduce:E->E TIMES E 
+[12, 7, 1, 0]
+state:12,token:'type:DIVIDE'
+shift:DIVIDE
+[9, 12, 7, 1, 0]
+state:9,token:'type:NUM,value:3'
+shift:NUM
+[4, 9, 12, 7, 1, 0]
+state:4,token:'type:EOF'
+reduce:E->NUM 
+[14, 9, 12, 7, 1, 0]
+state:14,token:'type:EOF'
+reduce:E->E DIVIDE E 
+[12, 7, 1, 0]
+state:12,token:'type:EOF'
+reduce:E->E MINUS E 
+[1, 0]
+state:1,token:'type:EOF'
+accecped
+[5, 1, 0]

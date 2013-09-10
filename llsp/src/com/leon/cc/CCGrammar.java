@@ -55,9 +55,6 @@ public class CCGrammar {
             list.add(t.next_token());
         }
         LR1 lr1 = new LR1(g);
-        long start = System.currentTimeMillis();
-        lr1.lr1_driver(list);
-        long end = System.currentTimeMillis();
-        System.out.println((end - start) + "");
+        System.out.println(lr1.lr1_driver(list));
     }
 }

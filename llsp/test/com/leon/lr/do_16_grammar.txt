@@ -1,0 +1,33 @@
+state:0,token:'type:ID,value:x'
+shift:ID
+[4, 0]
+state:4,token:'type:ASSIGN'
+reduce:V->ID 
+[3, 0]
+state:3,token:'type:ASSIGN'
+shift:ASSIGN
+[7, 3, 0]
+state:7,token:'type:TIMES'
+shift:TIMES
+[13, 7, 3, 0]
+state:13,token:'type:ID,value:x'
+shift:ID
+[12, 13, 7, 3, 0]
+state:12,token:'type:EOF'
+reduce:V->ID 
+[11, 13, 7, 3, 0]
+state:11,token:'type:EOF'
+reduce:E->V 
+[14, 13, 7, 3, 0]
+state:14,token:'type:EOF'
+reduce:V->TIMES E 
+[11, 7, 3, 0]
+state:11,token:'type:EOF'
+reduce:E->V 
+[10, 7, 3, 0]
+state:10,token:'type:EOF'
+reduce:S->V ASSIGN E 
+[1, 0]
+state:1,token:'type:EOF'
+accecped
+[6, 1, 0]

@@ -2,7 +2,6 @@
 
 package com.leon.simple;
 
-import com.leon.simple.Symbol;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
 

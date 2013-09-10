@@ -26,33 +26,33 @@ public class CST {
     
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\ndigraph g {");
-        sb.append("\n\tnode[shape = record, width = .1, height = .1];");
+        sb.append("digraph g {\n");
+        sb.append("\tnode[shape = record, width = .1, height = .1];\n");
         Stack<CSTNode> stack = new Stack<CSTNode>();
         int k = 0;
         Stack<Integer> k_stack = new Stack<Integer>();
         stack.push(root);
         k_stack.push(k);
-        sb.append("\n\tnode" + k + "[label = \"{<n> " + root.name + " }\", color = lightgray, style = filled];");
+        sb.append("\tnode" + k + "[label = \"{<n> " + root.name + " }\", color = lightgray, style = filled];\n");
         while (!stack.is_empty()) {
             CSTNode parent = stack.pop();
             String parentNode = "node" + k_stack.pop();
             for (int i = 0; i < parent.childs.size(); i++) {
                 String childNode = "node" + (++k);
                 if (parent.childs.get(i).type == NodeType.LEAF) {
-                    sb.append("\n\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
-                              + " }\", color = lightblue, style = filled];");
+                    sb.append("\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
+                              + " }\", color = lightblue, style = filled];\n");
                 }
                 else {
-                    sb.append("\n\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
-                              + " }\", color = lightgray, style = filled];");
+                    sb.append("\t" + childNode + "[label = \"{<n> " + parent.childs.get(i).name
+                              + " }\", color = lightgray, style = filled];\n");
                 }
-                sb.append("\n\t" + parentNode + ":n->" + childNode + ":n;");
+                sb.append("\t" + parentNode + ":n->" + childNode + ":n;\n");
                 stack.push(parent.childs.get(i));
                 k_stack.push(k);
             }
         }
-        sb.append("\n}");
+        sb.append("}\n");
         return sb.toString();
     }
 }

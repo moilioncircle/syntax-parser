@@ -1,0 +1,6 @@
+===============
+C->A c 
+A->B a 
+B->B_tail 
+B_tail->a c b B_tail 
+B_tail->

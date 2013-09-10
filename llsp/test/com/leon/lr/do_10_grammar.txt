@@ -1,0 +1,13 @@
+===============
+S->E $ 
+E->T E_tail 
+E_tail->+ T E_tail 
+E_tail->- T E_tail 
+E_tail->
+T->F T_tail 
+T_tail->* F T_tail 
+T_tail->/ F T_tail 
+T_tail->
+F->ID 
+F->NUM 
+F->( E ) 

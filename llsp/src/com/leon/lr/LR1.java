@@ -60,11 +60,11 @@ public class LR1 {
         ISymbol t = token.get(index);
         while (true) {
             int state = stack.top();
-            sb.append("\nstate:" + state + ",token:'" + t + "'");
+            sb.append("state:" + state + ",token:'" + t + "'\n");
             if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
                 Repair repair = validated_lr_repair(stack, token, index);
                 //System.out.println(repair);
-                sb.append("\nsyntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
+                sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column()+"\n");
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
@@ -76,26 +76,26 @@ public class LR1 {
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
-                sb.append("\naccecped");
-                sb.append("\n"+stack);
+                sb.append("accecped\n");
+                sb.append(stack+"\n");
                 break;
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
-                sb.append("\nshift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol);
+                sb.append("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol+"\n");
                 index++;
                 t = token.get(index);
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t.get_type_name(), g.vocabulary)][state].p;
-                sb.append("\nreduce:" + p);
+                sb.append("reduce:" + p+"\n");
                 for (int i = 0; i < p.rhs.length; i++) {
                     stack.pop();
                 }
                 int top = stack.top();
                 stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
             }
-            sb.append("\n"+stack);
+            sb.append(stack+"\n");
         }
         return sb.toString();
     }
