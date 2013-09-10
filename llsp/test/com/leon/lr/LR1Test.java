@@ -22,7 +22,7 @@ import com.leon.util.IToken;
 
 public class LR1Test {
     @Test
-    public void testgrammar1() throws IOException{
+    public void testGrammar1() throws IOException{
         List<Production> list = new ArrayList<Production>();
         list.add(new Production("S", new String[] { "E", "EOF" }, "new S($0)"));
         list.add(new Production("E", new String[] { "E", "PLUS", "T" }, "new E($0,$2)"));

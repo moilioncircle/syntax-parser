@@ -63,7 +63,7 @@ public class LR1 {
             sb.append("\nstate:" + state + ",token:'" + t + "'");
             if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
                 Repair repair = validated_lr_repair(stack, token, index);
-                System.out.println(repair);
+                //System.out.println(repair);
                 sb.append("\nsyntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
@@ -351,7 +351,6 @@ public class LR1 {
                 return (x < y) ? -1 : ((x == y) ? 0 : 1);
             }
         });
-        System.out.println(terminals);
         List<ISymbol> continuation = get_continuation(parse_stack);
         if (lr_validate(parse_stack, suffix)) {
             return null;
@@ -359,10 +358,6 @@ public class LR1 {
         for (int i = 0; i < terminals.size(); i++) {
             List<ISymbol> list = new ArrayList<ISymbol>(suffix);
             list.add(0, new FakeSymbol(terminals.get(i).name));
-            System.out.println("----------------------------");
-            for (ISymbol s : list) {
-                System.out.println(s.get_type_name());
-            }
             if (lr_validate(parse_stack, list)) {
                 insert.add(new FakeSymbol(terminals.get(i).name));
                 break;
@@ -378,7 +373,6 @@ public class LR1 {
                 return get_range(continuation, 0, i);
             }
         }
-        System.out.println("choose_validated_insert:" + insert);
         return insert;
     }
     
@@ -424,7 +418,6 @@ public class LR1 {
         List<ISymbol> suffix = get_range(token, index, token.size());
         List<ISymbol> ins = new ArrayList<ISymbol>();
         for (int i = 0; i < suffix.size(); i++) {
-            System.out.println(i);
             if (cost(get_range(suffix, 0, i), CostType.DELETE) >= cost(ins, CostType.INSERT)
                                                                   + cost(get_range(suffix, 0, d), CostType.DELETE)) {
                 break;
