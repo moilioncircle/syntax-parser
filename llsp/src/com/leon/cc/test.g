@@ -1,6 +1,6 @@
 %name : EOF 1 2;
 %start : program;
-%left PLUS,MINUS;
+%left PLUS,MINUS,EOF;
 %left TIMES,DIVIDE;
 %right UMINUS;
 #

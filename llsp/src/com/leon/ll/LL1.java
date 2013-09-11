@@ -47,7 +47,7 @@ public class LL1 {
     
     public void predict(Production p, Set<String>[] first_set, Set<String>[] follow_set, Grammar g, int p_index,
                         int[][] m) {
-        Set<String> set = first(p.rhs, first_set, g);
+        Set<String> set = first(p.right.rhs, first_set, g);
         if (set.size() == 0) {
             set.addAll(follow_set[index(p.lhs, g.nonterminals)]);
         }
@@ -83,7 +83,7 @@ public class LL1 {
                     if (m[j][i] > 0) {
                         System.out.println("\t\tcase \"" + g.terminals[j] + "\":");
                         Production selected_p = g.productions.get(m[j][i] - 1);
-                        gen_action(selected_p.rhs, g);
+                        gen_action(selected_p.right.rhs, g);
                         System.out.println("\t\t\tbreak;");
                     }
                     break;
@@ -109,7 +109,7 @@ public class LL1 {
                 && m[index(a.get_type_name(), g.terminals)][index(node.name, g.nonterminals)] > 0) {
                 Production p = g.productions.get(m[index(a.get_type_name(), g.terminals)][index(node.name,
                         g.nonterminals)] - 1);
-                String[] rhs = p.rhs;
+                String[] rhs = p.right.rhs;
                 for (int i = rhs.length - 1; i >= 0; i--) {
                     CSTNode child = is_nonterminal(rhs[i], g.nonterminals) ? new InternalNode(rhs[i]) : new LeafNode(
                             rhs[i]);
@@ -139,8 +139,8 @@ public class LL1 {
                     new_nonterminal));
             new_productions.add(p);
             for (int i = 0; i < struct.list.size(); i++) {
-                Production pi = new Production(new_nonterminal, cut_array_add_end(struct.list.get(i).rhs, struct.index,
-                        struct.list.get(i).rhs.length));
+                Production pi = new Production(new_nonterminal, cut_array_add_end(struct.list.get(i).right.rhs, struct.index,
+                        struct.list.get(i).right.rhs.length));
                 new_productions.add(pi);
             }
             for (int i = 0; i < struct.list.size(); i++) {
@@ -176,7 +176,7 @@ public class LL1 {
             for (int j = i + 1; j < productions.size(); j++) {
                 Production pj = productions.get(j);
                 if (pi.lhs.equals(pj.lhs)) {
-                    index = longest_common_perfix(pi.rhs, pj.rhs);
+                    index = longest_common_perfix(pi.right.rhs, pj.right.rhs);
                 }
             }
             if (index > max_len) {
@@ -191,7 +191,7 @@ public class LL1 {
                 if (p.lhs.equals(max_len_p.lhs)) {
                     int k = 0;
                     for (int j = 0; j < max_len; j++) {
-                        if (p.rhs[j].equals(max_len_p.rhs[j])) {
+                        if (p.right.rhs[j].equals(max_len_p.right.rhs[j])) {
                             k++;
                         }
                     }

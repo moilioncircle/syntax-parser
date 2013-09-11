@@ -23,7 +23,7 @@ public class CCGrammar {
     public Grammar getGrammar() {
         List<ProductionSet> list = new ArrayList<ProductionSet>();
         list.add(new ProductionSet("program").or("Descriptor", "EOF"));
-        list.add(new ProductionSet("Descriptor").or("Declarations", "SectionMarker", "Productions", "Usercode").or(
+        list.add(new ProductionSet("Descriptor").or("Declarations", "SectionMarker", "Production_set", "Usercode").or(
                 "SectionMarker", "Productions", "Usercode"));
         list.add(new ProductionSet("Usercode").or("SectionMarker", "ACTION").or(new String[] { "SectionMarker" }));
         list.add(new ProductionSet("SectionMarker").or("MARK"));

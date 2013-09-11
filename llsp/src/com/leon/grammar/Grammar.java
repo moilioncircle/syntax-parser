@@ -48,11 +48,11 @@ public class Grammar {
             ProductionSet p_set = contain_lhs(production.lhs);
             if (p_set == null) {
                 p_set = new ProductionSet(production.lhs);
-                p_set.or(production.rhs);
+                p_set.or(production.right.rhs);
                 this.production_set.add(p_set);
             }
             else {
-                p_set.or(production.rhs);
+                p_set.or(production.right.rhs);
             }
         }
         set_nonterminals();
@@ -66,6 +66,10 @@ public class Grammar {
             List<Assoc> assoc_list) {
         this(productions, start_symbol, terminals_list);
         this.assoc_list = assoc_list;
+    }
+    
+    public Grammar(){
+        
     }
     
     private Grammar(String start_symbol, List<Terminal> terminals_list) {
@@ -102,10 +106,10 @@ public class Grammar {
             List<String> terminals_list = new ArrayList<String>();
             for (int i = 0; i < this.productions.size(); i++) {
                 Production p = this.productions.get(i);
-                for (int j = 0; j < p.rhs.length; j++) {
-                    if (!is_nonterminal(p.rhs[j], this.nonterminals)) {
-                        if (!terminals_list.contains(p.rhs[j])) {
-                            terminals_list.add(p.rhs[j]);
+                for (int j = 0; j < p.right.rhs.length; j++) {
+                    if (!is_nonterminal(p.right.rhs[j], this.nonterminals)) {
+                        if (!terminals_list.contains(p.right.rhs[j])) {
+                            terminals_list.add(p.right.rhs[j]);
                         }
                     }
                 }
@@ -130,7 +134,7 @@ public class Grammar {
     }
     
     private void set_eof() {
-        String[] rhs = this.start_production.rhs;
+        String[] rhs = this.start_production.right.rhs;
         this.eof = rhs[rhs.length - 1];
     }
     

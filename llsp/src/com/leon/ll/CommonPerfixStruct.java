@@ -23,7 +23,7 @@ public class CommonPerfixStruct {
             lhs = this.list.get(0).lhs;
             perfix = new String[this.index];
             for (int i = 0; i < perfix.length; i++) {
-                perfix[i] = this.list.get(0).rhs[i];
+                perfix[i] = this.list.get(0).right.rhs[i];
             }
         }
     }

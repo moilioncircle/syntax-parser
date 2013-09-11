@@ -34,14 +34,14 @@ public class Utils {
             for (int i = 0; i < g.productions.size(); i++) {
                 Production p = g.productions.get(i);
                 if (!derives_lambda[index(p.lhs, g.vocabulary)]) {
-                    if (p.rhs.length == 0) {
+                    if (p.right.rhs.length == 0) {
                         derives_lambda[index(p.lhs, g.vocabulary)] = true;
                         changes = true;
                         continue;
                     }
-                    boolean rhs_derives_lambda = derives_lambda[index(p.rhs[0], g.vocabulary)];
-                    for (int j = 1; j < p.rhs.length; j++) {
-                        rhs_derives_lambda = rhs_derives_lambda && derives_lambda[index(p.rhs[j], g.vocabulary)];
+                    boolean rhs_derives_lambda = derives_lambda[index(p.right.rhs[0], g.vocabulary)];
+                    for (int j = 1; j < p.right.rhs.length; j++) {
+                        rhs_derives_lambda = rhs_derives_lambda && derives_lambda[index(p.right.rhs[j], g.vocabulary)];
                     }
                     if (rhs_derives_lambda) {
                         derives_lambda[index(p.lhs, g.vocabulary)] = true;
@@ -108,7 +108,7 @@ public class Utils {
             for (int i = 0; i < g.productions.size(); i++) {
                 Production p = g.productions.get(i);
                 int before_size = first_set[index(p.lhs, g.vocabulary)].size();
-                first_set[index(p.lhs, g.vocabulary)].addAll(compute_first(p.rhs, first_set, g));
+                first_set[index(p.lhs, g.vocabulary)].addAll(compute_first(p.right.rhs, first_set, g));
                 int after_size = first_set[index(p.lhs, g.vocabulary)].size();
                 if (before_size != after_size) {
                     changes = true;
@@ -134,10 +134,10 @@ public class Utils {
             changes = false;
             for (int i = 0; i < g.productions.size(); i++) {
                 Production p = g.productions.get(i);
-                for (int j = 0; j < p.rhs.length; j++) {
-                    String symbol = p.rhs[j];
+                for (int j = 0; j < p.right.rhs.length; j++) {
+                    String symbol = p.right.rhs[j];
                     if (index(symbol, g.nonterminals) != -1) {
-                        String[] beta = build_beta(j, p.rhs);
+                        String[] beta = build_beta(j, p.right.rhs);
                         Set<String> compute_first = compute_first(beta, first_set, g);
                         Set<String> set = new HashSet<String>(compute_first);
                         set.remove(lambda);
@@ -255,11 +255,11 @@ public class Utils {
         ProductionSet result = new ProductionSet(ai.lhs);
         String symbol = aj.lhs;
         for (int i = 0; i < ai.rhs_set.size(); i++) {
-            String[] rhs = ai.rhs_set.get(i);
+            String[] rhs = ai.rhs_set.get(i).rhs;
             if (rhs.length != 0 && rhs[0].equals(symbol)) {
                 List<Production> aj_ps = aj.get_productions();
                 for (int j = 0; j < aj_ps.size(); j++) {
-                    result.or(cut_array_add_before(rhs, 1, rhs.length, aj_ps.get(j).rhs));
+                    result.or(cut_array_add_before(rhs, 1, rhs.length, aj_ps.get(j).right.rhs));
                 }
             }
             else {
@@ -277,12 +277,12 @@ public class Utils {
         ProductionSet new_ai_tail = new ProductionSet(ai.lhs + "_tail");
         for (int i = 0; i < ai_ps.size(); i++) {
             Production p = ai_ps.get(i);
-            if (p.rhs.length != 0 && p.rhs[0].equals(p.lhs)) {
-                String[] new_rhs = cut_array_add_end(p.rhs, 1, p.rhs.length, new_ai_tail.lhs);
+            if (p.right.rhs.length != 0 && p.right.rhs[0].equals(p.lhs)) {
+                String[] new_rhs = cut_array_add_end(p.right.rhs, 1, p.right.rhs.length, new_ai_tail.lhs);
                 new_ai_tail.or(new_rhs);
             }
             else {
-                String[] new_rhs = cut_array_add_end(p.rhs, 0, p.rhs.length, new_ai_tail.lhs);
+                String[] new_rhs = cut_array_add_end(p.right.rhs, 0, p.right.rhs.length, new_ai_tail.lhs);
                 new_ai.or(new_rhs);
             }
         }
@@ -302,11 +302,11 @@ public class Utils {
         int precedence = 0;
         Associativity association = Associativity.NONASSOC;
         if (p.has_prec()) {
-            return get_symbol_assoc(p.prec.perc_symbol, assoc_list);
+            return get_symbol_assoc(p.right.prec.perc_symbol, assoc_list);
         }
-        for (int i = 0; i < p.rhs.length; i++) {
-            if (is_terminal(p.rhs[i], terminals)) {
-                Assoc assoc = get_symbol_assoc(p.rhs[i], assoc_list);
+        for (int i = 0; i < p.right.rhs.length; i++) {
+            if (is_terminal(p.right.rhs[i], terminals)) {
+                Assoc assoc = get_symbol_assoc(p.right.rhs[i], assoc_list);
                 precedence = assoc.precedence;
                 association = assoc.association;
             }
@@ -328,7 +328,7 @@ public class Utils {
     private static boolean have_derives(String nonterminal, String terminal, Grammar g) {
         for (int i = 0; i < g.productions.size(); i++) {
             Production production = g.productions.get(i);
-            if (production.lhs.equals(nonterminal) && production.rhs.length > 0 && production.rhs[0].equals(terminal)) {
+            if (production.lhs.equals(nonterminal) && production.right.rhs.length > 0 && production.right.rhs[0].equals(terminal)) {
                 return true;
             }
         }

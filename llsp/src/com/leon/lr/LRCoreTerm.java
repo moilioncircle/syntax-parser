@@ -46,15 +46,15 @@ public class LRCoreTerm {
     public String toString() {
         int i = 0;
         StringBuilder sb = new StringBuilder();
-        while (i <= p.rhs.length) {
+        while (i <= p.right.rhs.length) {
             if (i == dot) {
                 if (sb.length() > 0) {
                     sb.deleteCharAt(sb.length() - 1);
                 }
                 sb.append(".");
             }
-            if (i < p.rhs.length) {
-                sb.append(p.rhs[i] + " ");
+            if (i < p.right.rhs.length) {
+                sb.append(p.right.rhs[i] + " ");
             }
             i++;
         }

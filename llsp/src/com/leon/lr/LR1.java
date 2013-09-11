@@ -62,9 +62,9 @@ public class LR1 {
             int state = stack.top();
             sb.append("state:" + state + ",token:'" + t + "'\n");
             if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
-                Repair repair = validated_lr_repair(stack, token, index);
-                //System.out.println(repair);
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column()+"\n");
+                Repair repair = validated_lr_repair(stack, token, index);
+                System.out.println(repair);
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
@@ -89,7 +89,7 @@ public class LR1 {
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t.get_type_name(), g.vocabulary)][state].p;
                 sb.append("reduce:" + p+"\n");
-                for (int i = 0; i < p.rhs.length; i++) {
+                for (int i = 0; i < p.right.rhs.length; i++) {
                     stack.pop();
                 }
                 int top = stack.top();
@@ -111,10 +111,10 @@ public class LR1 {
     }
     
     private void dfs(LRTerm term, List<LRTerm> list, Set<String>[] first_set, Grammar g) {
-        if (term.p.rhs.length == term.dot) {
+        if (term.p.right.rhs.length == term.dot) {
             return;
         }
-        String symbol = term.p.rhs[term.dot];
+        String symbol = term.p.right.rhs[term.dot];
         List<Production> p_list = match_lhs(symbol, g);
         for (int j = 0; j < p_list.size(); j++) {
             Set<String> firsts = first(compute_alpha(term), first_set, g);
@@ -131,10 +131,10 @@ public class LR1 {
     private LRState goto1(LRState state, String symbol, Grammar g, Set<String>[] first_set) {
         LRState result = new LRState();
         for (LRTerm term : state.terms) {
-            if (term.p.rhs.length == term.dot) {
+            if (term.p.right.rhs.length == term.dot) {
                 continue;
             }
-            if (term.p.rhs[term.dot].equals(symbol)) {
+            if (term.p.right.rhs[term.dot].equals(symbol)) {
                 LRTerm new_term = new LRTerm(new LRCoreTerm(term.p, term.dot + 1), term.look_ahead);
                 result.terms.add(new_term);
             }
@@ -172,8 +172,8 @@ public class LR1 {
             c[i] = new Continuation();
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
-                if (term.p.rhs.length == term.dot) {
-                    if (term.p.rhs[term.dot - 1].equals(g.eof)) {
+                if (term.p.right.rhs.length == term.dot) {
+                    if (term.p.right.rhs[term.dot - 1].equals(g.eof)) {
                         c[i].type = ContinuationType.ACCEPT;
                     }
                     else {
@@ -183,7 +183,7 @@ public class LR1 {
                     break;
                 }
                 else {
-                    String symbol = term.p.rhs[term.dot];
+                    String symbol = term.p.right.rhs[term.dot];
                     if (is_terminal(symbol, g.terminals)) {
                         c[i].type = ContinuationType.TERMINAL;
                         c[i].symbol = symbol;
@@ -223,7 +223,7 @@ public class LR1 {
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
-                if (term.p.rhs.length != term.dot) {
+                if (term.p.right.rhs.length != term.dot) {
                     compute_shift(i, term);
                 }
                 else {
@@ -254,7 +254,7 @@ public class LR1 {
     }
     
     private void compute_shift(int i, LRTerm term) {
-        String symbol = term.p.rhs[term.dot];
+        String symbol = term.p.right.rhs[term.dot];
         if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
             if (!symbol.equals(g.eof)) {
                 ActionItem ai = action[index(symbol, g.vocabulary)][i];
@@ -285,10 +285,10 @@ public class LR1 {
     }
     
     private String[] compute_alpha(LRTerm term) {
-        String[] new_array = new String[term.p.rhs.length - term.dot];
+        String[] new_array = new String[term.p.right.rhs.length - term.dot];
         int j = 0;
-        for (int i = term.dot + 1; i < term.p.rhs.length; i++) {
-            new_array[j++] = term.p.rhs[i];
+        for (int i = term.dot + 1; i < term.p.right.rhs.length; i++) {
+            new_array[j++] = term.p.right.rhs[i];
         }
         new_array[j] = term.look_ahead;
         return new_array;
@@ -402,7 +402,7 @@ public class LR1 {
             }
             else if (action[index(symbol, g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(symbol, g.vocabulary)][state].p;
-                for (int j = 0; j < p.rhs.length; j++) {
+                for (int j = 0; j < p.right.rhs.length; j++) {
                     temp_stack.pop();
                 }
                 int top = temp_stack.top();
@@ -482,7 +482,7 @@ public class LR1 {
             }
             else {
                 Production p = ca[parse_stack.top()].p;
-                for (int i = 0; i < p.rhs.length; i++) {
+                for (int i = 0; i < p.right.rhs.length; i++) {
                     parse_stack.pop();
                 }
                 parse_stack.push(go_to[index(p.lhs, g.vocabulary)][parse_stack.top()]);
