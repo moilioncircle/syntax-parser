@@ -44,7 +44,7 @@ public class LR1 {
     private int[][]        go_to;
     private Continuation[] ca;
     private ActionItem[][] action;
-    public Stack<String> semantic;
+    public Stack<String>   semantic;
     
     public LR1(Grammar g) {
         this.g = g;
@@ -86,7 +86,7 @@ public class LR1 {
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
-                semantic.push("t.get("+index+")");
+                semantic.push("t.get(" + index + ")");
                 sb.append("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol + "\n");
                 index++;
                 t = token.get(index);
@@ -100,7 +100,7 @@ public class LR1 {
                     param.add(semantic.pop());
                 }
                 String str = merge(p.right.semantic_action, param);
-                System.out.println(str);
+                System.out.println(str.equals("") ? str : str + ";");
                 semantic.push(str);
                 int top = stack.top();
                 stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
@@ -116,7 +116,7 @@ public class LR1 {
         while (m.find()) {
             String dollor_id = m.group();
             int index = Integer.parseInt(dollor_id.substring(1));
-            m.appendReplacement(sb, (String) param.get(index));
+            m.appendReplacement(sb, (String) param.get(param.size() - index - 1));
         }
         m.appendTail(sb);
         return sb.toString();

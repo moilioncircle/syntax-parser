@@ -29,4 +29,11 @@ public class Assoc {
     public Assoc() {
         
     }
+    
+    @Override
+    public String toString() {
+        return "Assoc [precedence=" + precedence + ", association=" + association + ", symbol_list=" + symbol_list
+               + "]";
+    }
+    
 }

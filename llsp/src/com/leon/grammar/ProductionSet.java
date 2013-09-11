@@ -38,7 +38,7 @@ public class ProductionSet {
     }
     
     public ProductionSet or(String... rhs) {
-        or(null, null, rhs);
+        or(null, "", rhs);
         return this;
     }
     

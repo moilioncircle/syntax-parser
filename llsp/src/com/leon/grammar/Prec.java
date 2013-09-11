@@ -14,4 +14,9 @@ public class Prec {
     public Prec(String perc_symbol) {
         this.perc_symbol = perc_symbol;
     }
+    
+    @Override
+    public String toString() {
+        return "Prec [perc_symbol=" + perc_symbol + "]";
+    }
 }
