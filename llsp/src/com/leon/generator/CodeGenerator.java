@@ -20,16 +20,16 @@ import com.leon.util.ISymbol;
  */
 
 public class CodeGenerator {
-    
+    List<ISymbol> t;
     Grammar                   g          = new Grammar();
     int                       precedence = 1;
-    List<ISymbol>             tokens     = new ArrayList<ISymbol>();             //by assoc;
-    List<ISymbol>             rule       = new ArrayList<ISymbol>();             //by production's right hand;
+    List<ISymbol>             tokens     = new ArrayList<ISymbol>();            //by assoc;
+    List<ISymbol>             rule       = new ArrayList<ISymbol>();            //by production's right hand;
     List<ProductionRightHand> rules      = new ArrayList<ProductionRightHand>();
     
     //Declaration
-    public Assoc generate_assoc(Associativity assoc_type) {
-        Assoc assoc = new Assoc(precedence++, assoc_type);
+    public Assoc generate_assoc(Object assoc_type) {
+        Assoc assoc = new Assoc(precedence++, (Associativity)assoc_type);
         for (ISymbol symbol : tokens) {
             assoc.add_symbol(symbol.get_type_name());
         }
@@ -39,40 +39,40 @@ public class CodeGenerator {
         return assoc;
     }
     
-    public Terminal generate_terminal(ISymbol token, int insert_cost, int delete_cost) {
-        Terminal t = new Terminal(token.get_type_name(), insert_cost, delete_cost);
+    public Terminal generate_terminal(Object token, Object insert_cost, Object delete_cost) {
+        Terminal t = new Terminal(((ISymbol)token).get_type_name(), (Integer)((ISymbol)insert_cost).get_value(), (Integer)((ISymbol)delete_cost).get_value());
         g.terminals_list.add(t);
         return t;
     }
     
-    public ISymbol generate_start_symbol(ISymbol symbol) {
-        g.start_symbol = symbol.get_type_name();
-        return symbol;
+    public ISymbol generate_start_symbol(Object symbol) {
+        g.start_symbol = ((ISymbol)symbol).get_type_name();
+        return (ISymbol)symbol;
     }
     
-    public ISymbol generate_action(ISymbol action) {
-        return action;
+    public ISymbol generate_action(Object action) {
+        return (ISymbol)action;
     }
     
     //Precedence
-    public Associativity generate_associativity(ISymbol symbol) {
-        return Associativity.valueOf(symbol.get_type_name());
+    public Associativity generate_associativity(Object symbol) {
+        return Associativity.valueOf(((ISymbol)symbol).get_type_name());
     }
     
     //Tokens
-    public List<ISymbol> generate_tokens(ISymbol token) {
-        tokens.add(token);
+    public List<ISymbol> generate_tokens(Object token) {
+        tokens.add((ISymbol)token);
         return tokens;
     }
     
     //Token
-    public ISymbol generate_token(ISymbol token) {
-        return token;
+    public ISymbol generate_token(Object token) {
+        return (ISymbol)token;
     }
     
     //Productions
-    public List<ProductionSet> generate_productions(ISymbol token) {
-        ProductionSet set = new ProductionSet(token.get_type_name());
+    public List<ProductionSet> generate_productions(Object token) {
+        ProductionSet set = new ProductionSet(((ISymbol)token).get_type_name());
         for (ProductionRightHand p : rules) {
             set.rhs_set.add(p);
         }
@@ -83,35 +83,35 @@ public class CodeGenerator {
     }
     
     //Rules
-    public List<ProductionRightHand> generate_rules(ProductionRightHand right) {
-        rules.add(right);
+    public List<ProductionRightHand> generate_rules(Object right) {
+        rules.add((ProductionRightHand)right);
         return rules;
     }
     
     //GrammarRule
-    public ProductionRightHand generate_grammarRule(Prec prec, ISymbol action) {
+    public ProductionRightHand generate_grammarRule(Object prec, Object action) {
         String[] rhs = new String[rule.size()];
         for (int i = 0; i < rule.size(); i++) {
             rhs[i] = rule.get(i).get_type_name();
         }
         ProductionRightHand right = new ProductionRightHand();
         right.rhs = rhs;
-        right.prec = prec;
-        right.semantic_action = (String) action.get_value();
+        right.prec = (Prec)prec;
+        right.semantic_action = (String)((ISymbol)action).get_value();
         //reset rule;
         rule = new ArrayList<ISymbol>();
         return right;
     }
     
     //Rule
-    public List<ISymbol> generate_rule(ISymbol token) {
-        rule.add(token);
+    public List<ISymbol> generate_rule(Object token) {
+        rule.add((ISymbol)token);
         return rule;
     }
     
     //Prec
-    public Prec generate_prec(ISymbol token) {
-        Prec prec = new Prec(token.get_type_name());
+    public Prec generate_prec(Object token) {
+        Prec prec = new Prec(((ISymbol)token).get_type_name());
         return prec;
     }
 }

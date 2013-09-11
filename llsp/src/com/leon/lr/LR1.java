@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
@@ -42,6 +44,7 @@ public class LR1 {
     private int[][]        go_to;
     private Continuation[] ca;
     private ActionItem[][] action;
+    public Stack<String> semantic;
     
     public LR1(Grammar g) {
         this.g = g;
@@ -55,6 +58,7 @@ public class LR1 {
     public String lr1_driver(List<ISymbol> token) throws IOException {
         StringBuilder sb = new StringBuilder();
         Stack<Integer> stack = new Stack<Integer>();
+        semantic = new Stack<String>();
         stack.push(0);
         int index = 0;
         ISymbol t = token.get(index);
@@ -62,7 +66,7 @@ public class LR1 {
             int state = stack.top();
             sb.append("state:" + state + ",token:'" + t + "'\n");
             if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
-                sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column()+"\n");
+                sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
                 Repair repair = validated_lr_repair(stack, token, index);
                 System.out.println(repair);
                 int delete_size = repair.delete_size;
@@ -77,26 +81,44 @@ public class LR1 {
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
                 sb.append("accecped\n");
-                sb.append(stack+"\n");
+                sb.append(stack + "\n");
                 break;
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.S) {
                 stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
-                sb.append("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol+"\n");
+                semantic.push("t.get("+index+")");
+                sb.append("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol + "\n");
                 index++;
                 t = token.get(index);
             }
             else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.R) {
                 Production p = action[index(t.get_type_name(), g.vocabulary)][state].p;
-                sb.append("reduce:" + p+"\n");
+                sb.append("reduce:" + p + "\n");
+                List<String> param = new ArrayList<String>();
                 for (int i = 0; i < p.right.rhs.length; i++) {
                     stack.pop();
+                    param.add(semantic.pop());
                 }
+                String str = merge(p.right.semantic_action, param);
+                System.out.println(str);
+                semantic.push(str);
                 int top = stack.top();
                 stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
             }
-            sb.append(stack+"\n");
+            sb.append(stack + "\n");
         }
+        return sb.toString();
+    }
+    
+    private String merge(String semantic_action, List<String> param) {
+        Matcher m = Pattern.compile("\\$\\d+").matcher(semantic_action);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String dollor_id = m.group();
+            int index = Integer.parseInt(dollor_id.substring(1));
+            m.appendReplacement(sb, (String) param.get(index));
+        }
+        m.appendTail(sb);
         return sb.toString();
     }
     

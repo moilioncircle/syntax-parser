@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.leon.grammar.Grammar;
-import com.leon.grammar.ProductionSet;
+import com.leon.grammar.Production;
 import com.leon.lr.LR1;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
@@ -21,28 +21,39 @@ import com.leon.util.IToken;
 public class CCGrammar {
     
     public Grammar getGrammar() {
-        List<ProductionSet> list = new ArrayList<ProductionSet>();
-        list.add(new ProductionSet("program").or("Descriptor", "EOF"));
-        list.add(new ProductionSet("Descriptor").or("Declarations", "SectionMarker", "Production_set", "Usercode").or(
-                "SectionMarker", "Productions", "Usercode"));
-        list.add(new ProductionSet("Usercode").or("SectionMarker", "ACTION").or(new String[] { "SectionMarker" }));
-        list.add(new ProductionSet("SectionMarker").or("MARK"));
-        list.add(new ProductionSet("Declarations").or("Declarations", "Declaration").or("Declaration"));
-        list.add(new ProductionSet("Declaration").or("SEMI")
-                                                 .or("Precedence", "Tokens")
-                                                 .or("NAME", "COLON", "Token", "NUM", "NUM")
-                                                 .or("START", "COLON", "Token")
-                                                 .or("ACTION"));
-        list.add(new ProductionSet("Precedence").or("LEFT").or("RIGHT").or("NONASSOC").or("BINARY"));
-        list.add(new ProductionSet("Tokens").or("Tokens", "COMMA", "Token").or("Token"));
-        list.add(new ProductionSet("Token").or("TOKEN"));
-        list.add(new ProductionSet("Productions").or("Productions", "TOKEN", "COLON", "Rules", "SEMI").or("TOKEN",
-                "COLON", "Rules", "SEMI"));
-        list.add(new ProductionSet("Rules").or("Rules", "OR", "GrammarRule").or("GrammarRule"));
-        list.add(new ProductionSet("GrammarRule").or("Rule", "Prec", "ACTION").or("Rule", "ACTION").or("ACTION").or());
-        list.add(new ProductionSet("Rule").or("Rule", "TOKEN").or("TOKEN"));
-        list.add(new ProductionSet("Prec").or("PREC", "TOKEN"));
-        Grammar g = new Grammar("program", list, null);
+        List<Production> list = new ArrayList<Production>();
+        list.add(new Production("program", new String[] { "Descriptor", "EOF" },""));
+        list.add(new Production("Descriptor", new String[] { "Declarations", "SectionMarker", "Productions","Usercode" },""));
+        list.add(new Production("Descriptor", new String[] { "SectionMarker", "Productions", "Usercode" },""));
+        list.add(new Production("Usercode", new String[] { "SectionMarker", "ACTION" },""));
+        list.add(new Production("Usercode", new String[] { "SectionMarker" },""));
+        list.add(new Production("SectionMarker", new String[] { "MARK" },""));
+        list.add(new Production("Declarations", new String[] { "Declarations", "Declaration" },""));
+        list.add(new Production("Declarations", new String[] { "Declaration" },""));
+        list.add(new Production("Declaration", new String[] { "SEMI" },""));
+        list.add(new Production("Declaration", new String[] { "Precedence", "Tokens" },"generate_assoc($0,$1)"));
+        list.add(new Production("Declaration", new String[] { "NAME", "COLON", "Token", "NUM", "NUM" },"generate_terminal($2,$3,$4)"));
+        list.add(new Production("Declaration", new String[] { "START", "COLON", "Token" },"generate_start_symbol($2)"));
+        list.add(new Production("Declaration", new String[] { "ACTION" },"generate_action($0)"));
+        list.add(new Production("Precedence", new String[] { "LEFT" },"generate_associativity($0)"));
+        list.add(new Production("Precedence", new String[] { "RIGHT" },"generate_associativity($0)"));
+        list.add(new Production("Precedence", new String[] { "NONASSOC" },"generate_associativity($0)"));
+        list.add(new Production("Precedence", new String[] { "BINARY" },"generate_associativity($0)"));
+        list.add(new Production("Tokens", new String[] { "Tokens", "COMMA", "Token" },"generate_tokens($2)"));
+        list.add(new Production("Tokens", new String[] { "Token" },"generate_tokens($0)"));
+        list.add(new Production("Token", new String[] { "TOKEN" },"generate_token($0)"));
+        list.add(new Production("Productions", new String[] { "Productions", "TOKEN", "COLON", "Rules", "SEMI" },"generate_productions($1)"));
+        list.add(new Production("Productions", new String[] { "TOKEN", "COLON", "Rules", "SEMI" },"generate_productions($0)"));
+        list.add(new Production("Rules", new String[] { "Rules", "OR", "GrammarRule" },"generate_rules($2)"));
+        list.add(new Production("Rules", new String[] { "GrammarRule" },"generate_rules($0)"));
+        list.add(new Production("GrammarRule", new String[] { "Rule", "Prec", "ACTION" },"generate_grammarRule($1,$2)"));
+        list.add(new Production("GrammarRule", new String[] { "Rule", "ACTION" },"generate_grammarRule(null,$1)"));
+        list.add(new Production("GrammarRule", new String[] { "ACTION" },"generate_grammarRule(null,$0)"));
+        list.add(new Production("GrammarRule", new String[] {},"generate_grammarRule(null,null)"));
+        list.add(new Production("Rule", new String[] { "Rule", "TOKEN" },"generate_rule($1)"));
+        list.add(new Production("Rule", new String[] { "TOKEN" },"generate_rule($0)"));
+        list.add(new Production("Prec", new String[] { "PREC", "TOKEN" },"generate_prec($1)"));
+        Grammar g = new Grammar(list, "program", null);
         return g;
     }
     
@@ -56,5 +67,6 @@ public class CCGrammar {
         }
         LR1 lr1 = new LR1(g);
         System.out.println(lr1.lr1_driver(list));
+        System.out.println(lr1.semantic);
     }
 }
