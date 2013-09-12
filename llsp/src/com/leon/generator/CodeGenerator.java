@@ -23,12 +23,7 @@ import com.leon.util.ISymbol;
 
 public abstract class CodeGenerator implements BaseCodeGenerator {
     
-    public List<ISymbol> t;
     private int          precedence = 1;
-    
-    public CodeGenerator(List<ISymbol> t) {
-        this.t = t;
-    }
     
     //Declaration
     public Assoc generate_assoc(Associativity assoc_type, List<ISymbol> tokens) {

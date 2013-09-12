@@ -1,7 +1,6 @@
 
 package com.leon.generator;
 
-import java.io.IOException;
 
 /**
  * @author : Leon
@@ -11,5 +10,4 @@ import java.io.IOException;
 
 public interface BaseCodeGenerator {
     
-    public void generate(String fileName,Class<?> clazz) throws IOException;
 }

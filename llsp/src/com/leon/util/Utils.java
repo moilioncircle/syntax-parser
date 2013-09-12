@@ -1,6 +1,9 @@
 
 package com.leon.util;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.leon.cc.CCToken;
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
@@ -325,10 +329,22 @@ public class Utils {
         return new Assoc(0, Associativity.NONASSOC);
     }
     
+    public static List<ISymbol> getSymbolList(String fileName, Class<?> clazz) throws UnsupportedEncodingException,
+            IOException {
+        InputStreamReader reader = new InputStreamReader(clazz.getResourceAsStream(fileName), "UTF8");
+        IToken token = new CCToken(reader);
+        List<ISymbol> list = new ArrayList<ISymbol>();
+        while (token.has_next()) {
+            list.add(token.next_token());
+        }
+        return list;
+    }
+    
     private static boolean have_derives(String nonterminal, String terminal, Grammar g) {
         for (int i = 0; i < g.productions.size(); i++) {
             Production production = g.productions.get(i);
-            if (production.lhs.equals(nonterminal) && production.right.rhs.length > 0 && production.right.rhs[0].equals(terminal)) {
+            if (production.lhs.equals(nonterminal) && production.right.rhs.length > 0
+                && production.right.rhs[0].equals(terminal)) {
                 return true;
             }
         }

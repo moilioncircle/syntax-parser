@@ -63,7 +63,7 @@ public class CCGrammar {
     
     public static void main(String[] args) throws IOException {
         Grammar g = new CCGrammar().getGrammar();
-        InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("test.g"), "UTF8");
+        InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("syntax.g"), "UTF8");
         IToken t = new CCToken(reader);
         List<ISymbol> list = new ArrayList<ISymbol>();
         while (t.has_next()) {

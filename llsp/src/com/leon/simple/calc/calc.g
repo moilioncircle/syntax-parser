@@ -1,30 +1,20 @@
 #
 package com.leon.generator;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.leon.grammar.Assoc;
-import com.leon.grammar.Associativity;
-import com.leon.grammar.Grammar;
-import com.leon.grammar.Prec;
-import com.leon.grammar.ProductionRightHand;
-import com.leon.grammar.ProductionSet;
-import com.leon.grammar.Terminal;
-import com.leon.lr.LR1;
-import com.leon.util.ISymbol;
+import com.leon.simple.calc.E;
+import com.leon.simple.calc.P;
+import com.leon.simple.calc.T;
+import com.leon.util.*;
 
 /**
  * @author : Leon
- * @since : 2013-9-11
+ * @since : 2013-9-12
  * @see :
  */
 
-public class CaleGenerator implements BaseCodeGenerator{
-
-    public CaleGenerator(){
-    }
+public class CalcGenerator {
 #
 %name : EOF 20 20;
 %name : PLUS 3 3;
