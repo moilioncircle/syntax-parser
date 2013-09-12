@@ -1,9 +1,11 @@
 
 package com.leon.generator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.leon.cc.Syntax;
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
@@ -19,11 +21,14 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public class CodeGenerator {
+public abstract class CodeGenerator implements BaseCodeGenerator {
     
     public List<ISymbol> t;
-    public Grammar       g          = new Grammar();
     private int          precedence = 1;
+    
+    public CodeGenerator(List<ISymbol> t) {
+        this.t = t;
+    }
     
     //Declaration
     public Assoc generate_assoc(Associativity assoc_type, List<ISymbol> tokens) {
@@ -31,19 +36,16 @@ public class CodeGenerator {
         for (ISymbol symbol : tokens) {
             assoc.add_symbol((String) symbol.get_value());
         }
-        g.assoc_list.add(assoc);
         return assoc;
     }
     
     public Terminal generate_terminal(ISymbol token, ISymbol insert_cost, ISymbol delete_cost) {
         Terminal t = new Terminal((String) token.get_value(), (Integer) insert_cost.get_value(),
                 (Integer) delete_cost.get_value());
-        g.terminals_list.add(t);
         return t;
     }
     
     public ISymbol generate_start_symbol(ISymbol symbol) {
-        g.start_symbol = (String) symbol.get_value();
         return (ISymbol) symbol;
     }
     
@@ -75,12 +77,23 @@ public class CodeGenerator {
     
     //Productions
     public List<ProductionSet> generate_productions(ISymbol token, List<ProductionRightHand> rules) {
+        List<ProductionSet> production_set = new ArrayList<ProductionSet>();
         ProductionSet set = new ProductionSet((String) token.get_value());
         for (ProductionRightHand p : rules) {
             set.rhs_set.add(p);
         }
-        g.production_set.add(set);
-        return g.production_set;
+        production_set.add(set);
+        return production_set;
+    }
+    
+    public List<ProductionSet> generate_productions(List<ProductionSet> production_set, ISymbol token,
+                                                    List<ProductionRightHand> rules) {
+        ProductionSet set = new ProductionSet((String) token.get_value());
+        for (ProductionRightHand p : rules) {
+            set.rhs_set.add(p);
+        }
+        production_set.add(set);
+        return production_set;
     }
     
     //Rules
@@ -108,7 +121,6 @@ public class CodeGenerator {
         right.rhs = rhs;
         right.prec = prec == null ? null : prec;
         right.semantic_action = action == null ? "" : (String) action.get_value();
-        System.out.println(right);
         return right;
     }
     
@@ -135,67 +147,41 @@ public class CodeGenerator {
         return action;
     }
     
-    public void generate() {
-        generate_header(t.get(0));
-
-        generate_token(t.get(3));
-        generate_terminal(generate_token(t.get(3)),t.get(4),t.get(5));
-
-
-
-        generate_token(t.get(9));
-        generate_start_symbol(generate_token(t.get(9)));
-
-
-
-        generate_associativity(t.get(11));
-        generate_token(t.get(12));
-        generate_tokens(generate_token(t.get(12)));
-        generate_token(t.get(14));
-        generate_tokens(generate_tokens(generate_token(t.get(12))),generate_token(t.get(14)));
-        generate_assoc(generate_associativity(t.get(11)),generate_tokens(generate_tokens(generate_token(t.get(12))),generate_token(t.get(14))));
-
-
-
-        generate_associativity(t.get(16));
-        generate_token(t.get(17));
-        generate_tokens(generate_token(t.get(17)));
-        generate_token(t.get(19));
-        generate_tokens(generate_tokens(generate_token(t.get(17))),generate_token(t.get(19)));
-        generate_assoc(generate_associativity(t.get(16)),generate_tokens(generate_tokens(generate_token(t.get(17))),generate_token(t.get(19))));
-
-
-
-        generate_associativity(t.get(21));
-        generate_token(t.get(22));
-        generate_tokens(generate_token(t.get(22)));
-        generate_assoc(generate_associativity(t.get(21)),generate_tokens(generate_token(t.get(22))));
-
-
-
-
-        generate_rule(t.get(27));
-        generate_rule(generate_rule(t.get(27)),t.get(28));
-        generate_grammarRule(generate_rule(generate_rule(t.get(27)),t.get(28)),null,t.get(29));
-        generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(27)),t.get(28)),null,t.get(29)));
-        generate_grammarRule(null,null,t.get(31));
-        generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(27)),t.get(28)),null,t.get(29))),generate_grammarRule(null,null,t.get(31)));
-        generate_productions(t.get(25),generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(27)),t.get(28)),null,t.get(29))),generate_grammarRule(null,null,t.get(31))));
-        generate_rule(t.get(35));
-        generate_rule(generate_rule(t.get(35)),t.get(36));
-        generate_prec(t.get(38));
-        generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39));
-        generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39)));
-        generate_rule(t.get(41));
-        generate_rule(generate_rule(t.get(41)),t.get(42));
-        generate_grammarRule(generate_rule(generate_rule(t.get(41)),t.get(42)),null,t.get(43));
-        generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39))),generate_grammarRule(generate_rule(generate_rule(t.get(41)),t.get(42)),null,t.get(43)));
-        generate_grammarRule(null,null,t.get(45));
-        generate_rules(generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39))),generate_grammarRule(generate_rule(generate_rule(t.get(41)),t.get(42)),null,t.get(43))),generate_grammarRule(null,null,t.get(45)));
-        generate_grammarRule(null,null,null);
-        generate_rules(generate_rules(generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39))),generate_grammarRule(generate_rule(generate_rule(t.get(41)),t.get(42)),null,t.get(43))),generate_grammarRule(null,null,t.get(45))),generate_grammarRule(null,null,null));
-        generate_productions(t.get(33),generate_rules(generate_rules(generate_rules(generate_rules(generate_grammarRule(generate_rule(generate_rule(t.get(35)),t.get(36)),generate_prec(t.get(38)),t.get(39))),generate_grammarRule(generate_rule(generate_rule(t.get(41)),t.get(42)),null,t.get(43))),generate_grammarRule(null,null,t.get(45))),generate_grammarRule(null,null,null)));
-
-        generate_footer(t.get(49));
+    //Declarations
+    public List<Object> generate_declarations(Object declaration) {
+        List<Object> declarations = new ArrayList<Object>();
+        declarations.add(declaration);
+        return declarations;
     }
+    
+    public List<Object> generate_declarations(List<Object> declarations, Object declaration) {
+        declarations.add(declaration);
+        return declarations;
+    }
+    
+    //Descriptor
+    public Syntax generate_descriptor(ISymbol action, List<Object> declarations, List<ProductionSet> productions,
+                                      ISymbol usercode) throws IOException {
+        Syntax s = new Syntax();
+        s.header = (String) action.get_value();
+        Grammar g = new Grammar();
+        for (Object declaration : declarations) {
+            if (declaration instanceof Assoc) {
+                g.assoc_list.add((Assoc) declaration);
+            }
+            else if (declaration instanceof Terminal) {
+                g.terminals_list.add((Terminal) declaration);
+            }
+            else if (declaration instanceof ISymbol) {
+                g.start_symbol = (String) ((ISymbol) declaration).get_value();
+            }
+        }
+        g.production_set = productions;
+        g.init_productions();
+        g.init();
+        s.g = g;
+        s.footer = (String) usercode.get_value();
+        return s;
+    }
+    
 }

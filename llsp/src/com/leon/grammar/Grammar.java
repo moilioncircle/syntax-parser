@@ -24,14 +24,8 @@ public class Grammar {
     public Grammar(String start_symbol, List<ProductionSet> production_set, List<Terminal> terminals_list) {
         this(start_symbol, terminals_list);
         this.production_set = production_set;
-        for (int i = 0; i < production_set.size(); i++) {
-            productions.addAll(production_set.get(i).get_productions());
-        }
-        set_nonterminals();
-        set_terminals();
-        set_vocabulary();
-        set_start_production();
-        set_eof();
+        init_productions();
+        init();
     }
     
     public Grammar(String start_symbol, List<ProductionSet> production_set, List<Terminal> terminals_list,
@@ -43,6 +37,26 @@ public class Grammar {
     public Grammar(List<Production> productions, String start_symbol, List<Terminal> terminals_list) {
         this(start_symbol, terminals_list);
         this.productions = productions;
+        init_production_set();
+        init();
+    }
+    
+    public Grammar(List<Production> productions, String start_symbol, List<Terminal> terminals_list,
+            List<Assoc> assoc_list) {
+        this(productions, start_symbol, terminals_list);
+        this.assoc_list = assoc_list;
+    }
+    
+    public Grammar() {
+        
+    }
+    
+    private Grammar(String start_symbol, List<Terminal> terminals_list) {
+        this.start_symbol = start_symbol;
+        this.terminals_list = terminals_list;
+    }
+    
+    public void init_production_set() {
         for (int i = 0; i < productions.size(); i++) {
             Production production = productions.get(i);
             ProductionSet p_set = contain_lhs(production.lhs);
@@ -55,26 +69,20 @@ public class Grammar {
                 p_set.or(production.right.rhs);
             }
         }
+    }
+    
+    public void init_productions() {
+        for (int i = 0; i < production_set.size(); i++) {
+            productions.addAll(production_set.get(i).get_productions());
+        }
+    }
+    
+    public void init() {
         set_nonterminals();
         set_terminals();
         set_vocabulary();
         set_start_production();
         set_eof();
-    }
-    
-    public Grammar(List<Production> productions, String start_symbol, List<Terminal> terminals_list,
-            List<Assoc> assoc_list) {
-        this(productions, start_symbol, terminals_list);
-        this.assoc_list = assoc_list;
-    }
-    
-    public Grammar(){
-        
-    }
-    
-    private Grammar(String start_symbol, List<Terminal> terminals_list) {
-        this.start_symbol = start_symbol;
-        this.terminals_list = terminals_list;
     }
     
     private void set_vocabulary() {

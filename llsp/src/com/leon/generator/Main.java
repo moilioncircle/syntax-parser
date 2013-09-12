@@ -8,8 +8,6 @@ import java.util.List;
 
 import com.leon.cc.CCGrammar;
 import com.leon.cc.CCToken;
-import com.leon.grammar.ProductionSet;
-import com.leon.grammar.Terminal;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
 
@@ -28,18 +26,8 @@ public class Main {
         while (t.has_next()) {
             list.add(t.next_token());
         }
-        CodeGenerator c = new CodeGenerator();
-        c.t = list;
+        CCCodeGenerator c = new CCCodeGenerator(list);
         c.generate();
-        
-        System.out.println(c.g.start_symbol);
-        for (Terminal terminal : c.g.terminals_list){
-            System.out.println(terminal);
-        }
-        System.out.println(c.g.assoc_list);
-        for (ProductionSet ps : c.g.production_set) {
-            System.out.println(ps);
-        }
     }
     
 }

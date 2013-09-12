@@ -38,17 +38,25 @@ import com.leon.util.Stack;
 
 public class LR1 {
     
-    private Grammar        g;
-    private Set<String>[]  first_set;
-    private List<LRState>  label_list;
-    private int[][]        go_to;
-    private Continuation[] ca;
-    private ActionItem[][] action;
-    public Stack<String>   semantic;
+    public Grammar        grammar = new Grammar();
+    public Set<String>[]  first_set;
+    public List<LRState>  label_list;
+    public int[][]        go_to;
+    public Continuation[] ca;
+    public ActionItem[][] action;
+    public Stack<String>  semantic;
     
     public LR1(Grammar g) {
-        this.g = g;
-        first_set = fill_first_set(this.g);
+        init(g);
+    }
+    
+    public LR1() {
+        
+    }
+    
+    public void init(Grammar grammar) {
+        this.grammar = grammar;
+        first_set = fill_first_set(this.grammar);
         label_list = build_label();
         go_to = build_goto1();
         ca = label_continuation_action();
@@ -65,10 +73,10 @@ public class LR1 {
         while (true) {
             int state = stack.top();
             sb.append("state:" + state + ",token:'" + t + "'\n");
-            if (action[index(t.get_type_name(), g.vocabulary)][state] == null) {
+            if (action[index(t.get_type_name(), grammar.vocabulary)][state] == null) {
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
                 Repair repair = validated_lr_repair(stack, token, index);
-                System.out.println(repair);
+//                System.out.println(repair);
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
@@ -78,21 +86,21 @@ public class LR1 {
                 t = token.get(index);
                 continue;
             }
-            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.A) {
-                stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
+            else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.A) {
+                stack.push(go_to[index(t.get_type_name(), grammar.vocabulary)][state]);
                 sb.append("accecped\n");
                 sb.append(stack + "\n");
                 break;
             }
-            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.S) {
-                stack.push(go_to[index(t.get_type_name(), g.vocabulary)][state]);
+            else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.S) {
+                stack.push(go_to[index(t.get_type_name(), grammar.vocabulary)][state]);
                 semantic.push("t.get(" + index + ")");
-                sb.append("shift:" + action[index(t.get_type_name(), g.vocabulary)][state].symbol + "\n");
+                sb.append("shift:" + action[index(t.get_type_name(), grammar.vocabulary)][state].symbol + "\n");
                 index++;
                 t = token.get(index);
             }
-            else if (action[index(t.get_type_name(), g.vocabulary)][state].type == ActionType.R) {
-                Production p = action[index(t.get_type_name(), g.vocabulary)][state].p;
+            else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.R) {
+                Production p = action[index(t.get_type_name(), grammar.vocabulary)][state].p;
                 sb.append("reduce:" + p + "\n");
                 List<String> param = new ArrayList<String>();
                 for (int i = 0; i < p.right.rhs.length; i++) {
@@ -100,10 +108,10 @@ public class LR1 {
                     param.add(semantic.pop());
                 }
                 String str = merge(p.right.semantic_action, param);
-                System.out.println(str.equals("") ? str : str + ";");
+//                System.out.println(str.equals("") ? str : str + ";");
                 semantic.push(str);
                 int top = stack.top();
-                stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
+                stack.push(go_to[index(p.lhs, grammar.vocabulary)][top]);
             }
             sb.append(stack + "\n");
         }
@@ -165,18 +173,18 @@ public class LR1 {
     }
     
     private List<LRState> build_label() {
-        LRTerm term = new LRTerm(new LRCoreTerm(g.start_production, 0), null);
+        LRTerm term = new LRTerm(new LRCoreTerm(grammar.start_production, 0), null);
         LRState start = new LRState();
         start.terms.add(term);
-        start = closure1(start, g, first_set);
+        start = closure1(start, grammar, first_set);
         Queue<LRState> queue = new Queue<LRState>();
         queue.put(start);
         List<LRState> label_list = new ArrayList<LRState>();
         label_list.add(start);
         while (!queue.is_empty()) {
             LRState state = queue.poll();
-            for (int i = 0; i < g.vocabulary.length; i++) {
-                LRState to_state = goto1(state, g.vocabulary[i], g, first_set);
+            for (int i = 0; i < grammar.vocabulary.length; i++) {
+                LRState to_state = goto1(state, grammar.vocabulary[i], grammar, first_set);
                 if (to_state.terms.size() != 0) {
                     if (!is_labeled(to_state, label_list)) {
                         label_list.add(to_state);
@@ -195,7 +203,7 @@ public class LR1 {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
                 if (term.p.right.rhs.length == term.dot) {
-                    if (term.p.right.rhs[term.dot - 1].equals(g.eof)) {
+                    if (term.p.right.rhs[term.dot - 1].equals(grammar.eof)) {
                         c[i].type = ContinuationType.ACCEPT;
                     }
                     else {
@@ -206,7 +214,7 @@ public class LR1 {
                 }
                 else {
                     String symbol = term.p.right.rhs[term.dot];
-                    if (is_terminal(symbol, g.terminals)) {
+                    if (is_terminal(symbol, grammar.terminals)) {
                         c[i].type = ContinuationType.TERMINAL;
                         c[i].symbol = symbol;
                         break;
@@ -221,7 +229,7 @@ public class LR1 {
     }
     
     private int[][] build_goto1() {
-        int[][] go_to = new int[g.vocabulary.length][label_list.size()];
+        int[][] go_to = new int[grammar.vocabulary.length][label_list.size()];
         // initialize go_to table;
         for (int i = 0; i < go_to.length; i++) {
             for (int j = 0; j < go_to[i].length; j++) {
@@ -230,10 +238,10 @@ public class LR1 {
         }
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
-            for (int j = 0; j < g.vocabulary.length; j++) {
-                LRState to_state = goto1(state, g.vocabulary[j], g, first_set);
+            for (int j = 0; j < grammar.vocabulary.length; j++) {
+                LRState to_state = goto1(state, grammar.vocabulary[j], grammar, first_set);
                 if (to_state.terms.size() != 0) {
-                    go_to[index(g.vocabulary[j], g.vocabulary)][i] = label_list.indexOf(to_state);
+                    go_to[index(grammar.vocabulary[j], grammar.vocabulary)][i] = label_list.indexOf(to_state);
                 }
             }
         }
@@ -241,7 +249,7 @@ public class LR1 {
     }
     
     private void build_action1() {
-        this.action = new ActionItem[g.vocabulary.length][label_list.size()];
+        this.action = new ActionItem[grammar.vocabulary.length][label_list.size()];
         for (int i = 0; i < label_list.size(); i++) {
             LRState state = label_list.get(i);
             for (LRTerm term : state.terms) {
@@ -257,7 +265,7 @@ public class LR1 {
     
     private void compute_reduce(int i, LRTerm term) {
         if (term.look_ahead != null) {
-            ActionItem ai = action[index(term.look_ahead, g.vocabulary)][i];
+            ActionItem ai = action[index(term.look_ahead, grammar.vocabulary)][i];
             if (ai != null) {
                 if (ai.type == ActionType.S) {
                     if (!resolveShiftReduceConflict(term.look_ahead, i, term.p)) {
@@ -270,16 +278,17 @@ public class LR1 {
                 }
             }
             else {
-                action[index(term.look_ahead, g.vocabulary)][i] = new ActionItem(ActionType.R, term.p, term.look_ahead);
+                action[index(term.look_ahead, grammar.vocabulary)][i] = new ActionItem(ActionType.R, term.p,
+                        term.look_ahead);
             }
         }
     }
     
     private void compute_shift(int i, LRTerm term) {
         String symbol = term.p.right.rhs[term.dot];
-        if (is_terminal(symbol, g.terminals) && go_to[index(symbol, g.vocabulary)][i] != -1) {
-            if (!symbol.equals(g.eof)) {
-                ActionItem ai = action[index(symbol, g.vocabulary)][i];
+        if (is_terminal(symbol, grammar.terminals) && go_to[index(symbol, grammar.vocabulary)][i] != -1) {
+            if (!symbol.equals(grammar.eof)) {
+                ActionItem ai = action[index(symbol, grammar.vocabulary)][i];
                 if (ai != null && ai.type == ActionType.R) {
                     if (!resolveShiftReduceConflict(symbol, i, ai.p)) {
                         System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + symbol
@@ -287,11 +296,11 @@ public class LR1 {
                     }
                 }
                 else {
-                    action[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
+                    action[index(symbol, grammar.vocabulary)][i] = new ActionItem(ActionType.S, symbol);
                 }
             }
             else {
-                action[index(symbol, g.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
+                action[index(symbol, grammar.vocabulary)][i] = new ActionItem(ActionType.A, symbol);
             }
         }
     }
@@ -318,8 +327,8 @@ public class LR1 {
     
     private boolean resolveShiftReduceConflict(String symbol, int state, Production p) {
         Associativity association;
-        Assoc symbol_assoc = get_symbol_assoc(symbol, g.assoc_list);
-        Assoc production_assoc = get_production_assoc(p, g.assoc_list, g.terminals);
+        Assoc symbol_assoc = get_symbol_assoc(symbol, grammar.assoc_list);
+        Assoc production_assoc = get_production_assoc(p, grammar.assoc_list, grammar.terminals);
         if (symbol_assoc.precedence == 0 || production_assoc.precedence == 0) {
             return false;
         }
@@ -340,12 +349,12 @@ public class LR1 {
                 return false;
             case LEFT:
                 //reduce;
-                action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+                action[index(symbol, grammar.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
                 break;
             
             case RIGHT:
                 //shift;
-                action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.S, p, symbol);
+                action[index(symbol, grammar.vocabulary)][state] = new ActionItem(ActionType.S, p, symbol);
                 break;
         }
         return true;
@@ -353,15 +362,15 @@ public class LR1 {
     }
     
     private boolean resolveReduceReduceConflict(String symbol, int state, Production p1, Production p2) {
-        int index_p1 = g.productions.indexOf(p1);
-        int index_p2 = g.productions.indexOf(p2);
+        int index_p1 = grammar.productions.indexOf(p1);
+        int index_p2 = grammar.productions.indexOf(p2);
         Production p = index_p1 > index_p2 ? p1 : p2;
-        action[index(symbol, g.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
+        action[index(symbol, grammar.vocabulary)][state] = new ActionItem(ActionType.R, p, symbol);
         return true;
     }
     
     private List<ISymbol> choose_validated_insert(Stack<Integer> parse_stack, List<ISymbol> suffix) {
-        List<Terminal> terminals = g.terminals_list;
+        List<Terminal> terminals = grammar.terminals_list;
         List<ISymbol> insert = new ArrayList<ISymbol>();
         //sort by cost
         Collections.sort(terminals, new Comparator<Terminal>() {
@@ -404,10 +413,10 @@ public class LR1 {
         String symbol = strs.get(i).get_type_name();
         while (i < strs.size()) {
             int state = temp_stack.top();
-            if (action[index(symbol, g.vocabulary)][state] == null) {
+            if (action[index(symbol, grammar.vocabulary)][state] == null) {
                 return false;
             }
-            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.A) {
+            else if (action[index(symbol, grammar.vocabulary)][state].type == ActionType.A) {
                 if (i == strs.size() - 1) {
                     return true;
                 }
@@ -415,20 +424,20 @@ public class LR1 {
                     return false;
                 }
             }
-            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.S) {
-                temp_stack.push(go_to[index(symbol, g.vocabulary)][state]);
+            else if (action[index(symbol, grammar.vocabulary)][state].type == ActionType.S) {
+                temp_stack.push(go_to[index(symbol, grammar.vocabulary)][state]);
                 i++;
                 if (i < strs.size()) {
                     symbol = strs.get(i).get_type_name();
                 }
             }
-            else if (action[index(symbol, g.vocabulary)][state].type == ActionType.R) {
-                Production p = action[index(symbol, g.vocabulary)][state].p;
+            else if (action[index(symbol, grammar.vocabulary)][state].type == ActionType.R) {
+                Production p = action[index(symbol, grammar.vocabulary)][state].p;
                 for (int j = 0; j < p.right.rhs.length; j++) {
                     temp_stack.pop();
                 }
                 int top = temp_stack.top();
-                temp_stack.push(go_to[index(p.lhs, g.vocabulary)][top]);
+                temp_stack.push(go_to[index(p.lhs, grammar.vocabulary)][top]);
             }
         }
         return true;
@@ -478,14 +487,14 @@ public class LR1 {
         if (type == CostType.INSERT) {
             int total = 0;
             for (int i = 0; i < inserts.size(); i++) {
-                total += g.get_terminal_by_name(inserts.get(i).get_type_name()).insert_cost;
+                total += grammar.get_terminal_by_name(inserts.get(i).get_type_name()).insert_cost;
             }
             return total;
         }
         else {
             int total = 0;
             for (int i = 0; i < inserts.size(); i++) {
-                total += g.get_terminal_by_name(inserts.get(i).get_type_name()).delete_cost;
+                total += grammar.get_terminal_by_name(inserts.get(i).get_type_name()).delete_cost;
             }
             return total;
         }
@@ -500,14 +509,14 @@ public class LR1 {
             }
             else if (ca[parse_stack.top()].type == ContinuationType.TERMINAL) {
                 continuation.add(new FakeSymbol(ca[parse_stack.top()].symbol));
-                parse_stack.push(go_to[index(ca[parse_stack.top()].symbol, g.vocabulary)][parse_stack.top()]);
+                parse_stack.push(go_to[index(ca[parse_stack.top()].symbol, grammar.vocabulary)][parse_stack.top()]);
             }
             else {
                 Production p = ca[parse_stack.top()].p;
                 for (int i = 0; i < p.right.rhs.length; i++) {
                     parse_stack.pop();
                 }
-                parse_stack.push(go_to[index(p.lhs, g.vocabulary)][parse_stack.top()]);
+                parse_stack.push(go_to[index(p.lhs, grammar.vocabulary)][parse_stack.top()]);
             }
         }
     }
