@@ -11,5 +11,5 @@ import java.io.IOException;
 
 public interface BaseCodeGenerator {
     
-    public void generate() throws IOException;
+    public void generate(String fileName,Class<?> clazz) throws IOException;
 }

@@ -27,7 +27,7 @@ public class Main {
             list.add(t.next_token());
         }
         CCCodeGenerator c = new CCCodeGenerator(list);
-        c.generate();
+        c.generate("test.g",CCGrammar.class);
     }
     
 }
