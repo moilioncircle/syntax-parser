@@ -342,15 +342,6 @@ public class Utils {
         return list;
     }
     
-    public static List<ISymbol> getSymbolList(String str) throws UnsupportedEncodingException, IOException {
-        IToken t = new Token(new StringReader(str));
-        List<ISymbol> list = new ArrayList<ISymbol>();
-        while (t.has_next()) {
-            list.add(t.next_token());
-        }
-        return list;
-    }
-    
     private static boolean have_derives(String nonterminal, String terminal, Grammar g) {
         for (int i = 0; i < g.productions.size(); i++) {
             Production production = g.productions.get(i);

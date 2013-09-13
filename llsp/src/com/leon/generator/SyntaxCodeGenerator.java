@@ -1,5 +1,9 @@
 package com.leon.generator;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +14,14 @@ import javax.tools.JavaFileObject;
 import javax.tools.ToolProvider;
 
 import com.leon.cc.CCGrammar;
+import com.leon.cc.CCToken;
 import com.leon.cc.Syntax;
 import com.leon.dynamic.CharSequenceJavaFileObject;
 import com.leon.dynamic.ClassFileManager;
 import com.leon.lr.LR1;
+import com.leon.simple.Token;
 import com.leon.util.ISymbol;
+import com.leon.util.IToken;
 import com.leon.util.Utils;
 
 
