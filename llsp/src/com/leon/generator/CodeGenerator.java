@@ -21,7 +21,7 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public abstract class CodeGenerator implements BaseCodeGenerator {
+public abstract class CodeGenerator {
     
     private int          precedence = 1;
     

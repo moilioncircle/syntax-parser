@@ -1,18 +1,12 @@
 package com.leon.generator;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.tools.JavaCompiler;
-
 import com.leon.cc.CCGrammar;
-import com.leon.cc.CCToken;
 import com.leon.cc.Syntax;
 import com.leon.lr.LR1;
 import com.leon.util.ISymbol;
-import com.leon.util.IToken;
 import com.leon.util.Utils;
 
 
@@ -55,4 +49,3 @@ public class SyntaxCodeGenerator extends CodeGenerator{
         System.out.println("}");
     }
 }
-
