@@ -47,7 +47,7 @@ public class CodeGenerator implements BaseCodeGenerator{
 %name : PREC 1 2;
 %start : program;
 %%
-program         : Descriptor EOF ##
+program         : Descriptor EOF #generate_program($0)#
                 ;
 Descriptor      : ACTION Declarations SectionMarker Productions Usercode #generate_descriptor($0,$1,$3,$4)#
                 ;

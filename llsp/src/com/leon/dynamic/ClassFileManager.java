@@ -16,7 +16,7 @@ import javax.tools.StandardJavaFileManager;
  * @see :
  */
 
-public class ClassFileManager extends ForwardingJavaFileManager {
+public class ClassFileManager extends ForwardingJavaFileManager<StandardJavaFileManager> {
     
     /**
      * Instance of JavaClassObject that will store the

@@ -88,6 +88,15 @@ public class LR1 {
             }
             else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type_name(), grammar.vocabulary)][state]);
+                semantic.push("t.get(" + index + ")");
+                Production p = grammar.start_production;
+                List<String> param = new ArrayList<String>();
+                for (int i = 0; i < p.right.rhs.length; i++) {
+                    stack.pop();
+                    param.add(semantic.pop());
+                }
+                String str = merge(p.right.semantic_action, param);
+                semantic.push(str);
                 sb.append("accecped\n");
                 sb.append(stack + "\n");
                 break;

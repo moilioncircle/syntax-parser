@@ -22,7 +22,7 @@ public class CCGrammar {
     
     public Grammar getGrammar() {
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("program", new String[] { "Descriptor", "EOF" }));
+        list.add(new Production("program", new String[] { "Descriptor", "EOF" },"generate_program($0)"));
         list.add(new Production("Descriptor", new String[] { "ACTION", "Declarations", "SectionMarker", "Productions",
                 "Usercode" }, "generate_descriptor($0,$1,$3,$4)"));
         list.add(new Production("Usercode", new String[] { "SectionMarker", "ACTION" }, "generate_footer($1)"));

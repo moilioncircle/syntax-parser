@@ -23,7 +23,7 @@ import com.leon.util.ISymbol;
 
 public abstract class CodeGenerator {
     
-    private int          precedence = 1;
+    private int precedence = 1;
     
     //Declaration
     public Assoc generate_assoc(Associativity assoc_type, List<ISymbol> tokens) {
@@ -179,4 +179,8 @@ public abstract class CodeGenerator {
         return s;
     }
     
+    //program
+    public Syntax generate_program(Syntax descriptor) {
+        return descriptor;
+    }
 }
