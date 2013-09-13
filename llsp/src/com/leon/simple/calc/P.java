@@ -9,7 +9,7 @@ import com.leon.util.ISymbol;
  * @see :
  */
 
-public class P {
+public class P implements Value {
     
     public ISymbol symbol;
     public E       e;
@@ -20,5 +20,15 @@ public class P {
     
     public P(E e) {
         this.e = e;
+    }
+    
+    @Override
+    public int value() {
+        if (symbol == null) {
+            return e.value();
+        }
+        else {
+            return ((Integer) symbol.get_value()).intValue();
+        }
     }
 }

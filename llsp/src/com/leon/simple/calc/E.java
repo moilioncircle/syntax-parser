@@ -7,7 +7,7 @@ package com.leon.simple.calc;
  * @see :
  */
 
-public class E {
+public class E implements Value {
     
     public E e;
     public T t;
@@ -19,5 +19,13 @@ public class E {
     
     public E(T t) {
         this.t = t;
+    }
+    
+    @Override
+    public int value() {
+        if (e == null) {
+            return t.value();
+        }
+        return e.value() + t.value();
     }
 }

@@ -1,8 +1,9 @@
 #
-package com.leon.generator;
 
 import java.util.List;
 
+import com.leon.generator.BaseCodeGenerator;
+import com.leon.simple.calc.S;
 import com.leon.simple.calc.E;
 import com.leon.simple.calc.P;
 import com.leon.simple.calc.T;
@@ -14,7 +15,7 @@ import com.leon.util.*;
  * @see :
  */
 
-public class CalcGenerator {
+public class CalcGenerator implements BaseCodeGenerator{
 #
 %name : EOF 20 20;
 %name : PLUS 3 3;

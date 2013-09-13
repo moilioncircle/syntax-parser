@@ -5,7 +5,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileManager;
+import javax.tools.JavaFileObject;
+import javax.tools.ToolProvider;
+
 import com.leon.cc.Syntax;
+import com.leon.dynamic.CharSequenceJavaFileObject;
+import com.leon.dynamic.ClassFileManager;
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
@@ -182,5 +189,16 @@ public abstract class CodeGenerator {
     //program
     public Syntax generate_program(Syntax descriptor) {
         return descriptor;
+    }
+    
+    public Object dynamic_compile(List<ISymbol> list, String className, String src) throws Exception {
+        System.out.println(src);
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        JavaFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
+        List<JavaFileObject> jfiles = new ArrayList<JavaFileObject>();
+        jfiles.add(new CharSequenceJavaFileObject(className, src));
+        compiler.getTask(null, fileManager, null, null, null, jfiles).call();
+        Object instance = fileManager.getClassLoader(null).loadClass(className).newInstance();
+        return instance.getClass().getMethod("generate", List.class).invoke(instance, list);
     }
 }
