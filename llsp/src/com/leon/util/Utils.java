@@ -3,7 +3,6 @@ package com.leon.util;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,6 @@ import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
-import com.leon.simple.Token;
 
 /**
  * @author : Leon

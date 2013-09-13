@@ -68,7 +68,7 @@ Precedence      : LEFT #generate_associativity($0)#
                 | NONASSOC #generate_associativity($0)#
                 | BINARY #generate_associativity($0)#
                 ;
-Tokens          : Tokens COMMA Token SEMI #generate_tokens($0,$2)#
+Tokens          : Tokens COMMA Token #generate_tokens($0,$2)#
                 | Token #generate_tokens($0)#
                 ;
 Token           : TOKEN #generate_token($0)#

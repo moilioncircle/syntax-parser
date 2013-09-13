@@ -76,7 +76,7 @@ public class LR1 {
             if (action[index(t.get_type_name(), grammar.vocabulary)][state] == null) {
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
                 Repair repair = validated_lr_repair(stack, token, index);
-//                System.out.println(repair);
+                System.out.println(repair);
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
