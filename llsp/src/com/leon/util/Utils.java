@@ -3,6 +3,7 @@ package com.leon.util;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
 import com.leon.grammar.Production;
 import com.leon.grammar.ProductionSet;
+import com.leon.simple.Token;
 
 /**
  * @author : Leon
@@ -336,6 +338,15 @@ public class Utils {
         List<ISymbol> list = new ArrayList<ISymbol>();
         while (token.has_next()) {
             list.add(token.next_token());
+        }
+        return list;
+    }
+    
+    public static List<ISymbol> getSymbolList(String str) throws UnsupportedEncodingException, IOException {
+        IToken t = new Token(new StringReader(str));
+        List<ISymbol> list = new ArrayList<ISymbol>();
+        while (t.has_next()) {
+            list.add(t.next_token());
         }
         return list;
     }
