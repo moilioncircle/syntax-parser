@@ -45,4 +45,4 @@ reduce:E->E MINUS E
 [1, 0]
 state:1,token:'type:EOF'
 accecped
-[5, 1, 0]
+[0]

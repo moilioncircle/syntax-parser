@@ -30,4 +30,4 @@ reduce:S->V ASSIGN E
 [1, 0]
 state:1,token:'type:EOF'
 accecped
-[6, 1, 0]
+[0]
