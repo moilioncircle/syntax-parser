@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 
 public class FileUtils {
     
-    public static String readFile(String fileName,Class<?> clazz) {
+    public static String readFile(String fileName, Class<?> clazz) {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
         try {
@@ -28,7 +28,10 @@ public class FileUtils {
         }
         finally {
             try {
-                br.close();
+                if (br != null) {
+                    br.close();
+                }
+                
             }
             catch (IOException e) {
                 e.printStackTrace();
