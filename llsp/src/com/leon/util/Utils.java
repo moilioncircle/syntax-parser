@@ -329,13 +329,24 @@ public class Utils {
         return new Assoc(0, Associativity.NONASSOC);
     }
     
-    public static List<ISymbol> getSymbolList(String fileName, Class<?> clazz) throws UnsupportedEncodingException,
-            IOException {
-        InputStreamReader reader = new InputStreamReader(clazz.getResourceAsStream(fileName), "UTF8");
-        IToken token = new CCToken(reader);
+    public static List<ISymbol> getSymbolList(String fileName, Class<?> clazz) throws IOException {
         List<ISymbol> list = new ArrayList<ISymbol>();
-        while (token.has_next()) {
-            list.add(token.next_token());
+        InputStreamReader reader = null;
+        try {
+            reader = new InputStreamReader(clazz.getResourceAsStream(fileName), "UTF8");
+            IToken token = new CCToken(reader);
+            
+            while (token.has_next()) {
+                list.add(token.next_token());
+            }
+        }
+        catch (IOException e) {
+            throw e;
+        }
+        finally {
+            if (reader != null) {
+                reader.close();
+            }
         }
         return list;
     }
