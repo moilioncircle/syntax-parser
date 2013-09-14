@@ -11,50 +11,55 @@ import com.leon.util.ISymbol;
 
 public class E implements Value {
     
-    public ISymbol num;
-    public ISymbol uminus;
-    public E       e1;
-    public ISymbol op;
-    public E e2;
-    public E e3;
+    private ISymbol num;
+    private ISymbol uminus;
+    private E       e1;
+    private ISymbol op;
+    private E       e2;
     
-    public E(E e1,ISymbol op,E e2){
+    public E(E e1, ISymbol op, E e2) {
         this.e1 = e1;
         this.e2 = e2;
         this.op = op;
     }
     
-    public E(E e1){
+    public E(E e1) {
         this.e1 = e1;
     }
     
-    public E(ISymbol num){
+    public E(ISymbol num) {
         this.num = num;
     }
     
-    public E(ISymbol uminus,ISymbol num){
+    public E(ISymbol uminus, ISymbol num) {
         this.uminus = uminus;
         this.num = num;
     }
     
     @Override
     public int value() {
-        if (e1 != null && e2 !=null && op != null) {
-            if(op.get_type_name().equals("PLUS")){
+        if (e1 != null && e2 != null && op != null) {
+            if (op.get_type_name().equals("PLUS")) {
                 return e1.value() + e2.value();
-            }else if(op.get_type_name().equals("MINUS")){
+            }
+            else if (op.get_type_name().equals("MINUS")) {
                 return e1.value() - e2.value();
-            }else if(op.get_type_name().equals("TIMES")){
+            }
+            else if (op.get_type_name().equals("TIMES")) {
                 return e1.value() * e2.value();
-            }else if(op.get_type_name().equals("DIVIDE")){
+            }
+            else if (op.get_type_name().equals("DIVIDE")) {
                 return e1.value() / e2.value();
             }
-        }else if(e1 != null && e2 ==null){
+        }
+        else if (e1 != null && e2 == null) {
             return e1.value();
-        }else if(uminus != null && num != null){
-            return -((Integer)num.get_value()).intValue();
-        }else if(uminus == null && num != null){
-            return ((Integer)num.get_value()).intValue();
+        }
+        else if (uminus != null && num != null) {
+            return -((Integer) num.get_value()).intValue();
+        }
+        else if (uminus == null && num != null) {
+            return ((Integer) num.get_value()).intValue();
         }
         throw new UnsupportedOperationException("sss");
     }
