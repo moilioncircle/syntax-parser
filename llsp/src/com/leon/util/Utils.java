@@ -1,6 +1,8 @@
 
 package com.leon.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -328,11 +330,11 @@ public class Utils {
         return new Assoc(0, Associativity.NONASSOC);
     }
     
-    public static List<ISymbol> getSymbolList(String fileName, Class<?> clazz) throws IOException {
+    public static List<ISymbol> getSymbolList(File file) throws IOException {
         List<ISymbol> list = new ArrayList<ISymbol>();
         InputStreamReader reader = null;
         try {
-            reader = new InputStreamReader(clazz.getResourceAsStream(fileName), "UTF8");
+            reader = new InputStreamReader(new FileInputStream(file), "UTF8");
             IToken token = new CCToken(reader);
             
             while (token.has_next()) {
