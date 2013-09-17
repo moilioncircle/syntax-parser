@@ -1,18 +1,8 @@
 #
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.leon.generator.CodeGenerator;
 import com.leon.generator.BaseCodeGenerator;
-import com.leon.grammar.Assoc;
-import com.leon.grammar.Associativity;
-import com.leon.grammar.Grammar;
-import com.leon.grammar.Prec;
-import com.leon.grammar.ProductionRightHand;
-import com.leon.grammar.ProductionSet;
-import com.leon.grammar.Terminal;
-import com.leon.lr.LR1;
 
 /**
  * @author : Leon
@@ -20,7 +10,7 @@ import com.leon.lr.LR1;
  * @see :
  */
 
-public class SyntaxGenerator extends CodeGenerator implements BaseCodeGenerator{
+public class SyntaxCodeGenerator extends CodeGenerator implements BaseCodeGenerator{
 #
 %name : EOF 20 20;
 %name : ACTION 14 14;
@@ -40,7 +30,7 @@ public class SyntaxGenerator extends CodeGenerator implements BaseCodeGenerator{
 %name : OR 11 11;
 %name : PREC 12 12;
 %start : program;
-%class SyntaxGenerator;
+%class SyntaxCodeGenerator;
 %%
 program         : Descriptor EOF #generate_program($0)#
                 ;
