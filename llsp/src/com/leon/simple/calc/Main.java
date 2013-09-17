@@ -24,7 +24,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         SyntaxCodeGenerator scg = new SyntaxCodeGenerator();
         List<ISymbol> parse_str = getSymbolList("2+3*6+(5*4+3*8+9)*-5");
-        Object o = scg.generate(new File("resourses/calc.g"), parse_str, "CalcGenerator");
+        Object o = scg.generate(new File("resourses/calc.g"), parse_str);
         S s = (S) o;
         System.out.println(s.value());
     }

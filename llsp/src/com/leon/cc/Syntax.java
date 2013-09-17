@@ -14,4 +14,5 @@ public class Syntax {
     public String  header;
     public Grammar g;
     public String  footer;
+    public String  classname;
 }

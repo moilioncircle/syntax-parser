@@ -1,6 +1,8 @@
 
 package com.leon.cc;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ public class CCGrammar {
     
     public Grammar getGrammar() {
         List<Production> list = new ArrayList<Production>();
-        list.add(new Production("program", new String[] { "Descriptor", "EOF" },"generate_program($0)"));
+        list.add(new Production("program", new String[] { "Descriptor", "EOF" }, "generate_program($0)"));
         list.add(new Production("Descriptor", new String[] { "ACTION", "Declarations", "SectionMarker", "Productions",
                 "Usercode" }, "generate_descriptor($0,$1,$3,$4)"));
         list.add(new Production("Usercode", new String[] { "SectionMarker", "ACTION" }, "generate_footer($1)"));
@@ -35,7 +37,9 @@ public class CCGrammar {
         list.add(new Production("Declaration", new String[] { "NAME", "COLON", "Token", "NUM", "NUM", "SEMI" },
                 "generate_terminal($2,$3,$4)"));
         list.add(new Production("Declaration", new String[] { "START", "COLON", "Token", "SEMI" },
-                "generate_start_symbol($2)"));
+                "generate_start_symbol($0,$2)"));
+        list.add(new Production("Declaration", new String[] { "CLASSNAME", "Token", "SEMI" },
+                "generate_classname($0,$1)"));
         list.add(new Production("Precedence", new String[] { "LEFT" }, "generate_associativity($0)"));
         list.add(new Production("Precedence", new String[] { "RIGHT" }, "generate_associativity($0)"));
         list.add(new Production("Precedence", new String[] { "NONASSOC" }, "generate_associativity($0)"));
@@ -63,7 +67,7 @@ public class CCGrammar {
     
     public static void main(String[] args) throws IOException {
         Grammar g = new CCGrammar().getGrammar();
-        InputStreamReader reader = new InputStreamReader(CCGrammar.class.getResourceAsStream("syntax.g"), "UTF8");
+        InputStreamReader reader = new InputStreamReader(new FileInputStream(new File("resourses/syntax.g")), "UTF8");
         IToken t = new CCToken(reader);
         List<ISymbol> list = new ArrayList<ISymbol>();
         while (t.has_next()) {

@@ -27,6 +27,7 @@ public class CalcGenerator implements BaseCodeGenerator{
 %left TIMES,DIVIDE;
 %right UMINUS;
 %start : S;
+%class CalcGenerator;
 %%
 S               : E EOF #new S($0)#
                 ;

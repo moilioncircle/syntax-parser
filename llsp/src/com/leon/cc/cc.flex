@@ -52,6 +52,7 @@ OctDigit = [0-7]
     "%binary"                       { return symbol("BINARY",yytext()); }
     "%prec"                         { return symbol("PREC",yytext()); }
     "%start"                        { return symbol("START",yytext()); }
+    "%class"                        { return symbol("CLASSNAME",yytext()); }
     ","                             { return symbol("COMMA",yytext()); }
     "="                             { return symbol("ASSIGN",yytext()); }
     "["                             { return symbol("LBRACKET",yytext()); }

@@ -29,23 +29,25 @@ public class CodeGenerator implements BaseCodeGenerator{
         this.t = t;
     }
 #
-%name : EOF 1 2;
-%name : ACTION 1 2;
-%name : MARK 1 2;
-%name : SEMI 1 2;
+%name : EOF 20 20;
+%name : ACTION 14 14;
+%name : MARK 6 6;
+%name : SEMI 1 1;
 %name : NAME 1 2;
-%name : COLON 1 2;
-%name : NUM 1 2;
-%name : START 1 2;
-%name : LEFT 1 2;
-%name : RIGHT 1 2;
-%name : NONASSOC 1 2;
-%name : BINARY 1 2;
-%name : COMMA 1 2;
-%name : TOKEN 1 2;
-%name : OR 1 2;
-%name : PREC 1 2;
+%name : COLON 3 3;
+%name : NUM 5 5;
+%name : START 13 13;
+%name : CLASSNAME 15 15;
+%name : LEFT 7 7;
+%name : RIGHT 8 8;
+%name : NONASSOC 9 9;
+%name : BINARY 10 10;
+%name : COMMA 2 2;
+%name : TOKEN 4 4;
+%name : OR 11 11;
+%name : PREC 12 12;
 %start : program;
+%class CodeGenerator;
 %%
 program         : Descriptor EOF #generate_program($0)#
                 ;
@@ -61,7 +63,8 @@ Declarations    : Declarations Declaration #generate_declarations($0,$1)#
                 ;
 Declaration     : Precedence Tokens SEMI #generate_assoc($0,$1)#
                 | NAME COLON Token NUM NUM SEMI #generate_terminal($2,$3,$4)#
-                | START COLON Token SEMI #generate_start_symbol($2)#
+                | START COLON Token SEMI #generate_start_symbol($0,$2)#
+                | CLASSNAME Token SEMI #generate_classname($0,$1)#
                 ;
 Precedence      : LEFT #generate_associativity($0)#
                 | RIGHT #generate_associativity($0)#

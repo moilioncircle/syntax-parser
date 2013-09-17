@@ -47,8 +47,18 @@ public abstract class CodeGenerator {
         return t;
     }
     
-    public ISymbol generate_start_symbol(ISymbol symbol) {
-        return (ISymbol) symbol;
+    public List<ISymbol> generate_start_symbol(ISymbol type, ISymbol symbol) {
+        List<ISymbol> list = new ArrayList<ISymbol>();
+        list.add(type);
+        list.add(symbol);
+        return list;
+    }
+    
+    public List<ISymbol> generate_classname(ISymbol type, ISymbol symbol) {
+        List<ISymbol> list = new ArrayList<ISymbol>();
+        list.add(type);
+        list.add(symbol);
+        return list;
     }
     
     public ISymbol generate_header(ISymbol action) {
@@ -162,6 +172,7 @@ public abstract class CodeGenerator {
     }
     
     //Descriptor
+    @SuppressWarnings("unchecked")
     public Syntax generate_descriptor(ISymbol action, List<Object> declarations, List<ProductionSet> productions,
                                       ISymbol usercode) throws IOException {
         Syntax s = new Syntax();
@@ -174,8 +185,16 @@ public abstract class CodeGenerator {
             else if (declaration instanceof Terminal) {
                 g.terminals_list.add((Terminal) declaration);
             }
-            else if (declaration instanceof ISymbol) {
-                g.start_symbol = (String) ((ISymbol) declaration).get_value();
+            else if (declaration instanceof List) {
+                List<ISymbol> list = (List<ISymbol>) declaration;
+                ISymbol type = list.get(0);
+                ISymbol value = list.get(1);
+                if (type.get_type_name().equals("START")) {
+                    g.start_symbol = (String) value.get_value();
+                }
+                else if (type.get_type_name().equals("CLASSNAME")) {
+                    s.classname = (String) value.get_value();
+                }
             }
         }
         g.production_set = productions;

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
@@ -30,6 +32,7 @@ import com.leon.util.ISymbol;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
 
+
 /**
  * @author : Leon
  * @since : 2013-8-13
@@ -37,6 +40,7 @@ import com.leon.util.Stack;
  */
 
 public class LR1 {
+    public static final Logger logger = Logger.getLogger(LR1.class.getName());
     
     public Grammar        grammar = new Grammar();
     public Set<String>[]  first_set;
@@ -391,7 +395,7 @@ public class LR1 {
                 return (x < y) ? -1 : ((x == y) ? 0 : 1);
             }
         });
-        List<ISymbol> continuation = get_continuation(parse_stack);
+        
         if (lr_validate(parse_stack, suffix)) {
             return null;
         }
@@ -403,6 +407,7 @@ public class LR1 {
                 break;
             }
         }
+        List<ISymbol> continuation = get_continuation(parse_stack);
         for (int i = 2; i < continuation.size(); i++) {
             if (cost(get_range(continuation, 0, i), CostType.INSERT) >= cost(insert, CostType.INSERT)) {
                 return insert;
@@ -512,7 +517,13 @@ public class LR1 {
     private List<ISymbol> get_continuation(Stack<Integer> stack) {
         List<ISymbol> continuation = new ArrayList<ISymbol>();
         Stack<Integer> parse_stack = stack.copy();
+        logger.log(Level.INFO, parse_stack.toString());
+        for (int i = 0; i < ca.length; i++) {
+            logger.log(Level.INFO,"ca["+i+"]="+ca[i].toString());
+        }
+        
         while (true) {
+            
             if (ca[parse_stack.top()].type == ContinuationType.ACCEPT) {
                 return continuation;
             }
