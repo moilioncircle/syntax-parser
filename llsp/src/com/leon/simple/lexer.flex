@@ -1,6 +1,6 @@
 package com.leon.simple;
 
-import com.leon.simple.Symbol;
+import com.leon.cc.CCSymbol;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;
 %%
@@ -12,11 +12,11 @@ import com.leon.util.IToken;
 %type ISymbol
 %{
     private ISymbol symbol(String type) {
-        return new Symbol(type, yyline, yycolumn);
+        return new CCSymbol(type, yyline, yycolumn);
     }
     
     private ISymbol symbol(String type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+        return new CCSymbol(type, yyline, yycolumn, value);
     }
     
     @Override
