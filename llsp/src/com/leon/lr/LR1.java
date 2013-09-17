@@ -79,16 +79,17 @@ public class LR1 {
             sb.append("state:" + state + ",token:'" + t + "'\n");
             if (action[index(t.get_type_name(), grammar.vocabulary)][state] == null) {
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
-                Repair repair = validated_lr_repair(stack, token, index);
-                System.out.println(repair);
-                int delete_size = repair.delete_size;
-                List<ISymbol> insert = repair.insert;
-                index = index + delete_size;
-                if (insert != null) {
-                    token.addAll(index, insert);
-                }
-                t = token.get(index);
-                continue;
+                //TODO NEED FIX BUG
+//                Repair repair = validated_lr_repair(stack, token, index);
+//                int delete_size = repair.delete_size;
+//                List<ISymbol> insert = repair.insert;
+//                index = index + delete_size;
+//                if (insert != null) {
+//                    token.addAll(index, insert);
+//                }
+//                t = token.get(index);
+//                continue;
+                break;
             }
             else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type_name(), grammar.vocabulary)][state]);
@@ -121,7 +122,6 @@ public class LR1 {
                     param.add(semantic.pop());
                 }
                 String str = merge(p.right.semantic_action, param);
-//                System.out.println(str.equals("") ? str : str + ";");
                 semantic.push(str);
                 int top = stack.top();
                 stack.push(go_to[index(p.lhs, grammar.vocabulary)][top]);
