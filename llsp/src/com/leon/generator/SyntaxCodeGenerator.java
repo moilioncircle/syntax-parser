@@ -61,7 +61,7 @@ public class SyntaxCodeGenerator extends CodeGenerator {
         sb.append("\n\t\tStringBuilder sb = new StringBuilder();");
         sb.append("\n\t\tsb.append(\"\\n\"+s.header);");
         sb.append("\n\t\tsb.append(\"\\n    public Object generate() throws Exception {\");");
-        sb.append("\n\t\tsb.append(\"\\n        List<ISymbol> t = com.leon.util.Utils.getSymbolList(new java.io.File(\\\""+parse_target.getPath().replaceAll("\\\\", "/")+"\\\"),"+clazz.getName()+".class);\");");
+        sb.append("\n\t\tsb.append(\"\\n        List<com.leon.util.ISymbol> t = com.leon.util.Utils.getSymbolList(new java.io.File(\\\""+parse_target.getPath().replaceAll("\\\\", "/")+"\\\"),"+clazz.getName()+".class);\");");
         sb.append("\n\t\tsb.append(\"\\n        return \"+lr1.semantic.top()+\";\");");
         sb.append("\n\t\tsb.append(\"\\n    }\");");
         sb.append("\n\t\tsb.append(\"\\n\"+s.footer);");

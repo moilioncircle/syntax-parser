@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.leon.util.ISymbol;
 import com.leon.generator.CodeGenerator;
 import com.leon.generator.BaseCodeGenerator;
 import com.leon.grammar.Assoc;
