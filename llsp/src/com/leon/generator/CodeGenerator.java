@@ -210,7 +210,7 @@ public abstract class CodeGenerator {
         return descriptor;
     }
     
-    public Object dynamic_compile(List<ISymbol> list, String className, String src) throws Exception {
+    public Object dynamic_compile(String className, String src) throws Exception {
         System.out.println(src);
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
@@ -218,6 +218,6 @@ public abstract class CodeGenerator {
         jfiles.add(new CharSequenceJavaFileObject(className, src));
         compiler.getTask(null, fileManager, null, null, null, jfiles).call();
         Object instance = fileManager.getClassLoader(null).loadClass(className).newInstance();
-        return instance.getClass().getMethod("generate", List.class).invoke(instance, list);
+        return instance.getClass().getMethod("generate").invoke(instance);
     }
 }

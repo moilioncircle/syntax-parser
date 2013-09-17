@@ -5,7 +5,7 @@ import java.util.List;
 import com.leon.generator.BaseCodeGenerator;
 import com.leon.simple.calc.S;
 import com.leon.simple.calc.E;
-import com.leon.util.*;
+import com.leon.util.ISymbol;
 
 /**
  * @author : Leon

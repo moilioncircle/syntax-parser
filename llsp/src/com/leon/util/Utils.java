@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.leon.cc.CCToken;
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
 import com.leon.grammar.Grammar;
@@ -330,12 +330,12 @@ public class Utils {
         return new Assoc(0, Associativity.NONASSOC);
     }
     
-    public static List<ISymbol> getSymbolList(File file) throws IOException {
+    public static List<ISymbol> getSymbolList(File file, Class<? extends IToken> clazz) throws Exception {
         List<ISymbol> list = new ArrayList<ISymbol>();
         InputStreamReader reader = null;
         try {
             reader = new InputStreamReader(new FileInputStream(file), "UTF8");
-            IToken token = new CCToken(reader);
+            IToken token = clazz.getConstructor(Reader.class).newInstance(reader);
             
             while (token.has_next()) {
                 list.add(token.next_token());
