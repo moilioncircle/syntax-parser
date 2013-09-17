@@ -7,8 +7,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.leon.cc.CCToken;
-import com.leon.cc.Syntax;
 import com.leon.generator.SyntaxCodeGenerator;
 import com.leon.simple.Token;
 import com.leon.util.ISymbol;
@@ -24,12 +22,12 @@ public class Main {
     
     public static void main(String[] args) throws Exception {
         SyntaxCodeGenerator scg = new SyntaxCodeGenerator();
-        S o = (S) scg.generate(new File("resourses/calc.g"), new File("resourses/example_calc.ca"), Token.class);
+        T o = (T) scg.generate(new File("resourses/calc.g"), new File("resourses/example_calc.ca"), Token.class);
         System.out.println(o.value());
         
-        Syntax syntax = (Syntax) scg.generate(new File("resourses/syntax.g"), new File("resourses/syntax.g"),
-                CCToken.class);
-        System.out.println(syntax.classname);
+//        Syntax syntax = (Syntax) scg.generate(new File("resourses/syntax.g"), new File("resourses/syntax.g"),
+//                CCToken.class);
+//        System.out.println(syntax.classname);
     }
     
     public static List<ISymbol> getSymbolList(String str) throws IOException {

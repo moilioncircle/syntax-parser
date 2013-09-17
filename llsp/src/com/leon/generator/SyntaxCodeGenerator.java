@@ -57,7 +57,7 @@ public class SyntaxCodeGenerator extends CodeGenerator {
         sb.append("\n\t\tSyntax s = " + lr1.semantic.top() + ";");
         sb.append("\n\t\tLR1 lr1 = new LR1(s.g);");
         sb.append("\n\t\tList<ISymbol> list = Utils.getSymbolList(parse_target,clazz);");
-        sb.append("\n\t\tlr1.lr1_driver(list);");
+        sb.append("\n\t\tSystem.out.println(lr1.lr1_driver(list));");
         sb.append("\n\t\tStringBuilder sb = new StringBuilder();");
         sb.append("\n\t\tsb.append(\"\\n\"+s.header);");
         sb.append("\n\t\tsb.append(\"\\n    public Object generate() throws Exception {\");");

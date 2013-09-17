@@ -1,6 +1,9 @@
 
 package com.leon.simple.calc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author : Leon
  * @since : 2013-9-12
@@ -9,14 +12,25 @@ package com.leon.simple.calc;
 
 public class S implements Value {
     
-    public E e;
+    public List<E> list;
     
     public S(E e) {
-        this.e = e;
+        this.list = new ArrayList<E>();
+        this.list.add(e);
+    }
+    
+    public S(S s, E e) {
+        this.list = new ArrayList<E>(s.list);
+        this.list.add(e);
     }
     
     @Override
     public int value() {
-        return e.value();
+        int total = 0;
+        for (E e : this.list) {
+            System.out.println(e.value());
+            total += e.value();
+        }
+        return total;
     }
 }

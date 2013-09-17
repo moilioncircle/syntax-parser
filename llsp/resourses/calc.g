@@ -5,6 +5,7 @@ import java.util.List;
 import com.leon.generator.BaseCodeGenerator;
 import com.leon.simple.calc.S;
 import com.leon.simple.calc.E;
+import com.leon.simple.calc.T;
 
 /**
  * @author : Leon
@@ -22,13 +23,17 @@ public class CalcGenerator implements BaseCodeGenerator{
 %name : NUM 8 8;
 %name : LPAREN 9 9;
 %name : RPAREN 7 7;
+%name : SEMI 1 1;
 %left PLUS,MINUS;
 %left TIMES,DIVIDE;
 %right UMINUS;
-%start : S;
+%start : T;
 %class CalcGenerator;
 %%
-S               : E EOF #new S($0)#
+T               : S EOF #new T($0)#
+                ;
+S               : S E SEMI #new S($0,$1)#
+                | E SEMI #new S($0)#
                 ;
 E               : E PLUS E #new E($0,$1,$2)#
                 | E MINUS E #new E($0,$1,$2)#
