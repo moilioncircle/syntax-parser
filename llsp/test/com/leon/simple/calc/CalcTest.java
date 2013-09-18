@@ -20,7 +20,7 @@ public class CalcTest {
     @Test
     public void testCalc() throws Exception {
         Compile scg = new Compile();
-        T o = (T) scg.ast(new File("resourses/calc.g"), new File("resourses/example_calc.ca"), Token.class);
+        T o = (T) scg.ast(new File("test/com/leon/simple/calc/calc.g"), new File("test/com/leon/simple/calc/example_calc.ca"), Token.class);
         Assert.assertEquals(7229, o.value());
     }
 }
