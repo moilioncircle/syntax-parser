@@ -4,6 +4,8 @@ package com.leon.generator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -30,7 +32,9 @@ import com.leon.util.ISymbol;
 
 public abstract class CodeGenerator {
     
-    private int precedence = 1;
+    public static final Logger logger     = Logger.getLogger(CodeGenerator.class.getName());
+    
+    private int                precedence = 1;
     
     //Declaration
     public Assoc generate_assoc(Associativity assoc_type, List<ISymbol> tokens) {
@@ -211,7 +215,7 @@ public abstract class CodeGenerator {
     }
     
     public Object dynamic_compile(String className, String src) throws Exception {
-        System.out.println(src);
+        logger.log(Level.INFO, src);
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
         List<JavaFileObject> jfiles = new ArrayList<JavaFileObject>();

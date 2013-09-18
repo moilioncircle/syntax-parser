@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.leon.grammar.Assoc;
 import com.leon.grammar.Associativity;
@@ -29,7 +31,9 @@ import com.leon.grammar.ProductionSet;
 
 public class Utils {
     
-    private static String lambda = "lambda";
+    public static final Logger logger = Logger.getLogger(Utils.class.getName());
+    
+    private static String      lambda = "lambda";
     
     public static boolean[] mark_lambda(Grammar g) {
         boolean[] derives_lambda = new boolean[g.vocabulary.length];
@@ -276,7 +280,7 @@ public class Utils {
     }
     
     public static List<ProductionSet> remove_direct_left_recursion(ProductionSet ai, ProductionSet temp) {
-        System.out.println("ai:" + ai);
+        logger.log(Level.INFO, "ai:" + ai);
         List<Production> ai_ps = ai.get_productions();
         ProductionSet new_ai = new ProductionSet(ai.lhs);
         ProductionSet new_ai_tail = new ProductionSet(ai.lhs + "_tail");

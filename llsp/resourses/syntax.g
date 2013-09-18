@@ -13,10 +13,10 @@ import com.leon.generator.BaseCodeGenerator;
 public class SyntaxCodeGenerator extends CodeGenerator implements BaseCodeGenerator{
 #
 %name : EOF 20 20;
-%name : ACTION 14 14;
+%name : ACTION 4 4;
 %name : MARK 6 6;
 %name : SEMI 1 1;
-%name : NAME 1 2;
+%name : NAME 16 16;
 %name : COLON 3 3;
 %name : NUM 5 5;
 %name : START 13 13;
@@ -26,9 +26,9 @@ public class SyntaxCodeGenerator extends CodeGenerator implements BaseCodeGenera
 %name : NONASSOC 9 9;
 %name : BINARY 10 10;
 %name : COMMA 2 2;
-%name : TOKEN 4 4;
+%name : TOKEN 12 12;
 %name : OR 11 11;
-%name : PREC 12 12;
+%name : PREC 14 14;
 %start : program;
 %class SyntaxCodeGenerator;
 %%

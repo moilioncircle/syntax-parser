@@ -32,7 +32,6 @@ import com.leon.util.ISymbol;
 import com.leon.util.Queue;
 import com.leon.util.Stack;
 
-
 /**
  * @author : Leon
  * @since : 2013-8-13
@@ -40,15 +39,15 @@ import com.leon.util.Stack;
  */
 
 public class LR1 {
-    public static final Logger logger = Logger.getLogger(LR1.class.getName());
     
-    public Grammar        grammar = new Grammar();
-    public Set<String>[]  first_set;
-    public List<LRState>  label_list;
-    public int[][]        go_to;
-    public Continuation[] ca;
-    public ActionItem[][] action;
-    public Stack<String>  semantic;
+    public static final Logger logger  = Logger.getLogger(LR1.class.getName());
+    public Grammar             grammar = new Grammar();
+    public Set<String>[]       first_set;
+    public List<LRState>       label_list;
+    public int[][]             go_to;
+    public Continuation[]      ca;
+    public ActionItem[][]      action;
+    public Stack<String>       semantic;
     
     public LR1(Grammar g) {
         init(g);
@@ -79,17 +78,17 @@ public class LR1 {
             sb.append("state:" + state + ",token:'" + t + "'\n");
             if (action[index(t.get_type_name(), grammar.vocabulary)][state] == null) {
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
-                //TODO NEED FIX BUG
-//                Repair repair = validated_lr_repair(stack, token, index);
-//                int delete_size = repair.delete_size;
-//                List<ISymbol> insert = repair.insert;
-//                index = index + delete_size;
-//                if (insert != null) {
-//                    token.addAll(index, insert);
-//                }
-//                t = token.get(index);
-//                continue;
-                break;
+                Repair repair = validated_lr_repair(stack, token, index);
+                logger.log(Level.INFO, "delete size :" + repair.delete_size);
+                logger.log(Level.INFO, "insert symbols :" + repair.insert);
+                int delete_size = repair.delete_size;
+                List<ISymbol> insert = repair.insert;
+                index = index + delete_size;
+                if (insert != null) {
+                    token.addAll(index, insert);
+                }
+                t = token.get(index);
+                continue;
             }
             else if (action[index(t.get_type_name(), grammar.vocabulary)][state].type == ActionType.A) {
                 stack.push(go_to[index(t.get_type_name(), grammar.vocabulary)][state]);
@@ -180,9 +179,10 @@ public class LR1 {
             if (term.p.right.rhs[term.dot].equals(symbol)) {
                 LRTerm new_term = new LRTerm(new LRCoreTerm(term.p, term.dot + 1), term.look_ahead);
                 result.terms.add(new_term);
+                result.terms.addAll(closure1(result, g, first_set).terms);
             }
         }
-        return closure1(result, g, first_set);
+        return result;
     }
     
     private List<LRState> build_label() {
@@ -205,6 +205,11 @@ public class LR1 {
                     }
                 }
             }
+        }
+        for (int i = 0; i < label_list.size(); i++) {
+            LRState s = label_list.get(i);
+            logger.log(Level.CONFIG, "state :" + i);
+            logger.log(Level.CONFIG, s.toString());
         }
         return label_list;
     }
@@ -282,8 +287,8 @@ public class LR1 {
             if (ai != null) {
                 if (ai.type == ActionType.S) {
                     if (!resolveShiftReduceConflict(term.look_ahead, i, term.p)) {
-                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + term.look_ahead
-                                           + ";Reduce: " + term.p + ";");
+                        logger.log(Level.WARNING, "Warning: Shift/Reduce conflict. state:" + i + ";Shift:"
+                                                  + term.look_ahead + ";Reduce: " + term.p + ";");
                     }
                 }
                 else if (ai.type == ActionType.R) {
@@ -304,8 +309,8 @@ public class LR1 {
                 ActionItem ai = action[index(symbol, grammar.vocabulary)][i];
                 if (ai != null && ai.type == ActionType.R) {
                     if (!resolveShiftReduceConflict(symbol, i, ai.p)) {
-                        System.out.println("Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + symbol
-                                           + ";Reduce: " + ai.p + ";");
+                        logger.log(Level.WARNING, "Warning: Shift/Reduce conflict. state:" + i + ";Shift:" + symbol
+                                                  + ";Reduce: " + ai.p + ";");
                     }
                 }
                 else {
@@ -517,13 +522,12 @@ public class LR1 {
     private List<ISymbol> get_continuation(Stack<Integer> stack) {
         List<ISymbol> continuation = new ArrayList<ISymbol>();
         Stack<Integer> parse_stack = stack.copy();
-        logger.log(Level.INFO, parse_stack.toString());
+        logger.log(Level.CONFIG, parse_stack.toString());
         for (int i = 0; i < ca.length; i++) {
-            logger.log(Level.INFO,"ca["+i+"]="+ca[i].toString());
+            logger.log(Level.CONFIG, "ca[" + i + "]=" + ca[i].toString());
         }
         
         while (true) {
-            
             if (ca[parse_stack.top()].type == ContinuationType.ACCEPT) {
                 return continuation;
             }

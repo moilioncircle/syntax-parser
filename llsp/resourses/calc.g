@@ -23,7 +23,7 @@ public class CalcGenerator implements BaseCodeGenerator{
 %name : NUM 8 8;
 %name : LPAREN 9 9;
 %name : RPAREN 7 7;
-%name : SEMI 1 1;
+%name : SEMI 1 1;;
 %left PLUS,MINUS;
 %left TIMES,DIVIDE;
 %right UMINUS;

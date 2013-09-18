@@ -5,6 +5,8 @@ import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -26,6 +28,8 @@ import com.leon.util.Utils;
  * @see :
  */
 public class Compile extends CodeGenerator {
+    
+    public static final Logger logger = Logger.getLogger(Compile.class.getName());
     
     public Compile() {
     }
@@ -72,7 +76,7 @@ public class Compile extends CodeGenerator {
         sb.append("\n\t}");
         sb.append("\n");
         sb.append("\n}");
-        System.out.println(sb.toString());
+        logger.log(Level.INFO, sb.toString());
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileManager fileManager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
         List<JavaFileObject> jfiles = new ArrayList<JavaFileObject>();
