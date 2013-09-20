@@ -20,6 +20,6 @@ public class JsonTest {
     @Test
     public void testCalc() throws Exception {
         Compile scg = new Compile();
-        Json o = (Json) scg.ast(new File("resourses/json.g"), new File("resourses/example_json.js"), JsonToken.class);
+        Json o = (Json) scg.ast(new File("test/com/leon/simple/json/json.g"), new File("test/com/leon/simple/json/example_json.js"), JsonToken.class);
     }
 }
