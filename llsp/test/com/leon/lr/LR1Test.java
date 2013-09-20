@@ -21,7 +21,7 @@ import com.leon.grammar.Prec;
 import com.leon.grammar.Production;
 import com.leon.grammar.Terminal;
 import com.leon.ll.LL1;
-import com.leon.simple.Token;
+import com.leon.simple.calc.Token;
 import com.leon.tree.cst.CST;
 import com.leon.util.ISymbol;
 import com.leon.util.IToken;

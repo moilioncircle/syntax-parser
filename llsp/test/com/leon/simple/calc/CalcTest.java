@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.leon.generator.Compile;
-import com.leon.simple.Token;
+import com.leon.simple.calc.Token;
 
 /**
  * @author : Leon
