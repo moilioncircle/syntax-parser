@@ -1,5 +1,5 @@
 
-package com.leon.simple.calc;
+package com.leon.simple.json;
 
 import java.io.File;
 
@@ -15,12 +15,11 @@ import com.leon.simple.calc.Token;
  * @see :
  */
 
-public class CalcTest {
+public class JsonTest {
     
     @Test
     public void testCalc() throws Exception {
         Compile scg = new Compile();
-        T o = (T) scg.ast(new File("test/com/leon/simple/calc/calc.g"), new File("test/com/leon/simple/calc/example_calc.ca"), Token.class);
-        Assert.assertEquals(7229, o.value());
+        Json o = (Json) scg.ast(new File("resourses/json.g"), new File("resourses/example_json.js"), JsonToken.class);
     }
 }

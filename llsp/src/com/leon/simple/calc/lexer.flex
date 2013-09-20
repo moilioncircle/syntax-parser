@@ -1,4 +1,4 @@
-package com.leon.simple;
+package com.leon.simple.calc;
 
 import com.leon.cc.CCSymbol;
 import com.leon.util.ISymbol;
