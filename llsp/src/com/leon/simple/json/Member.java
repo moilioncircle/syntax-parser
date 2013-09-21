@@ -1,23 +1,34 @@
 
 package com.leon.simple.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author : Leon
  * @since : 2013-9-20
  * @see :
  */
 
-public class Member {
+public class Member implements JsonFormat {
     
-    private Pair   pair;
-    private Member member;
+    public List<Pair> member_list = new ArrayList<Pair>();
     
     public Member(Pair pair) {
-        this.pair = pair;
+        member_list.add(pair);
     }
     
     public Member(Pair pair, Member member) {
-        this.pair = pair;
-        this.member = member;
+        member_list.add(pair);
+        member_list.addAll(member.member_list);
+    }
+    
+    @Override
+    public List<String> format() {
+        List<String> list = new ArrayList<String>();
+        for (Pair pair : member_list) {
+            list.addAll(pair.format());
+        }
+        return list;
     }
 }
