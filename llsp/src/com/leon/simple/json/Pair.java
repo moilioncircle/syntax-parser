@@ -26,24 +26,17 @@ public class Pair implements JsonFormat {
     public List<String> format() {
         List<String> list = new ArrayList<String>();
         String key_colon = "\"" + (String) string.get_value() + "\" : ";
-        int i = 0;
-        for (String str : value.format()) {
-            if (value.format().size() == 1) {
-                list.add(key_colon + str + ",");
-            }
-            else {
-                if (i == 0) {
-                    list.add(key_colon + str);
-                }
-                else if (i != value.format().size() - 1) {
-                    list.add(FormatUtil.fillBlank(key_colon) + str);
-                }
-                else {
-                    list.add(FormatUtil.fillBlank(key_colon) + str + ",");
-                }
-            }
-            i++;
+        int size = value.format().size();
+        if (size == 1) {
+            list.add(key_colon + value.format().get(0) + ",");
         }
+        else {
+            list.add(key_colon);
+            list.addAll(value.format());
+            list.remove(list.size() - 1);
+            list.add(value.format().get(size - 1) + ",");
+        }
+        
         return list;
     }
 }
