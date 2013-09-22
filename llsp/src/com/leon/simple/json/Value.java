@@ -47,10 +47,10 @@ public class Value implements JsonFormat {
             list.add((String) value.get_value());
         }
         else if (type == ValueType.OBJECT) {
-            list.addAll(object_value.format());
+            return object_value.format();
         }
         else if (type == ValueType.ARRAY) {
-            list.addAll(array_value.format());
+            return array_value.format();
         }
         return list;
     }

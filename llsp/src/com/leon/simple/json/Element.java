@@ -33,20 +33,14 @@ public class Element implements JsonFormat {
     public List<String> format() {
         List<String> list = new ArrayList<String>();
         for (Value value : element_list) {
-            int i = 0;
-            for (String str : value.format()) {
-                if (value.format().size() == 1) {
-                    list.add(str + ",");
-                }
-                else {
-                    if (i != value.format().size() - 1) {
-                        list.add(str);
-                    }
-                    else {
-                        list.add(str + ",");
-                    }
-                }
-                i++;
+            int size = value.format().size();
+            if (size == 1) {
+                list.add(value.format().get(0) + ",");
+            }
+            else {
+                list.addAll(value.format());
+                list.remove(list.size() - 1);
+                list.add(value.format().get(size - 1) + ",");
             }
         }
         return list;
