@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.leon.generator.Compile;
@@ -28,6 +29,7 @@ public class JsonTest {
                 "test/com/leon/simple/json/example_json.js"), JsonToken.class);
         logger.log(Level.INFO, "begin:" + new Timestamp(System.currentTimeMillis()));
         List<String> list = o.format();
+        Assert.assertEquals(304, list.size());
         logger.log(Level.INFO, "end" + new Timestamp(System.currentTimeMillis()));
         for (String line : list) {
             System.out.println(line);
