@@ -2,6 +2,7 @@
 package com.leon.simple.json;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,9 +26,9 @@ public class JsonTest {
         Compile scg = new Compile();
         Json o = (Json) scg.ast(new File("test/com/leon/simple/json/json.g"), new File(
                 "test/com/leon/simple/json/example_json.js"), JsonToken.class);
-        logger.log(Level.INFO, "begin");
+        logger.log(Level.INFO, "begin:" + new Timestamp(System.currentTimeMillis()));
         List<String> list = o.format();
-        logger.log(Level.INFO, "end");
+        logger.log(Level.INFO, "end" + new Timestamp(System.currentTimeMillis()));
         for (String line : list) {
             System.out.println(line);
         }
