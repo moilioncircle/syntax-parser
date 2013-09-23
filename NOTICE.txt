@@ -1,0 +1,4 @@
+chenbaoyi's llsp parser.
+Copyright (c) 2013 chenbaoyi
+
+This software developed by chenbaoyi (http://leon-a.iteye.com).
