@@ -4,7 +4,7 @@ llsp -version 0.1.0
 =======
 llsp 简介：
 
--llsp是一个基于LR1的语法分析器，可以语法自举。
+-llsp是一个基于LR1的纯java语法分析器;运行在jdk1.7上;可以语法自举（即自己可以分析自己）。
 -通过JFLex进行词法分析之后，应用llsp来进行语法分析，并根据规则生成抽象语法树。
 -llsp可以在eclipse中直接以工程导入。有两个example：简易计算器与json格式化；可执行CalcTest，JsonTest查看运行结果。
 -llsp支持基于continuation方式的muti-error-recovery;检测多个语法错误之后给出修正建议；而不是检测出一个错误终止分析。
