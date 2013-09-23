@@ -21,17 +21,17 @@ import com.leon.simple.json.Root;
 public class JsonGenerator implements BaseCodeGenerator{
 #
 %name : EOF 20 20;
-%name : OBJECTBEGIN 3 3;
-%name : OBJECTEND 4 4;
-%name : COMMA 5 5;
-%name : COLON 6 6;
-%name : ARRAYBEGIN 8 8;
-%name : ARRAYEND 9 9;
-%name : TRUE 7 7;
-%name : FALSE 1 1;
-%name : NULL 1 1;
-%name : NUMBER 1 1;
-%name : STRING 1 1;
+%name : OBJECTBEGIN 10 10;
+%name : OBJECTEND 3 3;
+%name : COMMA 1 1;
+%name : COLON 7 7;
+%name : ARRAYBEGIN 9 9;
+%name : ARRAYEND 2 2;
+%name : TRUE 4 4;
+%name : FALSE 5 5;
+%name : NULL 6 6;
+%name : NUMBER 7 7;
+%name : STRING 8 8;
 
 %start : json;
 %class JsonGenerator;
