@@ -8,6 +8,7 @@ llsp 简介：
 -通过JFLex进行词法分析之后，应用llsp来进行语法分析，并根据规则生成抽象语法树。
 -llsp可以在eclipse中直接以工程导入。有两个example：简易计算器与json格式化；可执行CalcTest，JsonTest查看运行结果。
 -llsp支持基于continuation方式的muti-error-recovery;检测多个语法错误之后给出修正建议；而不是检测出一个错误终止分析。
+-llsp支持高度二义性文法。
 -llsp支持根据语法优先级与结合性解决shift-reduce冲突，支持根据产生式定义顺序解决reduce-reduce冲突。
 
 llsp 可以做什么：
