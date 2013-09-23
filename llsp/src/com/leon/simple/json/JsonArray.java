@@ -27,9 +27,10 @@ public class JsonArray implements JsonFormat {
         List<String> list = new ArrayList<String>();
         list.add("[");
         if (element != null) {
-            for (int i = 0; i < element.format().size(); i++) {
-                String str = element.format().get(i);
-                if (i != element.format().size() - 1) {
+            List<String> element_list = element.format();
+            for (int i = 0; i < element_list.size(); i++) {
+                String str = element_list.get(i);
+                if (i != element_list.size() - 1) {
                     list.add(new StringBuilder().append("    ").append(str).toString());
                 }
                 else {

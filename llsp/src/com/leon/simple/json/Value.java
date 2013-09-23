@@ -38,13 +38,13 @@ public class Value implements JsonFormat {
     public List<String> format() {
         List<String> list = new ArrayList<String>();
         if (type == ValueType.STRING) {
-            list.add("\"" + (String) value.get_value() + "\"");
+            list.add("\"" + value.get_value() + "\"");
         }
         else if (type == ValueType.NUMBER) {
-            list.add((Double) value.get_value() + "");
+            list.add(value.get_value().toString());
         }
         else if (type == ValueType.TRUE || type == ValueType.FALSE || type == ValueType.NULL) {
-            list.add((String) value.get_value());
+            list.add(value.get_value().toString());
         }
         else if (type == ValueType.OBJECT) {
             return object_value.format();

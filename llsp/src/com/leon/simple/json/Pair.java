@@ -26,15 +26,15 @@ public class Pair implements JsonFormat {
     public List<String> format() {
         List<String> list = new ArrayList<String>();
         String key_colon = "\"" + (String) string.get_value() + "\" : ";
-        int size = value.format().size();
-        if (size == 1) {
-            list.add(key_colon + value.format().get(0) + ",");
+        List<String> value_list = value.format();
+        if (value_list.size() == 1) {
+            list.add(key_colon + value_list.get(0) + ",");
         }
         else {
             list.add(key_colon);
-            list.addAll(value.format());
+            list.addAll(value_list);
             list.remove(list.size() - 1);
-            list.add(value.format().get(size - 1) + ",");
+            list.add(value_list.get(value_list.size() - 1) + ",");
         }
         
         return list;

@@ -27,9 +27,10 @@ public class JsonObject implements JsonFormat {
         List<String> list = new ArrayList<String>();
         list.add("{");
         if (member != null) {
-            for (int i = 0; i < member.format().size(); i++) {
-                String str = member.format().get(i);
-                if (i != member.format().size() - 1) {
+            List<String> member_list = member.format();
+            for (int i = 0; i < member_list.size(); i++) {
+                String str = member_list.get(i);
+                if (i != member_list.size() - 1) {
                     list.add(new StringBuilder().append("    ").append(str).toString());
                 }
                 else {
