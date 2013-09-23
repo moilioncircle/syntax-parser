@@ -19,7 +19,7 @@ import com.leon.generator.Compile;
 
 public class JsonTest {
     
-    Logger logger = Logger.getLogger(JsonTest.class.getName());
+    private static final Logger logger = Logger.getLogger(JsonTest.class.getName());
     
     @Test
     public void testCalc() throws Exception {
