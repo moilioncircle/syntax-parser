@@ -79,8 +79,11 @@ public class LR1 {
             if (action[index(t.get_type_name(), grammar.vocabulary)][state] == null) {
                 sb.append("syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column() + "\n");
                 Repair repair = validated_lr_repair(stack, token, index);
+                logger.log(Level.INFO, "syntax error:" + t + ",line:" + t.get_line() + ",column:" + t.get_column());
                 logger.log(Level.INFO, "delete size :" + repair.delete_size);
-                logger.log(Level.INFO, "insert symbols :" + repair.insert);
+                if (repair.insert != null) {
+                    logger.log(Level.INFO, "insert symbols :" + repair.insert);
+                }
                 int delete_size = repair.delete_size;
                 List<ISymbol> insert = repair.insert;
                 index = index + delete_size;
