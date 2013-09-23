@@ -31,9 +31,10 @@ public class Pair implements JsonFormat {
             list.add(key_colon + value_list.get(0) + ",");
         }
         else {
-            list.add(key_colon);
-            list.addAll(value_list);
-            list.remove(list.size() - 1);
+            list.add(key_colon + value_list.get(0));
+            for (int i = 1; i < value_list.size() - 1; i++) {
+                list.add(value_list.get(i));
+            }
             list.add(value_list.get(value_list.size() - 1) + ",");
         }
         
