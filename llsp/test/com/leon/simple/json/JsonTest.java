@@ -29,7 +29,7 @@ public class JsonTest {
                 "test/com/leon/simple/json/example_json.js"), JsonToken.class);
         logger.log(Level.INFO, "begin:" + new Timestamp(System.currentTimeMillis()));
         List<String> list = o.format();
-        Assert.assertEquals(304, list.size());
+        Assert.assertEquals(301, list.size());
         logger.log(Level.INFO, "end" + new Timestamp(System.currentTimeMillis()));
         for (String line : list) {
             System.out.println(line);

@@ -25,8 +25,8 @@ public class JsonObject implements JsonFormat {
     @Override
     public List<String> format() {
         List<String> list = new ArrayList<String>();
-        list.add("{");
         if (member != null) {
+            list.add("{");
             List<String> member_list = member.format();
             for (int i = 0; i < member_list.size(); i++) {
                 String str = member_list.get(i);
@@ -39,8 +39,11 @@ public class JsonObject implements JsonFormat {
                     list.add(sb.toString());
                 }
             }
+            list.add("}");
         }
-        list.add("}");
+        else {
+            list.add("{}");
+        }
         return list;
     }
 }

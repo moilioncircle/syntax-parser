@@ -25,8 +25,8 @@ public class JsonArray implements JsonFormat {
     @Override
     public List<String> format() {
         List<String> list = new ArrayList<String>();
-        list.add("[");
         if (element != null) {
+            list.add("[");
             List<String> element_list = element.format();
             for (int i = 0; i < element_list.size(); i++) {
                 String str = element_list.get(i);
@@ -39,8 +39,12 @@ public class JsonArray implements JsonFormat {
                     list.add(sb.toString());
                 }
             }
+            
+            list.add("]");
         }
-        list.add("]");
+        else {
+            list.add("[]");
+        }
         return list;
     }
 }
